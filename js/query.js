@@ -21,7 +21,8 @@ $(document).ready(function() {
 	/* for test */
 	
 	$('#fields').sortable({
-	  stop: function( event, ui ) { refresh_sql();  }
+		 items: "> div.field"
+	  	 ,stop: function( event, ui ) { refresh_sql();  }
 	});
 	
 	$('#add_this_table').click(function() {
@@ -37,8 +38,20 @@ $(document).ready(function() {
 		
 	});
 	
-	
-	
+	$('#save_query').click(function() {
+		
+		$.ajax({
+			url: MODQUERY_INTERFACE
+			,data:{
+				put:'query'
+				,TTable: TTable
+				,TField:TField
+				,form:$('form[name=formQuery]').serialize()
+			}
+			,method:'post'
+			,dataType:'json'
+		});
+	});		
 	
 });
 
@@ -152,14 +165,14 @@ function refresh_field_array(table) {
 	//$fields.find('li[table='+table+']').remove();
 	
 	$('tr[table='+table+'] input').not(':checked').each(function(i,item) {
-		$fields.find('li[table="'+table+'"][field="'+$(item).val()+'"]').remove();
+		$fields.find('div[table="'+table+'"][field="'+$(item).val()+'"]').remove();
 	});
 	
 	$('tr[table='+table+'] input:checked ').each(function(i,item) {
 		var field = $(item).val();
 		TField[table].push( field );
 		
-		if($fields.find('li[table="'+table+'"][field="'+field+'"]').length == 0) {
+		if($fields.find('div[table="'+table+'"][field="'+field+'"]').length == 0) {
 			
 			
 			var select_equal = '<select field='+field+' sql-act="operator"> '
@@ -167,14 +180,16 @@ function refresh_field_array(table) {
 						
 						+ '<option value="LIKE">LIKE</option>'
 						+ '<option value="=">=</option>'
+						+ '<option value="!=">!=</option>'
 						+ '<option value="&lt;">&lt;</option>'
 						+ '<option value="&lt;">&gt;</option>'
+						+ '<option value="IN">IN</option>'
 						+ '</select>';
 						
 			var select_mode	= '<select field='+field+' sql-act="mode"> '
 						+ '<option value="value">valeur</option>'
 						+ '<option value="var">variable</option>'
-						+ '</select> <input field='+f+' type="text" value="" sql-act="value" />';
+						+ '</select> <input field='+field+' type="text" value="" sql-act="value" />';
 				
 			var select_order	= '<select field='+field+' sql-act="order"> '
 						+ '<option value=""> </option>'
@@ -183,9 +198,9 @@ function refresh_field_array(table) {
 						+ '</select>';
 				
 			
-			var search = '<span table="'+table+'" field="'+f+'" class="selector"><br />'+select_equal+select_mode+'<br />'+select_order+'</span>';
+			var search = '<span table="'+table+'" field="'+f+'" class="selector"><div class="tagtd">'+select_equal+select_mode+'</div><div class="tagtd">'+select_order+'</div></span>';
 
-			$li = $('<li table="'+table+'" field="'+field+'" >'+field+'</li>');
+			$li = $('<div class="field table-border-row" table="'+table+'" field="'+field+'" >'+field+'</div>');
 				
 			$li.append(search);
 			$fields.append($li);
@@ -203,7 +218,7 @@ function refresh_field_array(table) {
 		var field = $(this).attr('field');
 		
 		var $input = $fields.find('input[field="'+field+'"][sql-act="value"]');
-		//console.log($input, $(this).val());
+		//console.log($input, field, $(this).val());
 		if($(this).val() == 'var') {
 			$input.hide();
 		}
@@ -241,7 +256,7 @@ function refresh_sql() {
 	}
 
 
-	$('#fields li[table]').each(function(i,item) {
+	$('#fields div.field').each(function(i,item) {
 		if(fields!='') fields+=',';
 	 	fields+=$(item).attr('field');	
 		
@@ -254,7 +269,7 @@ function refresh_sql() {
 	where='';
 	order='';
 	
-	$('#fields li').each(function(i, item) {
+	$('#fields div.field').each(function(i, item) {
 		
 		field = $(this).attr('field');
 		operator = $(this).find('select[sql-act=operator]').val();

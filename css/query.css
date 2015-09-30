@@ -1,4 +1,4 @@
-#selected_tables div.fields, #selected_tables div.jointure{
+#selected_tables div.fields, #selected_tables div.jointure , div.selected_fields{
 	
 	width : 300px;
 	border-color: #bbb #aaa #aaa;

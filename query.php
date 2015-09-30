@@ -11,10 +11,11 @@ dol_fiche_head();
 	var MODQUERY_INTERFACE = "<?php echo dol_buildpath('/query/script/interface.php',1); ?>";
 </script>
 
-
+<form name="formQuery">
 <div>
 	<select id="tables"></select>
 	<input class="button" type="button" id="add_this_table" value="<?php echo $langs->trans('AddThisTable') ?>" />
+	<input class="button" type="button" id="save_query" value="<?php echo $langs->trans('SaveQuery') ?>" />
 	
 	<div id="selected_tables">
 		
@@ -22,8 +23,8 @@ dol_fiche_head();
 	
 </div>
 
-<div>
-	<ul id="fields"><?php echo $langs->trans('FieldsOrder'); ?></ul>
+<div class="selected_fields">
+	<div class="border" id="fields"><div class="liste_titre"><?php echo $langs->trans('FieldsOrder'); ?></div></div>
 </div>
 
 <div id="results">
@@ -45,6 +46,8 @@ dol_fiche_head();
 	</textarea>
 	</div>
 </div>
+
+</form>
 
 <div style="clear:both"></div>
 

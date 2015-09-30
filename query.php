@@ -22,6 +22,10 @@ dol_fiche_head();
 	
 </div>
 
+<div>
+	<ul id="fields"><?php echo $langs->trans('FieldsOrder'); ?></ul>
+</div>
+
 <div id="results">
 	<div>
 	<?php echo $langs->trans('Fields'); ?><br />

@@ -2,6 +2,7 @@ var TTable = [];
 var TField = [];
 var TFieldInTable = [];
 var TJoin = [];
+var TFieldRank = [];
 
 $(document).ready(function() {
 	
@@ -18,6 +19,10 @@ $(document).ready(function() {
 	getTables();
 	
 	/* for test */
+	
+	$('#fields').sortable({
+	  stop: function( event, ui ) { refresh_sql();  }
+	});
 	
 	$('#add_this_table').click(function() {
 		
@@ -67,74 +72,13 @@ function drawFieldTables( table ){
 
 
 
-			var select_equal = '<select field='+f+' sql-act="operator"> '
-						+ '<option value=""> </option>'
-						
-						+ '<option value="LIKE">LIKE</option>'
-						+ '<option value="=">=</option>'
-						+ '<option value="&lt;">&lt;</option>'
-						+ '<option value="&lt;">&gt;</option>'
-						+ '</select>';
-						
-			var select_mode	= '<select field='+f+' sql-act="mode"> '
-						+ '<option value="value">valeur</option>'
-						+ '<option value="var">variable</option>'
-						+ '</select> <input field='+f+' type="text" value="" sql-act="value" />';
-				
-			var select_order	= '<select field='+f+' sql-act="order"> '
-						+ '<option value=""> </option>'
-						+ '<option value="ASC">Ascendant</option>'
-						+ '<option value="DESC">Descendant</option>'
-						+ '</select>';
-				
-			
-			var search = '<span table="'+table+'" field="'+f+'" class="selector"><br />'+select_equal+select_mode+'<br />'+select_order+'</span>';
-
-				
-			$ul.find('tr[field="'+f+'"] td').append(search);
-							
+										
 		}
 		
 		addJointure($ul, table);
 		
 		$ul.find('input[type=checkbox]').click( function () {
-			
-			$condition = $(this).closest('tr').find('span.selector');
-			
-			if($(this).is(':checked')) {
-			//	console.log($(this).closest('li').find('span.selector').html());
-				$condition.css('display','block');
-				$condition.attr('sql-where',1);	
-			}
-			else{
-				$condition.css('display','none');
-				$condition.attr('sql-where',0);
-			}
-			
 			refresh_field_array($(this).attr('table'));
-		});
-		
-		
-		$ul.find('select[sql-act=operator]').change( function () {
-			refresh_sql();
-		});
-		
-		$ul.find('select[sql-act=mode]').change( function () {
-			
-			field = $(this).attr('field');
-			
-			var $input = $ul.find('input[field="'+field+'"][sql-act="value"]');
-			//console.log($input, $(this).val());
-			if($(this).val() == 'var') {
-				$input.hide();
-			}
-			else{
-				$input.show();
-				
-			}
-			
-			refresh_sql();
-			
 		});
 		
 		
@@ -204,8 +148,74 @@ function refresh_field_array(table) {
 	
 	TField[table] = [];
 	//console.log('refresh_field_array:'+table);
+	var $fields = $('#fields');
+	//$fields.find('li[table='+table+']').remove();
+	
+	$('tr[table='+table+'] input').not(':checked').each(function(i,item) {
+		$fields.find('li[table="'+table+'"][field="'+$(item).val()+'"]').remove();
+	});
+	
 	$('tr[table='+table+'] input:checked ').each(function(i,item) {
-		TField[table].push( $(item).val() );	});
+		var field = $(item).val();
+		TField[table].push( field );
+		
+		if($fields.find('li[table="'+table+'"][field="'+field+'"]').length == 0) {
+			
+			
+			var select_equal = '<select field='+field+' sql-act="operator"> '
+						+ '<option value=""> </option>'
+						
+						+ '<option value="LIKE">LIKE</option>'
+						+ '<option value="=">=</option>'
+						+ '<option value="&lt;">&lt;</option>'
+						+ '<option value="&lt;">&gt;</option>'
+						+ '</select>';
+						
+			var select_mode	= '<select field='+field+' sql-act="mode"> '
+						+ '<option value="value">valeur</option>'
+						+ '<option value="var">variable</option>'
+						+ '</select> <input field='+f+' type="text" value="" sql-act="value" />';
+				
+			var select_order	= '<select field='+field+' sql-act="order"> '
+						+ '<option value=""> </option>'
+						+ '<option value="ASC">Ascendant</option>'
+						+ '<option value="DESC">Descendant</option>'
+						+ '</select>';
+				
+			
+			var search = '<span table="'+table+'" field="'+f+'" class="selector"><br />'+select_equal+select_mode+'<br />'+select_order+'</span>';
+
+			$li = $('<li table="'+table+'" field="'+field+'" >'+field+'</li>');
+				
+			$li.append(search);
+			$fields.append($li);
+			
+		}
+			});
+
+
+	$fields.find('select[sql-act=operator]').unbind().change( function () {
+		refresh_sql();
+	});
+	
+	$fields.find('select[sql-act=mode]').unbind().change( function () {
+		
+		var field = $(this).attr('field');
+		
+		var $input = $fields.find('input[field="'+field+'"][sql-act="value"]');
+		//console.log($input, $(this).val());
+		if($(this).val() == 'var') {
+			$input.hide();
+		}
+		else{
+			$input.show();
+			
+		}
+		
+		refresh_sql();
+		
+	});
+		
 
 	refresh_sql();
 }
@@ -228,12 +238,14 @@ function refresh_sql() {
 			tables+=' ON ('+TJoin[t][0]+'='+TJoin[t][1]+') ';	
 		}
 		
-		if(TField[t].length>0) {
-			if(fields!='') fields+=',';
-			 fields+=TField[t].join(',') ;	
-			
-		}
 	}
+
+
+	$('#fields li[table]').each(function(i,item) {
+		if(fields!='') fields+=',';
+	 	fields+=$(item).attr('field');	
+		
+	});
 	
 	$('#sql_query_fieds').val(fields);
 	
@@ -242,8 +254,7 @@ function refresh_sql() {
 	where='';
 	order='';
 	
-	$('span[sql-where=1]').each(function(i, item) {
-		
+	$('#fields li').each(function(i, item) {
 		
 		field = $(this).attr('field');
 		operator = $(this).find('select[sql-act=operator]').val();

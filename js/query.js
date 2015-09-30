@@ -81,8 +81,14 @@ function drawFieldTables( table ){
 						+ '<option value="var">variable</option>'
 						+ '</select> <input field='+f+' type="text" value="" sql-act="value" />';
 				
+			var select_order	= '<select field='+f+' sql-act="order"> '
+						+ '<option value=""> </option>'
+						+ '<option value="ASC">Ascendant</option>'
+						+ '<option value="DESC">Descendant</option>'
+						+ '</select>';
+				
 			
-			var search = '<span table="'+table+'" field="'+f+'" class="selector">'+select_equal+select_mode+'</span>';
+			var search = '<span table="'+table+'" field="'+f+'" class="selector"><br />'+select_equal+select_mode+'<br />'+select_order+'</span>';
 
 				
 			$ul.find('tr[field="'+f+'"] td').append(search);
@@ -234,12 +240,14 @@ function refresh_sql() {
 	$('#sql_query_from').val(tables);
 	
 	where='';
+	order='';
 	
 	$('span[sql-where=1]').each(function(i, item) {
 		
 		
 		field = $(this).attr('field');
 		operator = $(this).find('select[sql-act=operator]').val();
+		sens = $(this).find('select[sql-act=order]').val();
 		
 		if(operator!='') {
 			
@@ -249,6 +257,14 @@ function refresh_sql() {
 			
 		}
 		
+/*		if(sens!='') {
+			
+			if(order!='')order+=',';
+			
+			order+=field +' '+sens
+			
+		}
+*/		
 		
 	});
 	

@@ -12,6 +12,11 @@
 			__out( TQuery::getTables($db) , 'json' );
 			
 			break;
+		case 'fields':
+			
+			__out( TQuery::getFields($db, GETPOST('table')) , 'json' );
+			
+			break;
 		
 		default:
 			

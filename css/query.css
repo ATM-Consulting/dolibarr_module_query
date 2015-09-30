@@ -1,0 +1,28 @@
+#selected_tables div.fields {
+	
+	float:left;
+	width : 300px;
+	
+	
+}
+
+#selected_tables div.jointure {
+	
+	float:left;
+	width : 150px;
+	
+	
+}
+#selected_tables div.fields span.selector {
+	display:none;
+}
+
+div#results {
+	float:left; 
+	width:500px;
+
+}
+
+div#results textarea {
+	width:100%;	
+}

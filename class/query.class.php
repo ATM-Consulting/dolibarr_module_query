@@ -20,5 +20,20 @@ class TQuery {
 		
 	}
 	
+	static function getFields(&$db, $table) {
+		
+		$res = $db->query("DESCRIBE ".$table);
+		
+		$Tab = array();
+		while($obj = $db->fetch_object($res)) {
+			
+			$Tab[] = $obj;
+			
+		}
+		
+		return $Tab;
+		
+		
+	}
 	
 }

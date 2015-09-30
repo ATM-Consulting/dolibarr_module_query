@@ -1,17 +1,18 @@
-#selected_tables div.fields {
+#selected_tables div.fields, #selected_tables div.jointure{
 	
-	float:left;
 	width : 300px;
-	
+	border-color: #bbb #aaa #aaa;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 3px 3px 4px #ddd;
+    float: left;
+    margin: 0 5px 14px;
+    
 	
 }
 
-#selected_tables div.jointure {
-	
-	float:left;
-	width : 150px;
-	
-	
+#selected_tables table.jointure td[rel] {
+	background-color: #eeffee;
 }
 #selected_tables div.fields span.selector {
 	display:none;

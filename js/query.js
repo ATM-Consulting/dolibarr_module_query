@@ -50,9 +50,10 @@ function drawFieldTables( table ){
 	}).done(function(data) {
 		
 		var $fields = $('<div class="fields" />');
-		$fields.append('<ul table="'+table+'">'+table+'</ul>');
 		
-		$ul = $fields.find('ul');
+		$fields.append('<table class="border" width="100%" table="'+table+'"><tr class="liste_titre"><td>'+table+'</td></tr></table>');
+		
+		var $ul = $fields.find('table');
 		
 		TFieldInTable[table] = [];
 		
@@ -62,15 +63,17 @@ function drawFieldTables( table ){
 			
 			TFieldInTable[table].push(table+'.'+f);
 			
-			$ul.append('<li table="'+table+'" field="'+f+'"><input table="'+table+'" id="'+table+'-'+f+'" type="checkbox" name="'+table+'.'+f+'" value="'+table+'.'+f+'" /><label for="'+table+'-'+f+'"> '+f+' </label></li>');	
+			$ul.append('<tr table="'+table+'" field="'+f+'"><td><input table="'+table+'" id="'+table+'-'+f+'" type="checkbox" name="'+table+'.'+f+'" value="'+table+'.'+f+'" /><label for="'+table+'-'+f+'"> '+f+' </label></td></tr>');	
 
 
 
 			var select_equal = '<select field='+f+' sql-act="operator"> '
+						+ '<option value=""> </option>'
+						
+						+ '<option value="LIKE">LIKE</option>'
+						+ '<option value="=">=</option>'
 						+ '<option value="&lt;">&lt;</option>'
 						+ '<option value="&lt;">&gt;</option>'
-						+ '<option value="=">=</option>'
-						+ '<option value="LIKE">LIKE</option>'
 						+ '</select>';
 						
 			var select_mode	= '<select field='+f+' sql-act="mode"> '
@@ -79,43 +82,52 @@ function drawFieldTables( table ){
 						+ '</select> <input field='+f+' type="text" value="" sql-act="value" />';
 				
 			
-			var search = '<span class="selector">'+select_equal+select_mode+'</span>';
+			var search = '<span table="'+table+'" field="'+f+'" class="selector">'+select_equal+select_mode+'</span>';
 
 				
-			$ul.find('li[field="'+f+'"]').append(search);
+			$ul.find('tr[field="'+f+'"] td').append(search);
 							
 		}
 		
-		addJointure(table);
+		addJointure($ul, table);
 		
 		$ul.find('input[type=checkbox]').click( function () {
 			
+			$condition = $(this).closest('tr').find('span.selector');
+			
 			if($(this).is(':checked')) {
-				console.log($(this).closest('li').find('span.selector').html());
-				$(this).closest('li').find('span.selector').css('display','block');	
+			//	console.log($(this).closest('li').find('span.selector').html());
+				$condition.css('display','block');
+				$condition.attr('sql-where',1);	
 			}
 			else{
-				$(this).closest('li').find('span.selector').css('display','none');
+				$condition.css('display','none');
+				$condition.attr('sql-where',0);
 			}
-			
-			
 			
 			refresh_field_array($(this).attr('table'));
 		});
 		
-		$ul.find('select[sql-act=mode]').click( function () {
+		
+		$ul.find('select[sql-act=operator]').change( function () {
+			refresh_sql();
+		});
+		
+		$ul.find('select[sql-act=mode]').change( function () {
 			
 			field = $(this).attr('field');
 			
-			$input = $ul.find('input[field='+f+'][sql-act=value]');
-			
-			if($(this).val() == 'variable') {
-				$input.val=':'+f;
-				$input.attr('disabled','disabled');
+			var $input = $ul.find('input[field="'+field+'"][sql-act="value"]');
+			//console.log($input, $(this).val());
+			if($(this).val() == 'var') {
+				$input.hide();
 			}
 			else{
-				$input.removeAttr('disabled');
+				$input.show();
+				
 			}
+			
+			refresh_sql();
 			
 		});
 		
@@ -126,7 +138,7 @@ function drawFieldTables( table ){
 	
 }
 
-function addJointure(table) {
+function addJointure($obj, table) {
 	
 	if(TTable[0] == table) return false;
 	
@@ -139,16 +151,18 @@ function addJointure(table) {
 		
 	}
 	
-	var $join = $('<div class="jointure" />');
+	var $join = $('<table class="border jointure" width="100%"><tr class="liste_titre"><td>Jointure</td></tr><tr><td rel="from"></td></tr><tr><td rel="to"></td></tr></table>');
 	
 	$select_t1 = $('<select name="jointure_'+table+'" jointure="'+table+'" />');
 	$select_t2 = $('<select name="jointure_'+table+'_to" jointure-to="'+table+'" />');
 	
 	$select_t1.change(function() {
 		TJoin[table] = [ $('select[jointure='+table+']').val() , $('select[jointure-to='+table+']').val() ];
+		refresh_sql();
 	});
 	$select_t2.change(function() {
 		TJoin[table] = [ $('select[jointure='+table+']').val() , $('select[jointure-to='+table+']').val() ];
+		refresh_sql();
 	});
 	
 	for(x in TFieldInTable[table]) {
@@ -170,10 +184,12 @@ function addJointure(table) {
 	
 	TJoin[table] = [ TFieldInTable[table][0] , TFieldInTable[previous_table][0] ];
 	
-	$join.append($select_t1);
-	$join.append($select_t2);
+	$join.find('[rel=from]').append($select_t1);
+	$join.find('[rel=to]').append($select_t2);
 	
-	$('#selected_tables').append($join);
+	//$('#selected_tables').append($join);
+	
+	$obj.before($join);
 	
 	refresh_sql();
 }
@@ -182,7 +198,7 @@ function refresh_field_array(table) {
 	
 	TField[table] = [];
 	//console.log('refresh_field_array:'+table);
-	$('ul li[table='+table+'] input:checked ').each(function(i,item) {
+	$('tr[table='+table+'] input:checked ').each(function(i,item) {
 		TField[table].push( $(item).val() );	});
 
 	refresh_sql();
@@ -216,6 +232,27 @@ function refresh_sql() {
 	$('#sql_query_fieds').val(fields);
 	
 	$('#sql_query_from').val(tables);
+	
+	where='';
+	
+	$('span[sql-where=1]').each(function(i, item) {
+		
+		
+		field = $(this).attr('field');
+		operator = $(this).find('select[sql-act=operator]').val();
+		
+		if(operator!='') {
+			
+			if(where!='') where+=' AND ';
+			
+			where+= field+' '+operator+' :'+field;
+			
+		}
+		
+		
+	});
+	
+	$('#sql_query_where').val(where);
 	
 }
 

@@ -4,6 +4,8 @@ require('config.php');
 
 llxHeader('', 'Query', '', '', 0, 0, array('/query/js/query.js') , array('/query/css/query.css') );
 
+dol_fiche_head();
+
 ?>
 <script type="text/javascript">
 	var MODQUERY_INTERFACE = "<?php echo dol_buildpath('/query/script/interface.php',1); ?>";
@@ -12,7 +14,7 @@ llxHeader('', 'Query', '', '', 0, 0, array('/query/js/query.js') , array('/query
 
 <div>
 	<select id="tables"></select>
-	<input type="button" id="add_this_table" value="<?php echo $langs->trans('AddThisTable') ?>" />
+	<input class="button" type="button" id="add_this_table" value="<?php echo $langs->trans('AddThisTable') ?>" />
 	
 	<div id="selected_tables">
 		
@@ -40,6 +42,10 @@ llxHeader('', 'Query', '', '', 0, 0, array('/query/js/query.js') , array('/query
 	</div>
 </div>
 
+<div style="clear:both"></div>
+
 <?php
+
+dol_fiche_end();
 
 llxFooter();

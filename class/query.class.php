@@ -1,6 +1,18 @@
 <?php
 
-class TQuery {
+class TQuery extends TObjetStd {
+	
+	function __construct() {
+        global $langs;
+         
+        parent::set_table(MAIN_DB_PREFIX.'query');
+        parent::add_champs('sql_fields,sql_from,sql_where',array('type'=>'text'));
+		parent::add_champs('TField,TTable,TOrder',array('type'=>'array'));
+		
+        parent::_init_vars();
+        parent::start();    
+         
+    }
 	
 	static function getTables(&$db) {
 		

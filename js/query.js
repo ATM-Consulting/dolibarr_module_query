@@ -6,19 +6,27 @@ var TFieldRank = [];
 
 $(document).ready(function() {
 	
-	/* for test */
+	_init_query();
+	
+	/* for test ----
 		TTable.push( 'llx_user' );
 		TField['llx_user'] = [];
 		
 		drawFieldTables( 'llx_user' );
+		
 		TTable.push('llx_usergroup_user' );
 		TField['llx_usergroup_user'] = [];
-		
 		drawFieldTables( 'llx_usergroup_user' );
 	
-	getTables();
+		TTable.push('llx_usergroup' );
+		TField['llx_usergroup'] = [];
+		drawFieldTables( 'llx_usergroup' );
 	
-	/* for test */
+		
+	
+	---- for test */
+	
+	getTables();
 	
 	$('#fields').sortable({
 		 items: "> div.field"
@@ -44,18 +52,28 @@ $(document).ready(function() {
 			url: MODQUERY_INTERFACE
 			,data:{
 				put:'query'
-				,TTable: TTable
-				,TField:TField
-				,form:$('form[name=formQuery]').serialize()
+				,'id' : $('form#formQuery input[name=id]').val()
+				,'TTable': TTable
+				,'TField': TField
+				,'form':$('form[name=formQuery]').serializeArray()
 			}
 			,method:'post'
-			,dataType:'json'
+			,dataType:'html'
+			
+		}).done(function (data) {
+			$('form#formQuery input[name=id]').val(data);
 		});
 	});		
 	
 });
 
-
+function addTable( table ){
+	
+	TTable.push( table );
+	TField[table] = [];
+		
+	drawFieldTables( table );
+}
 function drawFieldTables( table ){
 	
 	$.ajax({
@@ -64,6 +82,7 @@ function drawFieldTables( table ){
 			get:'fields'
 			,table : table
 		}
+		,async:false
 		,dataType:'json'
 	}).done(function(data) {
 		
@@ -101,6 +120,13 @@ function drawFieldTables( table ){
 	
 }
 
+function checkField( field ) {
+	$input = $("input[type=checkbox][name='"+field+"']");
+	
+	$input.prop("checked",true);
+	refresh_field_array($input.attr('table'));
+	
+}
 function addJointure($obj, table) {
 	
 	if(TTable[0] == table) return false;
@@ -255,14 +281,13 @@ function refresh_sql() {
 		
 	}
 
-
 	$('#fields div.field').each(function(i,item) {
 		if(fields!='') fields+=',';
 	 	fields+=$(item).attr('field');	
 		
 	});
 	
-	$('#sql_query_fieds').val(fields);
+	$('#sql_query_fields').val(fields);
 	
 	$('#sql_query_from').val(tables);
 	
@@ -306,6 +331,7 @@ function getTables() {
 			get:'tables'
 		}
 		,dataType:'json'
+		,async:false
 	}).done(function(data) {
 		
 		$tables = $("#tables");

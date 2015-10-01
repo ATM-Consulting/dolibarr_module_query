@@ -9,17 +9,17 @@ class TQuery extends TObjetStd {
         parent::add_champs('sql_fields,sql_from,sql_where',array('type'=>'text'));
 		parent::add_champs('TField,TTable,TOrder',array('type'=>'array'));
 		
-        parent::_init_vars();
+        parent::_init_vars('title');
         parent::start();    
          
     }
 	
-	static function getTables(&$db) {
+	static function getTables(&$PDOdb) {
 		
-		$res = $db->query("SHOW TABLES");
+		$PDOdb->Execute("SHOW TABLES");
 		
 		$Tab = array();
-		while($obj = $db->fetch_object($res)) {
+		while($obj = $PDOdb->Get_line()) {
 			
 			
 			$t = array_values((array)$obj);
@@ -32,12 +32,12 @@ class TQuery extends TObjetStd {
 		
 	}
 	
-	static function getFields(&$db, $table) {
+	static function getFields(&$PDOdb, $table) {
 		
-		$res = $db->query("DESCRIBE ".$table);
+		$PDOdb->Execute("DESCRIBE ".$table);
 		
 		$Tab = array();
-		while($obj = $db->fetch_object($res)) {
+		while($obj = $PDOdb->Get_line()) {
 			
 			$Tab[] = $obj;
 			

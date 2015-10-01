@@ -48,14 +48,33 @@ $(document).ready(function() {
 	
 	$('#save_query').click(function() {
 		
+		var TOperator = [];
+		$('#fields [sql-act="operator"]').each(function(i,item) {
+			if($(item).val()) {
+				
+				TOperator[$(item).attr('field')] = $(item).val();
+				
+			}
+		});
+		
+		var TValue = [];
+		$('#fields [sql-act="value"]').each(function(i,item) {
+			if($(item).val()) {
+				TValue[$(item).attr('field')] = $(item).val();
+			}
+		});
+		
+		
 		$.ajax({
 			url: MODQUERY_INTERFACE
 			,data:{
 				put:'query'
 				,'id' : $('form#formQuery input[name=id]').val()
 				,'TTable': TTable
-				,'TField': TField
-				,'form':$('form[name=formQuery]').serializeArray()
+				,'TOperator' : TOperator
+				,'TValue' : TValue
+				,'TJoin' : TJoin
+				,'form': $('form[name=formQuery]').serializeArray()
 			}
 			,method:'post'
 			,dataType:'html'

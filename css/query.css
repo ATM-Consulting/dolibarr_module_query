@@ -10,6 +10,13 @@
     
 	
 }
+#selected_tables div.fields {
+	max-height:300px;
+    overflow-y: auto;
+}
+.no-max-height {
+	max-height:none;
+}
 
 #selected_tables table.jointure td[rel] {
 	background-color: #eeffee;

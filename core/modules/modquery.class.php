@@ -92,8 +92,8 @@ class modquery extends DolibarrModules
             // Set this to 1 if module has its own models directory
             //'models' => 0,
             // Set this to relative path of css if module has its own css file
-            'css' => array('/query/lib/querybuilder/dist/css/query-builder.dark.min.css')
-            ,'js'=>array('/query/lib/querybuilder/dist/js/query-builder.standalone.min.js')
+            'css' => array()
+            ,'js'=>array()
             // Set here all hooks context managed by module
             //'hooks' => array('hookcontext1','hookcontext2')
             // Set here all workflow context managed by module

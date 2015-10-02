@@ -34,19 +34,6 @@
 			
 			$query->set_values($_REQUEST);
 			
-			if(!empty($_REQUEST['form'])) {
-				$Tab = array();
-				foreach($_REQUEST['form'] as &$row){
-					
-					$Tab[$row['name']] = $row['value']; 
-					
-							
-				}
-				
-				$query->set_values( $Tab );
-			}
-			
-			
 			$query->save($PDOdb);
 			
 			print $query->getId();

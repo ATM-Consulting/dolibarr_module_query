@@ -48,11 +48,28 @@ $(document).ready(function() {
 	
 	$('#save_query').click(function() {
 		
-		var TOperator = [];
+		var TOperator = {};
 		$('#fields [sql-act="operator"]').each(function(i,item) {
 			if($(item).val()) {
-				
 				TOperator[$(item).attr('field')] = $(item).val();
+				
+			}
+		});
+		
+		var TMode = {};
+		$('#fields [sql-act="mode"]').each(function(i,item) {
+			if($(item).val()) {
+				
+				TMode[$(item).attr('field')] = $(item).val();
+				
+			}
+		});
+		
+		var TOrder = {};
+		$('#fields [sql-act="order"]').each(function(i,item) {
+			if($(item).val()) {
+				
+				TOrder[$(item).attr('field')] = $(item).val();
 				
 			}
 		});
@@ -64,18 +81,24 @@ $(document).ready(function() {
 			}
 		});
 		
+		var TData= {
+			'put':'query'
+			,'id' : $('form#formQuery input[name=id]').val()
+			,'TOperator' : TOperator
+			,'TValue' : TValue
+			,'TJoin' : TJoin
+			,'TTable': TTable
+			,'TOrder' : TOrder
+			,'TMode' : TMode
+			,'sql_fields' : $('textarea[name=sql_fields]').val()
+			,'sql_from' : $('textarea[name=sql_from]').val()
+			,'sql_where' : $('textarea[name=sql_where]').val()
 		
+		};
+		console.log( TData);
 		$.ajax({
 			url: MODQUERY_INTERFACE
-			,data:{
-				put:'query'
-				,'id' : $('form#formQuery input[name=id]').val()
-				,'TTable': TTable
-				,'TOperator' : TOperator
-				,'TValue' : TValue
-				,'TJoin' : TJoin
-				,'form': $('form[name=formQuery]').serializeArray()
-			}
+			,data:TData
 			,method:'post'
 			,dataType:'html'
 			
@@ -245,7 +268,7 @@ function refresh_field_array(table) {
 			
 			var search = '<span table="'+table+'" field="'+f+'" class="selector"><div class="tagtd">'+select_equal+select_mode+'</div><div class="tagtd">'+select_order+'</div></span>';
 
-			$li = $('<div class="field table-border-row" table="'+table+'" field="'+field+'" >'+field+'</div>');
+			$li = $('<div class="field table-border-row" table="'+table+'" field="'+field+'" ><div class="fieldName">'+field+'</div></div>');
 				
 			$li.append(search);
 			$fields.append($li);
@@ -323,7 +346,7 @@ function refresh_sql() {
 			
 			if(where!='') where+=' AND ';
 			
-			where+= field+' '+operator+' :'+field;
+			where+= field+' '+operator+' :'+field.replace(".", "_"); ;
 			
 		}
 		

@@ -10,6 +10,14 @@
     
 	
 }
+.fieldName {
+	margin-top:10px;
+	font-weight: bold;
+	font-size:20px;
+}
+div.selected_fields{
+	width:500px;	
+}
 #selected_tables div.fields {
 	max-height:300px;
     overflow-y: auto;
@@ -30,4 +38,16 @@ div#results {
 
 div#results textarea {
 	width:100%;	
+}
+
+
+div.query {
+	
+	border-color: #bbb #aaa #aaa;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 3px 3px 4px #ddd;
+    border-radius:15px;
+	padding:20px;
+	background-color: #EEFFEE;
 }

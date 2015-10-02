@@ -4,9 +4,8 @@ require('config.php');
 
 dol_include_once('/query/class/query.class.php');
 
-llxHeader('', 'Query', '', '', 0, 0, array('/query/js/query.js') , array('/query/css/query.css') );
 
-dol_fiche_head();
+
 
 $action = GETPOST('action');
 
@@ -25,6 +24,13 @@ switch ($action) {
 		fiche($query);
 		
 		break;
+		
+	case 'run':
+		$query->load($PDOdb, GETPOST('id'));
+		run($PDOdb, $query);
+		
+		break;		
+
 	default:
 		
 		liste();
@@ -33,7 +39,65 @@ switch ($action) {
 }
 
 
-dol_fiche_end();
+
+
+function run(&$PDOdb, &$query) {
+	
+	llxHeader('', 'Query', '', '', 0, 0, array() , array('/query/css/query.css') );
+	dol_fiche_head();
+	
+	print_fiche_titre($query->title);
+	
+	if(empty($query->sql_from)) die('InvalidQuery');
+	
+	$sql="SELECT ".($query->sql_fields ? $query->sql_fields : '*') ."
+	FROM ".$query->sql_from."
+	WHERE ".($query->sql_where ? $query->sql_where : 1 )."
+	";
+	
+	$TBind = array();
+	$TSearch = array();
+	
+	foreach($query->TMode as $f=>$m) {
+		
+		if(empty($query->TOperator[$f])) continue;
+		
+		$fBind  = strtr($f, '.', '_');
+		list($tbl, $fSearch) = explode('.', $f);
+		
+		if($m == 'var') {
+			$TBind[$fBind] = '%';
+			$TSearch[$fSearch] = true;
+		}
+		else{
+			if(!empty($query->TValue[$f])) {
+				$TBind[$fBind] = $query->TValue[$f];	
+			}
+			
+		}
+		
+	}
+	var_dump($TBind);
+	
+	print '<div class="query">'.$sql.'</div>';
+	
+	$r=new TListviewTBS('lRunQuery');
+	echo $r->render($PDOdb, $sql,array(
+		'link'=>$query->TLink
+		,'title'=>$query->TTitle
+		,'liste'=>array(
+			'titre'=>''
+		)
+		,'search'=>$TSearch
+		
+		
+	)
+	,$TBind);
+	
+	dol_fiche_end();
+	
+	llxFooter();
+}
 
 
 function liste() {
@@ -42,26 +106,36 @@ function liste() {
 	
 	$PDOdb=new TPDOdb;
 	
+	llxHeader('', 'Query', '', '', 0, 0, array() , array('/query/css/query.css') );
+	dol_fiche_head();
 	
 	$sql="SELECT rowid as 'Id', title 
 	FROM ".MAIN_DB_PREFIX."query
 	WHERE 1
-	ORDER BY date_cre ASC ";
+	 ";
 	
 	$r=new TListviewTBS('lQuery');
 	echo $r->render($PDOdb, $sql,array(
 		'link'=>array(
-			'Id'=>'<a href="?action=view&id=@val@">@val@</a>'
+			'Id'=>'<a href="?action=view&id=@val@">'.img_picto('Edit', 'edit.png').' @val@</a>'
+			,'title'=>'<a href="?action=run&id=@Id@">'.img_picto('Run', 'object_cron.png').' @val@</a>'
+		)
+		,'title'=>array(
+			'title'=>$langs->trans('Title')
 		)
 	
 	));
 	
+	dol_fiche_end();
 	
+	llxFooter();
 }
 
 function fiche(&$query) {
 	global $langs, $conf,$user;
 	
+	llxHeader('', 'Query', '', '', 0, 0, array('/query/js/query.js') , array('/query/css/query.css') );
+	dol_fiche_head();
 	
 	?>
 	<script type="text/javascript">
@@ -84,11 +158,47 @@ function fiche(&$query) {
 				foreach($TField as $field) {
 					
 					echo ' checkField("'.$field.'"); ';
+				
+				}
+				
+				if(!empty($query->TMode)) {
+					foreach($query->TMode as $f=>$v) {
+						
+						echo ' $("#fields [sql-act=\'mode\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+						
+					}
+					
+				}
+				
+				if(!empty($query->TOrder)) {
+					foreach($query->TOrder as $f=>$v) {
+					
+						echo ' $("#fields [sql-act=\'order\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+						
+					}
+				}
+							
+				if(!empty($query->TOperator)) {
+					foreach($query->TOperator as $f=>$v) {
+						
+						echo ' $("#fields [sql-act=\'operator\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+						
+					}
+				}
+				
+				if(!empty($query->TValue)) {
+					foreach($query->TValue as $f=>$v) {
+						
+						echo ' $("#fields [sql-act=\'value\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+						
+					}
 				}
 				
 			}
 						
 			?>
+			
+			refresh_sql();
 		}
 		
 	</script>
@@ -137,9 +247,11 @@ function fiche(&$query) {
 	<div style="clear:both"></div>
 	
 	<?php
-
+	dol_fiche_end();
+	
+	llxFooter();
 }
 	
 
 
-llxFooter();
+

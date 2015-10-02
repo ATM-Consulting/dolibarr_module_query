@@ -74,22 +74,31 @@ $(document).ready(function() {
 			}
 		});
 		
-		var TValue = [];
+		var TValue = {};
 		$('#fields [sql-act="value"]').each(function(i,item) {
 			if($(item).val()) {
 				TValue[$(item).attr('field')] = $(item).val();
 			}
 		});
 		
+		var THide = {};
+		$('#fields [sql-act="hide"]').each(function(i,item) {
+			if($(item).val()) {
+				THide[$(item).attr('field')] = $(item).val();
+			}
+		});
+		
 		var TData= {
 			'put':'query'
 			,'id' : $('form#formQuery input[name=id]').val()
+			,'title' : $('form#formQuery input[name=title]').val()
 			,'TOperator' : TOperator
 			,'TValue' : TValue
 			,'TJoin' : TJoin
 			,'TTable': TTable
 			,'TOrder' : TOrder
 			,'TMode' : TMode
+			,'THide' : THide
 			,'sql_fields' : $('textarea[name=sql_fields]').val()
 			,'sql_from' : $('textarea[name=sql_from]').val()
 			,'sql_where' : $('textarea[name=sql_where]').val()
@@ -265,8 +274,13 @@ function refresh_field_array(table) {
 						+ '<option value="DESC">Descendant</option>'
 						+ '</select>';
 				
+			var select_hide	= '<select field='+field+' sql-act="hide"> '
+						+ '<option value=""> </option>'
+						+ '<option value="1">Caché</option>'
+						+ '</select>';
+				
 			
-			var search = '<span table="'+table+'" field="'+f+'" class="selector"><div class="tagtd">'+select_equal+select_mode+'</div><div class="tagtd">'+select_order+'</div></span>';
+			var search = '<span table="'+table+'" field="'+f+'" class="selector"><div class="tagtd">'+select_equal+select_mode+'</div><div class="tagtd">'+select_order+select_hide+'</div></span>';
 
 			$li = $('<div class="field table-border-row" table="'+table+'" field="'+field+'" ><div class="fieldName">'+field+'</div></div>');
 				

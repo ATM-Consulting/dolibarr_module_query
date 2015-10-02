@@ -57,7 +57,7 @@ function run(&$PDOdb, &$query) {
 	
 	$TBind = array();
 	$TSearch = array();
-	
+	$binds='';
 	foreach($query->TMode as $f=>$m) {
 		
 		if(empty($query->TOperator[$f])) continue;
@@ -67,7 +67,10 @@ function run(&$PDOdb, &$query) {
 		
 		if($m == 'var') {
 			$TBind[$fBind] = '%';
-			$TSearch[$fSearch] = true;
+			$TSearch[$fSearch] = array(
+				'recherche'=>TRUE
+				,'table'=>$tbl
+			);
 		}
 		else{
 			if(!empty($query->TValue[$f])) {
@@ -77,22 +80,50 @@ function run(&$PDOdb, &$query) {
 		}
 		
 	}
-	var_dump($TBind);
+	
+	$THide = array();
+	/*foreach($query->THide as $f=>$v) {
+		if($v) {
+			list($tbl, $fSearch) = explode('.', $f);
+			$THide[$fSearch]= true;
+			
+		}
+		
+	}*/
+	
+	
+	$form=new TFormCore('auto','formQuery','get');
+	echo $form->hidden('action', 'run');
+	echo $form->hidden('id',  $query->getId());
 	
 	print '<div class="query">'.$sql.'</div>';
+	
 	
 	$r=new TListviewTBS('lRunQuery');
 	echo $r->render($PDOdb, $sql,array(
 		'link'=>$query->TLink
+		,'hide'=>$THide
 		,'title'=>$query->TTitle
 		,'liste'=>array(
 			'titre'=>''
 		)
+		,'orderBy'=>$query->TOrder
 		,'search'=>$TSearch
 		
 		
 	)
 	,$TBind);
+	
+	echo '<div class="query">';
+	$Tab=array();
+	foreach($r->TBind as $f=>$v) {
+		$Tab[] = $f.' : '.$v;
+	}
+	echo implode(', ', $Tab);
+	echo '</div>';
+	
+	
+	$form->end();
 	
 	dol_fiche_end();
 	
@@ -190,6 +221,14 @@ function fiche(&$query) {
 					foreach($query->TValue as $f=>$v) {
 						
 						echo ' $("#fields [sql-act=\'value\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+						
+					}
+				}
+				
+				if(!empty($query->THide)) {
+					foreach($query->THide as $f=>$v) {
+						
+						echo ' $("#fields [sql-act=\'hide\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
 						
 					}
 				}

@@ -21,6 +21,9 @@ switch ($action) {
 		
 		break;
 	case 'add':
+		
+		if(empty($user->rights->query->all->create)) accessforbidden();
+		
 		fiche($query);
 		
 		break;

@@ -228,7 +228,21 @@ class modquery extends DolibarrModules
 
         // Permissions
         $this->rights = array(); // Permission array used by this module
-        $r = 0;
+		$r=0;
+		
+		$this->rights[$r][0] = 105000; 				// Permission id (must not be already used)
+		$this->rights[$r][1] = 'Exécuter une requête';	// Permission label
+		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
+		$this->rights[$r][4] = 'all';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][5] = 'read';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$r++;
+		
+		$this->rights[$r][0] = 105001; 				// Permission id (must not be already used)
+		$this->rights[$r][1] = 'Créer une requête';	// Permission label
+		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
+		$this->rights[$r][4] = 'all';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][5] = 'create';			// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$r++;
 
         // Add here list of permission defined by
         // an id, a label, a boolean and two constant strings.
@@ -253,30 +267,57 @@ class modquery extends DolibarrModules
         // Add here entries to declare new menus
         //
         // Example to declare a new Top Menu entry and its Left menu entry:
-        //$this->menu[$r]=array(
-        //	// Put 0 if this is a top menu
-        //	'fk_menu'=>0,
-        //	// This is a Top menu entry
-        //	'type'=>'top',
-        //	'titre'=>'query top menu',
-        //	'mainmenu'=>'query',
-        //	'leftmenu'=>'query',
-        //	'url'=>'/query/pagetop.php',
-        //	// Lang file to use (without .lang) by module.
-        //	// File must be in langs/code_CODE/ directory.
-        //	'langs'=>'mylangfile',
-        //	'position'=>100,
-        //	// Define condition to show or hide menu entry.
-        //	// Use '$conf->query->enabled' if entry must be visible if module is enabled.
-        //	'enabled'=>'$conf->query->enabled',
-        //	// Use 'perms'=>'$user->rights->query->level1->level2'
-        //	// if you want your menu with a permission rules
-        //	'perms'=>'1',
-        //	'target'=>'',
-        //	// 0=Menu for internal users, 1=external users, 2=both
-        //	'user'=>2
-        //);
-        //$r++;
+        $this->menu[$r]=array(
+        	'fk_menu'=>'fk_mainmenu=tools',
+        	'type'=>'left',
+        	'titre'=>'Query',
+        	'mainmenu'=>'tools',
+        	'leftmenu'=>'query',
+        	'url'=>'/query/query.php',
+        	'langs'=>'query.lang',
+        	'position'=>100,
+        	'enabled'=>'$conf->query->enabled',
+        	'perms'=>'1',
+        	'target'=>'',
+        	'user'=>2
+        );
+		
+        $r++;
+
+        $this->menu[$r]=array(
+        	'fk_menu'=>'fk_mainmenu=tools,fk_leftmenu=query',
+        	'type'=>'left',
+        	'titre'=>'Créer une requête',
+        	'mainmenu'=>'tools',
+        	'leftmenu'=>'query_add',
+        	'url'=>'/query/query.php?action=add',
+        	'langs'=>'query.lang',
+        	'position'=>101,
+        	'enabled'=>'$conf->query->enabled',
+        	'perms'=>'$user->rights->query->all->create',
+        	'target'=>'',
+        	'user'=>2
+        );
+		
+        $r++;
+
+        $this->menu[$r]=array(
+        	'fk_menu'=>'fk_mainmenu=tools,fk_leftmenu=query',
+        	'type'=>'left',
+        	'titre'=>'Liste des requêtes',
+        	'mainmenu'=>'tools',
+        	'leftmenu'=>'query_list',
+        	'url'=>'/query/query.php',
+        	'langs'=>'query.lang',
+        	'position'=>101,
+        	'enabled'=>'$conf->query->enabled',
+        	'perms'=>'1',
+        	'target'=>'',
+        	'user'=>2
+        );
+		
+        $r++;
+		
         //$this->menu[$r]=array(
         //	// Use r=value where r is index key used for the parent menu entry
         //	// (higher parent must be a top menu entry)

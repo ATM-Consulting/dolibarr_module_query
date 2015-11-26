@@ -116,7 +116,7 @@ class modquery extends DolibarrModules
         // Minimum version of PHP required by module
         $this->phpmin = array(5, 3);
         // Minimum version of Dolibarr required by module
-        $this->need_dolibarr_version = array(3, 2);
+        $this->need_dolibarr_version = array(3, 7);
         $this->langfiles = array("query@query"); // langfiles@query
         // Constants
         // List of particular constants to add when module is enabled

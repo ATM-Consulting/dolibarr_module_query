@@ -1,4 +1,7 @@
-ModuleXXXXXXName = Name
-ModuleXXXXXXDesc = Descripion
+Module104778Name = Query
+Module104778Desc = Requeteur et tableau de bord graphique 
 
 AddThisTable=Ajouter cette table
+AddOneOfThisTables=Ajouter l'une de ces tables
+Fields=Champs
+Where=Condition

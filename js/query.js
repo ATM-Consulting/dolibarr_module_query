@@ -92,6 +92,7 @@ $(document).ready(function() {
 			'put':'query'
 			,'id' : $('form#formQuery input[name=id]').val()
 			,'title' : $('form#formQuery input[name=title]').val()
+			,'type' : $('form#formQuery select[name=type]').val()
 			,'TOperator' : TOperator
 			,'TValue' : TValue
 			,'TJoin' : TJoin

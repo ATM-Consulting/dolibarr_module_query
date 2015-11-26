@@ -9,7 +9,7 @@ class TQuery extends TObjetStd {
         parent::add_champs('sql_fields,sql_from,sql_where',array('type'=>'text'));
 		parent::add_champs('TField,TTable,TOrder,TTitle,TLink,THide,TMode,TOperator,TValue',array('type'=>'array'));
 		
-        parent::_init_vars('title,type');
+        parent::_init_vars('title,type,xaxis');
         parent::start();    
 		
 		$this->TType = array(
@@ -71,6 +71,80 @@ class TQuery extends TObjetStd {
 	
 	function runChart(&$PDOdb) {
 		
+		list($tableXaxis,$fieldXaxis) = explode('.', $this->xaxis);
+		
+		$sql=$this->getSQL();
+		$TBind = $this->getBind();
+		$TSearch = $this->getSearch();
+		$THide = $this->getHide();
+		
+		$Tab = $PDOdb->ExecuteAsArray($sql, $TBind);
+		$TData = array();
+		$header = '';
+		$first = true;
+		foreach($Tab as $row) {
+			
+			//var_dump($row);
+			if($first) {
+				
+				$TValue=array();
+				$key = null;
+			
+				foreach($row as $k=>$v) {
+				
+					if($k == $fieldXaxis) {
+						$key = $k;
+					}
+					else if(!isset($THide[$k])) {
+						$TValue[] = $k;
+					}
+					
+				}
+				if(!is_null($key)) {
+					$header='["'.addslashes($key).'","'.implode('","', $TValue).'"]';
+				}
+				else{
+					exit('QueryChart, where is Xaxis '.$fieldXaxis.' !?');
+				}
+				$first = false;
+			}
+			$TValue=array();
+			$key = null;
+			
+			
+			foreach($row as $k=>$v) {
+				
+				if($k == $fieldXaxis) {
+					$key = $v;
+				}
+				else if(!isset($THide[$k])) {
+					$TValue[] = $v;
+				}
+				
+			}
+
+			if(!is_null($key)) {
+				if(!isset($TData[$key])) $TData[$key] = $TValue;
+				else {
+					foreach($TData[$key] as $k=>$v) {
+						$TData[$key][$k]+=$TValue[$k];
+					}
+					
+					
+				}
+			}
+			
+			
+		}
+		
+		$data = $header;
+		foreach($TData as $key=>$TValue) {
+			$data .= ',[ "'.$key.'", '.implode(',', $TValue).' ]';
+		}
+		
+		$height = empty($this->height) ? 500 : $this->height;
+		$curveType= empty($this->curveType) ? 'function' : $this->curveType; // none or function
+		
 		$html = '';
 		
 		$html.='<script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -84,18 +158,15 @@ class TQuery extends TObjetStd {
 		
 		  function drawChart() {
 	        var data = google.visualization.arrayToDataTable([
-	          ["Year", "Sales", "Expenses"],
-	          ["2004",  1000,      400],
-	          ["2005",  1170,      460],
-	          ["2006",  660,       1120],
-	          ["2007",  1030,      540]
+	          '.$data.'
 	        ]);
 	
 	        var options = {
 	          title: "'.addslashes($this->title).'",
-	          curveType: "none" /* or function */
+	          curveType: "'.$curveType.'"
 	          ,legend: { position: "bottom" }
-			  ,animation: { }
+			  ,animation: { "startup": true }
+			  ,height : '.$height.'
 	        };
 	
 	        var chart = new google.visualization.LineChart(document.getElementById("div_query_chart'.$this->getId().'"));
@@ -113,47 +184,51 @@ class TQuery extends TObjetStd {
 		return $html;
 	}
 	
-	function runList(&$PDOdb) {
-		
-		$html = '';
+	function getSQL() {
 		
 		$sql="SELECT ".($this->sql_fields ? $this->sql_fields : '*') ."
 			FROM ".$this->sql_from."
 			WHERE ".($this->sql_where ? $this->sql_where : 1 )."
 			";
+		
+		return $sql;			
+	}
+
+	function getBind() {
+		$TBind = array();
+		if(!empty($this->TMode)) {
 			
-			$TBind = array();
-			$TSearch = array();
-			$binds='';
-			if(!empty($this->TMode)) {
+			foreach($this->TMode as $f=>$m) {
 				
-				foreach($this->TMode as $f=>$m) {
-					
-					if(empty($this->TOperator[$f])) continue;
-					
-					$fBind  = strtr($f, '.', '_');
-					list($tbl, $fSearch) = explode('.', $f);
-					
-					if($m == 'var') {
-						$TBind[$fBind] = '%';
-						$TSearch[$fSearch] = array(
-							'recherche'=>TRUE
-							,'table'=>$tbl
-						);
-					}
-					else if(!empty($this->TValue[$f])) {
-							$TBind[$fBind] = $this->TValue[$f];	
-					}
-					else {
-						$TBind[$fBind] = NULL; // mauvaise définition de la valeur à chercher
-					}	
-					
-					
+				if(empty($this->TOperator[$f])) continue;
+				
+				$fBind  = strtr($f, '.', '_');
+				list($tbl, $fSearch) = explode('.', $f);
+				
+				if($m == 'var') {
+					$TBind[$fBind] = '%';
 				}
+				else if(!empty($this->TValue[$f])) {
+					$TBind[$fBind] = $this->TValue[$f];	
+				}
+				else {
+					$TBind[$fBind] = NULL; // mauvaise définition de la valeur à chercher
+				}	
+				
 				
 			}
 			
-			$THide = array();
+		}
+		
+		return $TBind ;
+		
+	}
+	
+	function getHide() {
+		
+		$THide = array();
+		if(!empty($this->THide)) {
+			
 			foreach($this->THide as $f=>$v) {
 				if($v) {
 					list($tbl, $fSearch) = explode('.', $f);
@@ -163,6 +238,43 @@ class TQuery extends TObjetStd {
 				
 			}
 			
+		}
+		return $THide;
+	}
+	
+	function getSearch() {
+		
+		
+		$TSearch = array();
+		
+		if(!empty($this->TMode)) {
+			
+			foreach($this->TMode as $f=>$m) {
+				
+				if(empty($this->TOperator[$f]) || $m!='var') continue;
+				
+				list($tbl, $fSearch) = explode('.', $f);
+				
+				$TSearch[$fSearch] = array(
+					'recherche'=>TRUE
+					,'table'=>$tbl
+				);
+				
+			}
+			
+		}
+		
+		return $TSearch;
+	}
+	
+	function runList(&$PDOdb) {
+		
+		$html = '';
+		
+			$sql=$this->getSQL();
+			$TBind = $this->getBind();
+			$TSearch = $this->getSearch();
+			$THide = $this->getHide();
 			
 			$form=new TFormCore();
 			$html.= $form->begin_form('auto','formQuery'. $this->getId(),'get');

@@ -181,8 +181,8 @@ function fiche(&$query) {
 			<input type="text" name="title" size="80" value="<?php echo $query->title; ?>" />
 			<?php
 				$form=new TFormCore;
-				echo $form->combo('- Type : ', 'type', $query->TType, $query->type);
-				
+				echo $form->combo('- '.$langs->trans('Type').' : ', 'type', $query->TType, $query->type);
+				echo '- '.$langs->trans('XAxis').' : <select name="xaxis" initValue="'.$query->xaxis.'"></select>';
 			?>
 			<input class="button" type="button" id="save_query" value="<?php echo $langs->trans('SaveQuery') ?>" />
 		</div>

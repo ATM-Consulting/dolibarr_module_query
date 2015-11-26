@@ -160,7 +160,7 @@ class TQuery extends TObjetStd {
 	        var data = google.visualization.arrayToDataTable([
 	          '.$data.'
 	        ]);
-	
+
 	        var options = {
 	          title: "'.addslashes($this->title).'",
 	          curveType: "'.$curveType.'"

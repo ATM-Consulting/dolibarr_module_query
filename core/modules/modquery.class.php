@@ -230,19 +230,28 @@ class modquery extends DolibarrModules
         $this->rights = array(); // Permission array used by this module
 		$r=0;
 		
-		$this->rights[$r][0] = 105000; 				// Permission id (must not be already used)
+		$this->rights[$r][0] = $this->numero+$r; 				// Permission id (must not be already used)
 		$this->rights[$r][1] = 'Exécuter une requête';	// Permission label
 		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
 		$this->rights[$r][4] = 'all';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$this->rights[$r][5] = 'read';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$r++;
 		
-		$this->rights[$r][0] = 105001; 				// Permission id (must not be already used)
+		$this->rights[$r][0] = $this->numero+$r; 				// Permission id (must not be already used)
 		$this->rights[$r][1] = 'Créer une requête';	// Permission label
 		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
 		$this->rights[$r][4] = 'all';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$this->rights[$r][5] = 'create';			// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$r++;
+
+		$this->rights[$r][0] = $this->numero+$r; 				// Permission id (must not be already used)
+		$this->rights[$r][1] = 'Ecrire dans la base de donnée';	// Permission label
+		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
+		$this->rights[$r][4] = 'bdd';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][5] = 'write';			// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$r++;
+
+
 
         // Add here list of permission defined by
         // an id, a label, a boolean and two constant strings.
@@ -293,7 +302,6 @@ class modquery extends DolibarrModules
         	'url'=>'/query/query.php?action=add',
         	'langs'=>'query.lang',
         	'position'=>101,
-        	'enabled'=>'$conf->query->enabled',
         	'perms'=>'$user->rights->query->all->create',
         	'target'=>'',
         	'user'=>2
@@ -310,8 +318,22 @@ class modquery extends DolibarrModules
         	'url'=>'/query/query.php',
         	'langs'=>'query.lang',
         	'position'=>101,
-        	'enabled'=>'$conf->query->enabled',
         	'perms'=>'1',
+        	'target'=>'',
+        	'user'=>2
+        );
+		
+        $this->menu[$r]=array(
+        	'fk_menu'=>'fk_mainmenu=tools,fk_leftmenu=query',
+        	'type'=>'left',
+        	'titre'=>'Accès base de données',
+        	'mainmenu'=>'tools',
+        	'leftmenu'=>'bdd_access',
+        	'url'=>'/query/bdd.php',
+        	'langs'=>'query.lang',
+        	'position'=>101,
+        	'enabled'=>'',
+        	'perms'=>'$user->rights->query->bdd->write',
         	'target'=>'',
         	'user'=>2
         );

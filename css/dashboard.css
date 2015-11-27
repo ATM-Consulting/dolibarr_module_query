@@ -1,6 +1,9 @@
 .gridster li {
 	
 	background-color: #eee;
-	
+	border:1px dashed #333;
 	list-style: none;
+	
+	overflow-y: auto;
+	overflow-x: hidden;
 }

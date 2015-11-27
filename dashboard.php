@@ -17,12 +17,14 @@
 		case 'view':
 			
 			$dashboard->load($PDOdb, GETPOST('id'));
-			fiche($query);
+			fiche($dashboard);
 			
 			break;
 		case 'add':
 			
 			if(empty($user->rights->query->dashboard->create)) accessforbidden();
+			
+			$dashboard->save($PDOdb);
 			
 			fiche($dashboard);
 			
@@ -44,20 +46,14 @@
 
 
 
-function run(&$PDOdb, &$query) {
+function run(&$PDOdb, &$dashboard) {
 	
-	llxHeader('', 'Query DashBoard', '', '', 0, 0, array('/query/js/dashboard.js', '/query/js/jquery.gridster.min.js') , array('/query/css/dashboard.css','/query/css/jquery.gridster.min.css') );
-	dol_fiche_head();
 	
-	print_fiche_titre($dashboard->title);
+	echo fiche($dashboard, 'view');
 	
-	if(empty($dashboard->sql_from)) die('InvalidQuery');
 	
-	echo $dashboard->run($PDOdb);
 	
-	dol_fiche_end();
 	
-	llxFooter();
 }
 
 
@@ -72,7 +68,7 @@ function liste() {
 	dol_fiche_head();
 	
 	$sql="SELECT rowid as 'Id', title 
-	FROM ".MAIN_DB_PREFIX."query
+	FROM ".MAIN_DB_PREFIX."qdashboard
 	WHERE 1
 	 ";
 	
@@ -93,11 +89,19 @@ function liste() {
 	llxFooter();
 }
 
-function fiche(&$query) {
+function fiche(&$dashboard, $action = 'edit') {
 	global $langs, $conf,$user;
 	
+	$PDOdb=new TPDOdb;
+	
+	$form=new TFormCore;
+	
+	$cell_height = 200;
+	
 	llxHeader('', 'Query DashBoard', '', '', 0, 0, array('/query/js/dashboard.js', '/query/js/jquery.gridster.min.js') , array('/query/css/dashboard.css','/query/css/jquery.gridster.min.css') );
+	
 	dol_fiche_head();
+	print_fiche_titre($dashboard->title);
 	
 	?>
 	<script type="text/javascript">
@@ -107,31 +111,164 @@ function fiche(&$query) {
 
 		    $(".gridster ul").gridster({
 		        widget_margins: [10, 10]
-		        ,widget_base_dimensions: [300, 200]
+		        ,widget_base_dimensions: [300, <?php echo $cell_height ?>]
 		        ,min_cols:3
 		        ,min_rows:5
-		        ,resize: {
-		            enabled: true,
-		            max_size: [4, 4],
-		            min_size: [1, 1]
-		          }
-		    });
+		        <?php
+		        if($action == 'edit') {
+		        
+		        ?>,resize: {
+		            enabled: true
+		            ,max_size: [4, 4]
+		            ,min_size: [1, 1]
+		            ,stop: function(e, ui, $widget) {
+		             // $widget = ui.$player;
+		              var width = $widget.attr('data-sizex');
+		              var height = $widget.attr('data-sizey');
+		              var k = $widget.attr('data-k');
+		              $widget.css('color','blue');
+		              
+		              $.ajax({
+							url: MODQUERY_INTERFACE
+							,data: {
+								put:'dashboard-query-link'
+								,width:width
+								,height:height
+								,k:k
+								,fk_qdashboard:<?php echo $dashboard->getId() ?>
+							}
+							,dataType:'json'
+							
+					  }).done(function(data) {
+					  	
+					  	$widget.css('color','black');
+					  	
+					  });
+		            }
+		        }
+		        ,draggable: {
+		            stop: function(e, ui, $widget) {
+		              $widget = ui.$player;
+		              var posx = $widget.attr('data-col');
+		              var posy = $widget.attr('data-row');
+		              var k = $widget.attr('data-k');
+		              $widget.css('color','blue');
+		              
+		              $.ajax({
+							url: MODQUERY_INTERFACE
+							,data: {
+								put:'dashboard-query-link'
+								,posx:posx
+								,posy:posy
+								,k:k
+								,fk_qdashboard:<?php echo $dashboard->getId() ?>
+							}
+							,dataType:'json'
+							
+					  }).done(function(data) {
+					  	
+					  	 $widget.css('color','black');
+					  	
+					  });
+		              
+		            }
+		        }
+		       <?php
+		       }
+		       ?>
+		    })<?php 
+				if($action == 'view') {
+					
+					echo '.data(\'gridster\').disable()';
+					
+				}
+			
+			?>;
 		
 			var gridster = $(".gridster ul").gridster().data('gridster');
 		
 			$('#addQuery').click(function() {
-				gridster.add_widget('<li>New query</li>');
-
+				
+				var fk_query = $('select[name=fk_query]').val();
+				
+				$.ajax({
+					url: MODQUERY_INTERFACE
+					,data: {
+						put:'dashboard-query'
+						,fk_query : fk_query
+						,fk_qdashboard:<?php echo $dashboard->getId() ?>
+					}
+					,dataType:'json'
+					
+				}).done(function(data) {
+					
+					var title = $('select[name=fk_query] option:selected').text();
+					
+					gridster.add_widget('<li>'+title+'</li>',1,1,1,1);	
+				});
+				
+			});
+			
+			$('#saveDashboard').click(function() {
+				
+				$.ajax({
+					url: MODQUERY_INTERFACE
+					,data: {
+						put:'dashboard'
+						,id:<?php echo $dashboard->getId() ?>
+						,title:$('input[name=title]').val()
+					}
+				}).done(function(data) {
+					
+				});
+				
 			});
 		
 		});
 			
 	</script>
-	<a href="#" class="butAction" id="addQuery">Ajouter une requête</a>
+	<?php
+	if($action == 'edit') {
+		?><div><?php 
+			$TQuery = TQuery::getQueries($PDOdb);
+			echo $form->texte($langs->trans('Title'), 'title', $dashboard->title, 80,255);
+			?>
+			<a href="#" class="butAction" id="saveDashboard"><?php echo $langs->trans('SaveDashboard'); ?></a>
+		</div>
+		<div>
+			<?php
+				$TQuery = TQuery::getQueries($PDOdb);
+				echo $form->combo('', 'fk_query', $TQuery, 0);
+			?>
+			<a href="#" class="butAction" id="addQuery"><?php echo $langs->trans('AddThisQuery'); ?></a>
+		</div>
+		
+	<?php
+	}
+	?>		
 	
 	<div class="gridster">
 	    <ul>
-	        <li data-row="1" data-col="1" data-sizex="1" data-sizey="1"></li>
+	    	<?php
+	    	foreach($dashboard->TQDashBoardQuery as $k=>&$cell) {
+	    		echo '<li data-k="'.$k.'" data-row="'.$cell->posy.'" data-col="'.$cell->posx.'" data-sizex="'.$cell->width.'" data-sizey="'.$cell->height.'">';
+	    		
+	    		/*if($action == 'edit') {
+	    			echo $cell->query->title;	
+	    		}
+				else {*/
+					echo $cell->query->run($PDOdb, false, $cell->height * $cell_height);
+				//}
+	    		
+				
+				
+	    		echo '</li>';
+				
+				
+	    	}
+	    	
+	    	?>
+	        
 	
 	    </ul>
 	</div>

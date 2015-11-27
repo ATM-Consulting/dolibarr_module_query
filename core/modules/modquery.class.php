@@ -535,9 +535,8 @@ class modquery extends DolibarrModules
 
         $result = $this->loadTables();
 
-        $url = dol_buildpath('/query/script/create-maj-base.php', 2);
-        file_get_contents($url);
-
+        dol_include_once('/query/script/create-maj-base.php');
+        
         return $this->_init($sql, $options);
     }
 

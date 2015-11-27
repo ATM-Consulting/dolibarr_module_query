@@ -21,6 +21,15 @@ class TQuery extends TObjetStd {
         $this->show_details = true;
     }
 	
+	static function getQueries(&$PDOdb) {
+		
+		$Tab = array();
+		
+		$Tab = TRequeteCore::_get_id_by_sql($PDOdb, "SELECT rowid, title FROM ".MAIN_DB_PREFIX."query WHERE 1 ORDER BY title", 'title', 'rowid');
+		
+		return $Tab;
+	}
+	
 	static function getTables(&$PDOdb) {
 		
 		$PDOdb->Execute("SHOW TABLES");
@@ -55,7 +64,11 @@ class TQuery extends TObjetStd {
 		
 	}
 	
-	function run(&$PDOdb) {
+	function run(&$PDOdb, $show_details = true, $height=0) {
+		
+		$this->show_details = $show_details;
+		
+		if(!empty($height)) $this->height = $height;
 		
 		if($this->type == 'CHART') {
 			

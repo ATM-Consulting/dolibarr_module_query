@@ -49,8 +49,6 @@ function run(&$PDOdb, &$query) {
 	llxHeader('', 'Query', '', '', 0, 0, array() , array('/query/css/query.css') );
 	dol_fiche_head();
 	
-	print_fiche_titre($query->title);
-	
 	if(empty($query->sql_from)) die('InvalidQuery');
 	
 	echo $query->run($PDOdb);

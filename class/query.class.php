@@ -76,7 +76,8 @@ class TQuery extends TObjetStd {
 			
 		}
 		else {
-			return $this->runList($PDOdb);	
+			
+			return load_fiche_titre($this->title).$this->runList($PDOdb);	
 		}
 		
 		

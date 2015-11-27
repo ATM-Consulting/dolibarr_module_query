@@ -251,6 +251,13 @@ class modquery extends DolibarrModules
 		$this->rights[$r][5] = 'write';			// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$r++;
 
+		$this->rights[$r][0] = $this->numero+$r; 				// Permission id (must not be already used)
+		$this->rights[$r][1] = 'Créer un panneau de contrôle';	// Permission label
+		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
+		$this->rights[$r][4] = 'dashboard';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][5] = 'create';			// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$r++;
+
 
 
         // Add here list of permission defined by
@@ -283,10 +290,7 @@ class modquery extends DolibarrModules
         	'mainmenu'=>'tools',
         	'leftmenu'=>'query',
         	'url'=>'/query/query.php',
-        	'langs'=>'query.lang',
         	'position'=>100,
-        	'enabled'=>'$conf->query->enabled',
-        	'perms'=>'1',
         	'target'=>'',
         	'user'=>2
         );
@@ -300,8 +304,7 @@ class modquery extends DolibarrModules
         	'mainmenu'=>'tools',
         	'leftmenu'=>'query_add',
         	'url'=>'/query/query.php?action=add',
-        	'langs'=>'query.lang',
-        	'position'=>101,
+        	'position'=>102,
         	'perms'=>'$user->rights->query->all->create',
         	'target'=>'',
         	'user'=>2
@@ -309,7 +312,7 @@ class modquery extends DolibarrModules
 		
         $r++;
 
-        $this->menu[$r]=array(
+		$this->menu[$r]=array(
         	'fk_menu'=>'fk_mainmenu=tools,fk_leftmenu=query',
         	'type'=>'left',
         	'titre'=>'Liste des requêtes',
@@ -318,11 +321,42 @@ class modquery extends DolibarrModules
         	'url'=>'/query/query.php',
         	'langs'=>'query.lang',
         	'position'=>101,
-        	'perms'=>'1',
         	'target'=>'',
         	'user'=>2
         );
 		
+		$r++;
+
+        $this->menu[$r]=array(
+        	'fk_menu'=>'fk_mainmenu=tools,fk_leftmenu=query',
+        	'type'=>'left',
+        	'titre'=>'Liste des panneaux',
+        	'mainmenu'=>'tools',
+        	'leftmenu'=>'dash_list',
+        	'url'=>'/query/dashboard.php',
+        	'position'=>201,
+        	'target'=>'',
+        	'user'=>2
+        );
+		$r++;
+
+        $this->menu[$r]=array(
+        	'fk_menu'=>'fk_mainmenu=tools,fk_leftmenu=query',
+        	'type'=>'left',
+        	'titre'=>'Créer un panneau',
+        	'mainmenu'=>'tools',
+        	'leftmenu'=>'dash_add',
+        	'url'=>'/query/dashboard.php?action=add',
+        	'langs'=>'query.lang',
+        	'position'=>202,
+        	'perms'=>'$user->rights->query->dashboard->create',
+        	'target'=>'',
+        	'user'=>2
+        );
+		
+        $r++;
+
+        
         $this->menu[$r]=array(
         	'fk_menu'=>'fk_mainmenu=tools,fk_leftmenu=query',
         	'type'=>'left',

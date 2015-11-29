@@ -534,7 +534,8 @@ class modquery extends DolibarrModules
         $sql = array();
 
         $result = $this->loadTables();
-
+	
+	define('INC_FROM_DOLIBARR',true);
         dol_include_once('/query/script/create-maj-base.php');
         
         return $this->_init($sql, $options);

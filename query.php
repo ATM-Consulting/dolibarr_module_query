@@ -4,7 +4,7 @@ require('config.php');
 
 dol_include_once('/query/class/query.class.php');
 
-
+$langs->load('query@query');
 
 
 $action = GETPOST('action');

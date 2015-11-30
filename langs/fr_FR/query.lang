@@ -2,3 +2,5 @@ ModuleXXXXXXName = Name
 ModuleXXXXXXDesc = Descripion
 
 AddThisTable=Ajouter cette table
+SaveQuery=Enregistrer requête
+InvalidQuery=Requête non valide

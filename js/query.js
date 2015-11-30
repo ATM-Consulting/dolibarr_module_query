@@ -33,6 +33,8 @@ $(document).ready(function() {
 	  	 ,stop: function( event, ui ) { refresh_sql();  }
 	});
 	
+	$('select[name=xaxis]').val( $('select[name=xaxis]').attr('initValue') );
+	
 	$('#add_this_table').click(function() {
 		
 		t = $("#tables").val();
@@ -92,6 +94,8 @@ $(document).ready(function() {
 			'put':'query'
 			,'id' : $('form#formQuery input[name=id]').val()
 			,'title' : $('form#formQuery input[name=title]').val()
+			,'type' : $('form#formQuery select[name=type]').val()
+			,'xaxis' : $('form#formQuery select[name=xaxis]').val()
 			,'TOperator' : TOperator
 			,'TValue' : TValue
 			,'TJoin' : TJoin
@@ -111,8 +115,13 @@ $(document).ready(function() {
 			,method:'post'
 			,dataType:'html'
 			
-		}).done(function (data) {
-			$('form#formQuery input[name=id]').val(data);
+		}).done(function (idQuery) {
+			if(idQuery>0) {
+				$('form#formQuery input[name=id]').val(idQuery);	
+			}
+			else{
+				
+			}
 		});
 	});		
 	
@@ -243,14 +252,15 @@ function refresh_field_array(table) {
 	
 	$('tr[table='+table+'] input').not(':checked').each(function(i,item) {
 		$fields.find('div[table="'+table+'"][field="'+$(item).val()+'"]').remove();
+		$('select[name=xaxis] option[table="'+table+'"][field="'+$(item).val()+'"]').remove();
 	});
 	
 	$('tr[table='+table+'] input:checked ').each(function(i,item) {
 		var field = $(item).val();
 		TField[table].push( field );
-		
+	
 		if($fields.find('div[table="'+table+'"][field="'+field+'"]').length == 0) {
-			
+			$('select[name=xaxis]').append('<option value="'+field+'" field="'+field+'" table="'+table+'">'+field+'</option>');
 			
 			var select_equal = '<select field='+field+' sql-act="operator"> '
 						+ '<option value=""> </option>'

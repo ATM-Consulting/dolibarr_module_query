@@ -49,84 +49,9 @@ function run(&$PDOdb, &$query) {
 	llxHeader('', 'Query', '', '', 0, 0, array() , array('/query/css/query.css') );
 	dol_fiche_head();
 	
-	print_fiche_titre($query->title);
-	
 	if(empty($query->sql_from)) die('InvalidQuery');
 	
-	$sql="SELECT ".($query->sql_fields ? $query->sql_fields : '*') ."
-	FROM ".$query->sql_from."
-	WHERE ".($query->sql_where ? $query->sql_where : 1 )."
-	";
-	
-	$TBind = array();
-	$TSearch = array();
-	$binds='';
-	foreach($query->TMode as $f=>$m) {
-		
-		if(empty($query->TOperator[$f])) continue;
-		
-		$fBind  = strtr($f, '.', '_');
-		list($tbl, $fSearch) = explode('.', $f);
-		
-		if($m == 'var') {
-			$TBind[$fBind] = '%';
-			$TSearch[$fSearch] = array(
-				'recherche'=>TRUE
-				,'table'=>$tbl
-			);
-		}
-		else{
-			if(!empty($query->TValue[$f])) {
-				$TBind[$fBind] = $query->TValue[$f];	
-			}
-			
-		}
-		
-	}
-	
-	$THide = array();
-	/*foreach($query->THide as $f=>$v) {
-		if($v) {
-			list($tbl, $fSearch) = explode('.', $f);
-			$THide[$fSearch]= true;
-			
-		}
-		
-	}*/
-	
-	
-	$form=new TFormCore('auto','formQuery','get');
-	echo $form->hidden('action', 'run');
-	echo $form->hidden('id',  $query->getId());
-	
-	print '<div class="query">'.$sql.'</div>';
-	
-	
-	$r=new TListviewTBS('lRunQuery');
-	echo $r->render($PDOdb, $sql,array(
-		'link'=>$query->TLink
-		,'hide'=>$THide
-		,'title'=>$query->TTitle
-		,'liste'=>array(
-			'titre'=>''
-		)
-		,'orderBy'=>$query->TOrder
-		,'search'=>$TSearch
-		
-		
-	)
-	,$TBind);
-	
-	echo '<div class="query">';
-	$Tab=array();
-	foreach($r->TBind as $f=>$v) {
-		$Tab[] = $f.' : '.$v;
-	}
-	echo implode(', ', $Tab);
-	echo '</div>';
-	
-	
-	$form->end();
+	echo $query->run($PDOdb);
 	
 	dol_fiche_end();
 	
@@ -249,10 +174,20 @@ function fiche(&$query) {
 		<input type="hidden" name="id" value="<?php echo $query->getId(); ?>" />
 		
 	<div>
-		<?php echo $langs->trans('Title') ?> : <input type="text" name="title" size="80" value="<?php echo $query->title; ?>" />
-		<select id="tables"></select>
-		<input class="button" type="button" id="add_this_table" value="<?php echo $langs->trans('AddThisTable') ?>" />
-		<input class="button" type="button" id="save_query" value="<?php echo $langs->trans('SaveQuery') ?>" />
+		<div>
+			<?php echo $langs->trans('Title') ?> : 
+			<input type="text" name="title" size="80" value="<?php echo $query->title; ?>" />
+			<?php
+				$form=new TFormCore;
+				echo $form->combo('- '.$langs->trans('Type').' : ', 'type', $query->TType, $query->type);
+				echo '- '.$langs->trans('XAxis').' : <select name="xaxis" initValue="'.$query->xaxis.'"></select>';
+			?>
+			<input class="button" type="button" id="save_query" value="<?php echo $langs->trans('SaveQuery') ?>" />
+		</div>
+		<div>
+			<?php echo $langs->trans('AddOneOfThisTables') ?> : <select id="tables"></select>
+			<input class="button" type="button" id="add_this_table" value="<?php echo $langs->trans('AddThisTable') ?>" />
+		</div>
 		
 		<div id="selected_tables">
 			

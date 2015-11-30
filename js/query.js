@@ -127,6 +127,18 @@ $(document).ready(function() {
 	
 });
 
+function delTable( table ) {
+	
+	TTable.splice( TTable.indexOf(table), 1 );
+	
+	$('[table='+table+']').parent('div').remove();
+	
+	getTables();
+	
+	refresh_sql();
+	
+}
+
 function addTable( table ){
 	
 	TTable.push( table );
@@ -148,7 +160,7 @@ function drawFieldTables( table ){
 		
 		var $fields = $('<div class="fields" />');
 		
-		$fields.append('<table class="border" width="100%" table="'+table+'"><tr class="liste_titre"><td>'+table+'</td></tr></table>');
+		$fields.append('<table class="border" width="100%" table="'+table+'"><tr class="liste_titre"><td>'+table+'<a href="#" onclick="javascript:delTable(\''+table+'\');" style="float:right">x</a></td></tr></table>');
 		
 		var $ul = $fields.find('table');
 		

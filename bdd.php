@@ -8,7 +8,7 @@ if(empty($user->rights->query->bdd->write)) {
 	accessforbidden();
 }
 
-		$url = 'lib/adminer.php?';
+		$url = 'lib/adminer/?';
 		
 		$url.='&server='.$dolibarr_main_db_host;
 		$url.='&db='.$dolibarr_main_db_name;

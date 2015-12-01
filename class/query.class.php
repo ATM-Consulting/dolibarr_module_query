@@ -13,7 +13,8 @@ class TQuery extends TObjetStd {
         parent::start();    
 		
 		$this->TType = array(
-			'LIST'=>$langs->trans('List')		
+			'LIST'=>$langs->trans('List')
+			,'SIMPLELIST'=>$langs->trans('SimpleList')		
 			,'CHART'=>$langs->trans('Chart')
 			,'PIE'=>$langs->trans('Pie')
 		);
@@ -77,6 +78,9 @@ class TQuery extends TObjetStd {
 		}
 		else if($this->type == 'PIE') {
 			return $this->runChart($PDOdb,'PieChart');
+		}
+		else if($this->type == 'SIMPLELIST') {
+			return load_fiche_titre($this->title).$this->runList($PDOdb,dol_buildpath('/query/tpl/html.simplelist.tbs.html'));
 		}
 		else {
 			
@@ -284,7 +288,7 @@ class TQuery extends TObjetStd {
 		return $TSearch;
 	}
 	
-	function runList(&$PDOdb) {
+	function runList(&$PDOdb, $template = '') {
 		
 		$html = '';
 		
@@ -302,7 +306,7 @@ class TQuery extends TObjetStd {
 			if($this->show_details) $html.= '<div class="query">'.$sql.'</div>';
 			
 			
-			$r=new TListviewTBS('lRunQuery'. $this->getId());
+			$r=new TListviewTBS('lRunQuery'. $this->getId(), $template);
 			$html.=  $r->render($PDOdb, $sql,array(
 				'link'=>$this->TLink
 				,'hide'=>$THide

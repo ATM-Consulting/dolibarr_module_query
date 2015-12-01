@@ -56,8 +56,19 @@
 		case 'dashboard-query-link':
 			$dash=new TQDashBoard;
 			if($dash->load($PDOdb, GETPOST('fk_qdashboard'))) {
-				$dash->TQDashBoardQuery[GETPOST('k')]->set_values($_REQUEST);
 				
+				$TCoord = $_REQUEST['TCoord'];
+				
+				foreach($TCoord as &$coord) {
+					
+					//var_dump($coord);
+					
+					$dash->TQDashBoardQuery[(int)$coord['k']]->set_values($coord);	
+					
+				}
+
+//var_dump($dash);
+
 				$dash->save($PDOdb);
 				
 				print 1;

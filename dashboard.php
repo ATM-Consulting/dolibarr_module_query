@@ -122,19 +122,14 @@ function fiche(&$dashboard, $action = 'edit') {
 		            ,max_size: [4, 4]
 		            ,min_size: [1, 1]
 		            ,stop: function(e, ui, $widget) {
-		             // $widget = ui.$player;
-		              var width = $widget.attr('data-sizex');
-		              var height = $widget.attr('data-sizey');
-		              var k = $widget.attr('data-k');
+
 		              $widget.css('color','blue');
 		              
 		              $.ajax({
 							url: MODQUERY_INTERFACE
 							,data: {
 								put:'dashboard-query-link'
-								,width:width
-								,height:height
-								,k:k
+								,TCoord:gridster.serialize_changed( )
 								,fk_qdashboard:<?php echo $dashboard->getId() ?>
 							}
 							,dataType:'json'
@@ -146,21 +141,19 @@ function fiche(&$dashboard, $action = 'edit') {
 					  });
 		            }
 		        }
+		        ,serialize_params: function($w, wgd) { 
+		        	return { posx: wgd.col, posy: wgd.row, width: wgd.size_x, height: wgd.size_y, k : $w.attr('data-k') } 
+		        }
 		        ,draggable: {
 		            stop: function(e, ui, $widget) {
 		              $widget = ui.$player;
-		              var posx = $widget.attr('data-col');
-		              var posy = $widget.attr('data-row');
-		              var k = $widget.attr('data-k');
 		              $widget.css('color','blue');
 		              
 		              $.ajax({
 							url: MODQUERY_INTERFACE
 							,data: {
 								put:'dashboard-query-link'
-								,posx:posx
-								,posy:posy
-								,k:k
+								,TCoord:gridster.serialize_changed( )
 								,fk_qdashboard:<?php echo $dashboard->getId() ?>
 							}
 							,dataType:'json'

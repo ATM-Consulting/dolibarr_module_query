@@ -129,7 +129,7 @@ function fiche(&$dashboard, $action = 'edit') {
 							url: MODQUERY_INTERFACE
 							,data: {
 								put:'dashboard-query-link'
-								,TCoord:gridster.serialize_changed( )
+								,TCoord:gridster.serialize( )
 								,fk_qdashboard:<?php echo $dashboard->getId() ?>
 							}
 							,dataType:'json'
@@ -197,7 +197,7 @@ function fiche(&$dashboard, $action = 'edit') {
 					
 					var title = $('select[name=fk_query] option:selected').text();
 					
-					gridster.add_widget('<li>'+title+'</li>',1,1,1,1);	
+					gridster.add_widget('<li data-k="'+data+'">'+title+'</li>',1,1,1,1);	
 				});
 				
 			});

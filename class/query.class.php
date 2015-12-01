@@ -75,6 +75,9 @@ class TQuery extends TObjetStd {
 			return $this->runChart($PDOdb);
 			
 		}
+		else if($this->type == 'PIE') {
+			return $this->runChart($PDOdb,'PieChart');
+		}
 		else {
 			
 			return load_fiche_titre($this->title).$this->runList($PDOdb);	
@@ -83,7 +86,7 @@ class TQuery extends TObjetStd {
 		
 	}
 	
-	function runChart(&$PDOdb) {
+	function runChart(&$PDOdb, $type = 'LineChart') {
 		
 		list($tableXaxis,$fieldXaxis) = explode('.', $this->xaxis);
 		
@@ -183,7 +186,7 @@ class TQuery extends TObjetStd {
 			  ,height : '.$height.'
 	        };
 	
-	        var chart = new google.visualization.LineChart(document.getElementById("div_query_chart'.$this->getId().'"));
+	        var chart = new google.visualization.'.$type.'(document.getElementById("div_query_chart'.$this->getId().'"));
 	
 	        chart.draw(data, options);
 	      }

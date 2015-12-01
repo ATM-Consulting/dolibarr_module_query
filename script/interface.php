@@ -60,15 +60,9 @@
 				$TCoord = $_REQUEST['TCoord'];
 				
 				foreach($TCoord as &$coord) {
-					
-					//var_dump($coord);
-					
 					$dash->TQDashBoardQuery[(int)$coord['k']]->set_values($coord);	
-					
 				}
-
-//var_dump($dash);
-
+				
 				$dash->save($PDOdb);
 				
 				print 1;

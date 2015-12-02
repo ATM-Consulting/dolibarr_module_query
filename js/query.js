@@ -90,6 +90,32 @@ $(document).ready(function() {
 			}
 		});
 		
+		var TGroup = [];
+		$('#fields [sql-act="group"]').each(function(i,item) {
+			if($(item).val()) {
+				TGroup.push($(item).attr('field'));
+			}
+		});
+		
+		var TFunction = {};
+		$('#fields [sql-act="function"]').each(function(i,item) {
+			if($(item).val()) {
+				TFunction[$(item).attr('field')] = $(item).val();
+			}
+		});
+		
+		var TTitle = {};
+		$('#fields [sql-act="title"]').each(function(i,item) {
+			if($(item).val()) {
+				TTitle[$(item).attr('field')] = $(item).val();
+			}
+		});
+		
+		var TSelectedField = [];
+		$('input[rel=selected-field]:checked').each(function(i,item) {
+				TSelectedField.push( $(item).val() );
+		});
+		
 		var TData= {
 			'put':'query'
 			,'id' : $('form#formQuery input[name=id]').val()
@@ -103,6 +129,10 @@ $(document).ready(function() {
 			,'TOrder' : TOrder
 			,'TMode' : TMode
 			,'THide' : THide
+			,'TTitle' : TTitle
+			,'TField' : TSelectedField
+			,'TGroup' : TGroup
+			,'TFunction' : TFunction
 			,'sql_fields' : $('textarea[name=sql_fields]').val()
 			,'sql_from' : $('textarea[name=sql_from]').val()
 			,'sql_where' : $('textarea[name=sql_where]').val()
@@ -172,7 +202,7 @@ function drawFieldTables( table ){
 			
 			TFieldInTable[table].push(table+'.'+f);
 			
-			$ul.append('<tr table="'+table+'" field="'+f+'"><td><input table="'+table+'" id="'+table+'-'+f+'" type="checkbox" name="'+table+'.'+f+'" value="'+table+'.'+f+'" /><label for="'+table+'-'+f+'"> '+f+' </label></td></tr>');	
+			$ul.append('<tr table="'+table+'" field="'+f+'"><td><input table="'+table+'" id="'+table+'-'+f+'" type="checkbox" name="'+table+'.'+f+'" value="'+table+'.'+f+'" rel="selected-field" /><label for="'+table+'-'+f+'"> '+f+' </label></td></tr>');	
 
 
 
@@ -301,10 +331,26 @@ function refresh_field_array(table) {
 						+ '<option value="1">Caché</option>'
 						+ '</select>';
 				
+			var select_group	= '<select field='+field+' sql-act="group"> '
+						+ '<option value=""> </option>'
+						+ '<option value="1">Groupé</option>'
+						+ '</select>';
+				
+			var select_function	= '<select field='+field+' sql-act="function"> '
+						+ '<option value=""> </option>'
+						+ '<option value="SUM(@field@)">Somme</option>'
+						+ '<option value="COUNT(@field@)">Nombre de</option>'
+						+ '<option value="MIN(@field@)">Minimum</option>'
+						+ '<option value="MAX(@field@)">Maximum</option>'
+						+ '<option value="MONTH(@field@)">Mois</option>'
+						+ '<option value="YEAR">Année</option>'
+						+ '<option value="DATE_FORMAT(@field@, \'%m/%Y\')">Année/Mois</option>'
+						+ '</select>';
+				
 			
-			var search = '<span table="'+table+'" field="'+f+'" class="selector"><div class="tagtd">'+select_equal+select_mode+'</div><div class="tagtd">'+select_order+select_hide+'</div></span>';
+			var search = '<span table="'+table+'" field="'+f+'" class="selector"><div class="tagtd">'+select_equal+select_mode+'</div><div class="tagtd">'+select_order+select_hide+select_function+select_group+'</div></span>';
 
-			$li = $('<div class="field table-border-row" table="'+table+'" field="'+field+'" ><div class="fieldName">'+field+'</div></div>');
+			$li = $('<div class="field table-border-row" table="'+table+'" field="'+field+'" ><div class="fieldName">'+field+' <input tytpe="text" placeholder="Title" sql-act="title" field='+field+' value="" /></div></div>');
 				
 			$li.append(search);
 			$fields.append($li);
@@ -313,7 +359,7 @@ function refresh_field_array(table) {
 			});
 
 
-	$fields.find('select[sql-act=operator]').unbind().change( function () {
+	$fields.find('select[sql-act=operator], input[sql-act=title]').unbind().change( function () {
 		refresh_sql();
 	});
 	
@@ -335,6 +381,7 @@ function refresh_field_array(table) {
 		
 	});
 		
+	if($fields.find('select[sql-act=mode]').val() == 'var') { $input.hide(); }
 
 	refresh_sql();
 }
@@ -360,8 +407,14 @@ function refresh_sql() {
 	}
 
 	$('#fields div.field').each(function(i,item) {
+		
 		if(fields!='') fields+=',';
-	 	fields+=$(item).attr('field');	
+		fields+=$(item).attr('field');
+	
+	/*	var title = $(this).find('input[sql-act=title]').val();
+		console.log(title, $.trim(title));
+		if($.trim(title) != '') fields+=' as "'+title+'"';
+		*/	
 		
 	});
 	

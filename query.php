@@ -112,9 +112,12 @@ function fiche(&$query) {
 		
 				}
 			
-				$TField = explode(',', $query->sql_fields );
+				if(empty($query->TField)) {
+					$query->TField = explode(',', $query->sql_fields );
+				}
+				//$TField = 
 				
-				foreach($TField as $field) {
+				foreach($query->TField as $field) {
 					
 					echo ' checkField("'.$field.'"); ';
 				
@@ -157,6 +160,30 @@ function fiche(&$query) {
 					foreach($query->THide as $f=>$v) {
 						
 						echo ' $("#fields [sql-act=\'hide\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+						
+					}
+				}
+				
+				if(!empty($query->TTitle)) {
+					foreach($query->TTitle as $f=>$v) {
+						
+						echo ' $("#fields [sql-act=\'title\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+						
+					}
+				}
+				
+				if(!empty($query->TFunction)) {
+					foreach($query->TFunction as $f=>$v) {
+						
+						echo ' $("#fields [sql-act=\'function\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+						
+					}
+				}
+				
+				if(!empty($query->TGroup)) {
+					foreach($query->TGroup as $f=>$v) {
+						
+						echo ' $("#fields [sql-act=\'group\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
 						
 					}
 				}

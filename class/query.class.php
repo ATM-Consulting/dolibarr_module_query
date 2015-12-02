@@ -7,7 +7,7 @@ class TQuery extends TObjetStd {
          
         parent::set_table(MAIN_DB_PREFIX.'query');
         parent::add_champs('sql_fields,sql_from,sql_where',array('type'=>'text'));
-		parent::add_champs('TField,TTable,TOrder,TTitle,TLink,THide,TMode,TOperator,TValue',array('type'=>'array'));
+		parent::add_champs('TField,TTable,TOrder,TTitle,TLink,THide,TMode,TOperator,TGroup,TFunction,TValue',array('type'=>'array'));
 		
         parent::_init_vars('title,type,xaxis');
         parent::start();    
@@ -98,6 +98,7 @@ class TQuery extends TObjetStd {
 		$TBind = $this->getBind();
 		$TSearch = $this->getSearch();
 		$THide = $this->getHide();
+		$TTitle = $this->getTitle();
 		
 		$Tab = $PDOdb->ExecuteAsArray($sql, $TBind);
 		$TData = array();
@@ -116,8 +117,8 @@ class TQuery extends TObjetStd {
 					if($k == $fieldXaxis) {
 						$key = $k;
 					}
-					else if(!isset($THide[$k])) {
-						$TValue[] = $k;
+					else if(!in_array($k, $THide)) {
+						$TValue[] = !empty($TTitle[$k]) ? $TTitle[$k] : $k;
 					}
 					
 				}
@@ -138,7 +139,7 @@ class TQuery extends TObjetStd {
 				if($k == $fieldXaxis) {
 					$key = $v;
 				}
-				else if(!isset($THide[$k])) {
+				else if(!in_array($k, $THide)) {
 					$TValue[] = $v;
 				}
 				
@@ -148,9 +149,8 @@ class TQuery extends TObjetStd {
 				if(!isset($TData[$key])) $TData[$key] = $TValue;
 				else {
 					foreach($TData[$key] as $k=>$v) {
-						$TData[$key][$k]+=$TValue[$k];
+						$TData[$key][$k]+=(float)$TValue[$k];
 					}
-					
 					
 				}
 			}
@@ -160,7 +160,13 @@ class TQuery extends TObjetStd {
 		
 		$data = $header;
 		foreach($TData as $key=>$TValue) {
-			$data .= ',[ "'.$key.'", '.implode(',', $TValue).' ]';
+			
+			$data .= ',[ "'.$key.'", ';
+			foreach($TValue as $v) {
+				$data.=(float)$v.',';
+			}
+			
+			$data.=' ]';
 		}
 		
 		$height = empty($this->height) ? 500 : $this->height;
@@ -188,6 +194,7 @@ class TQuery extends TObjetStd {
 	          ,legend: { position: "bottom" }
 			  ,animation: { "startup": true }
 			  ,height : '.$height.'
+			  ,pieHole: 0.2
 	        };
 	
 	        var chart = new google.visualization.'.$type.'(document.getElementById("div_query_chart'.$this->getId().'"));
@@ -206,11 +213,33 @@ class TQuery extends TObjetStd {
 	}
 	
 	function getSQL() {
+			
+		if(!empty($this->TFunction)) {
+			$this->sql_fields = '';
+			foreach($this->TField as $field) {
+				
+				if(!empty($this->sql_fields))$this->sql_fields.=',';
+				
+				if(!empty($this->TFunction[$field])) {
+					list($t, $fname) = explode('.', $field);
+					$this->sql_fields.=strtr($this->TFunction[$field], array('@field@'=> $field)).' as "'.$fname.'"';
+				}
+				else{
+					$this->sql_fields.=$field;
+				}
+				
+			}
+		}
 		
 		$sql="SELECT ".($this->sql_fields ? $this->sql_fields : '*') ."
 			FROM ".$this->sql_from."
 			WHERE ".($this->sql_where ? $this->sql_where : 1 )."
 			";
+		
+		
+		if(!empty($this->TGroup)) {
+			$sql.=" GROUP BY ".implode(',', $this->TGroup);	
+		}
 		
 		return $sql;			
 	}
@@ -244,7 +273,23 @@ class TQuery extends TObjetStd {
 		return $TBind ;
 		
 	}
-	
+	function getTitle() {
+		
+		
+		$Tab = array();
+		if(!empty($this->TTitle)) {
+			
+			foreach($this->TTitle as $f=>$v) {
+				if($v) {
+					list($tbl, $fSearch) = explode('.', $f);
+					$Tab[$fSearch]= $v;
+				}
+				
+			}
+			
+		}
+		return $Tab;
+	}
 	function getHide() {
 		
 		$THide = array();
@@ -253,8 +298,7 @@ class TQuery extends TObjetStd {
 			foreach($this->THide as $f=>$v) {
 				if($v) {
 					list($tbl, $fSearch) = explode('.', $f);
-					$THide[$fSearch]= true;
-					
+					$THide[]= $fSearch;
 				}
 				
 			}
@@ -305,12 +349,24 @@ class TQuery extends TObjetStd {
 			
 			if($this->show_details) $html.= '<div class="query">'.$sql.'</div>';
 			
+			$TTitle=array();
+			if(!empty($this->TTitle)) {
+				$TTitle = $this->TTitle;
+				foreach($this->TTitle as $tableField=>$label) {
+					
+					list($t,$f) = explode('.', $tableField);
+					
+					$TTitle[$f] = $label;
+					
+				}
+					
+			}
 			
 			$r=new TListviewTBS('lRunQuery'. $this->getId(), $template);
 			$html.=  $r->render($PDOdb, $sql,array(
 				'link'=>$this->TLink
 				,'hide'=>$THide
-				,'title'=>$this->TTitle
+				,'title'=>$TTitle
 				,'liste'=>array(
 					'titre'=>''
 				)

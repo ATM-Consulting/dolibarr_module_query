@@ -114,6 +114,9 @@ function fiche(&$dashboard, $action = 'edit') {
 		        ,widget_base_dimensions: [300, <?php echo $cell_height ?>]
 		        ,min_cols:3
 		        ,min_rows:5
+		        ,serialize_params: function($w, wgd) { 
+		        	return { posx: wgd.col, posy: wgd.row, width: wgd.size_x, height: wgd.size_y, k : $w.attr('data-k') } 
+		        }
 		        <?php
 		        if($action == 'edit') {
 		        
@@ -121,51 +124,9 @@ function fiche(&$dashboard, $action = 'edit') {
 		            enabled: true
 		            ,max_size: [4, 4]
 		            ,min_size: [1, 1]
-		            ,stop: function(e, ui, $widget) {
-
-		              $widget.css('color','blue');
-		              
-		              $.ajax({
-							url: MODQUERY_INTERFACE
-							,data: {
-								put:'dashboard-query-link'
-								,TCoord:gridster.serialize( )
-								,fk_qdashboard:<?php echo $dashboard->getId() ?>
-							}
-							,dataType:'json'
-							
-					  }).done(function(data) {
-					  	
-					  	$widget.css('color','black');
-					  	
-					  });
-		            }
 		        }
-		        ,serialize_params: function($w, wgd) { 
-		        	return { posx: wgd.col, posy: wgd.row, width: wgd.size_x, height: wgd.size_y, k : $w.attr('data-k') } 
-		        }
-		        ,draggable: {
-		            stop: function(e, ui, $widget) {
-		              $widget = ui.$player;
-		              $widget.css('color','blue');
-		              
-		              $.ajax({
-							url: MODQUERY_INTERFACE
-							,data: {
-								put:'dashboard-query-link'
-								,TCoord:gridster.serialize_changed( )
-								,fk_qdashboard:<?php echo $dashboard->getId() ?>
-							}
-							,dataType:'json'
-							
-					  }).done(function(data) {
-					  	
-					  	 $widget.css('color','black');
-					  	
-					  });
-		              
-		            }
-		        }
+		        
+		       
 		       <?php
 		       }
 		       ?>
@@ -204,6 +165,10 @@ function fiche(&$dashboard, $action = 'edit') {
 			
 			$('#saveDashboard').click(function() {
 				
+				var $button = $(this);
+				
+				$button.hide();
+				
 				$.ajax({
 					url: MODQUERY_INTERFACE
 					,data: {
@@ -212,7 +177,21 @@ function fiche(&$dashboard, $action = 'edit') {
 						,title:$('input[name=title]').val()
 					}
 				}).done(function(data) {
-					
+					  
+		              $.ajax({
+							url: MODQUERY_INTERFACE
+							,data: {
+								put:'dashboard-query-link'
+								,TCoord:gridster.serialize( )
+								,fk_qdashboard:<?php echo $dashboard->getId() ?>
+							}
+							,dataType:'json'
+							
+					  }).done(function(data) {
+					  	
+					  	$button.show();
+					  	
+					  });
 				});
 				
 			});

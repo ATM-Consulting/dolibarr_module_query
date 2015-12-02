@@ -17,6 +17,7 @@ class TQuery extends TObjetStd {
 			,'SIMPLELIST'=>$langs->trans('SimpleList')		
 			,'CHART'=>$langs->trans('Chart')
 			,'PIE'=>$langs->trans('Pie')
+			,'AREA'=>$langs->trans('Area')
 		);
 		
         $this->show_details = true;
@@ -79,6 +80,9 @@ class TQuery extends TObjetStd {
 		else if($this->type == 'PIE') {
 			return $this->runChart($PDOdb,'PieChart');
 		}
+		else if($this->type == 'AREA') {
+			return $this->runChart($PDOdb,'AreaChart');
+		}
 		else if($this->type == 'SIMPLELIST') {
 			return load_fiche_titre($this->title).$this->runList($PDOdb,dol_buildpath('/query/tpl/html.simplelist.tbs.html'));
 		}
@@ -91,6 +95,7 @@ class TQuery extends TObjetStd {
 	}
 	
 	function runChart(&$PDOdb, $type = 'LineChart') {
+		//TODO déplacer rendu graphique dans listviewTBS Abricot
 		
 		list($tableXaxis,$fieldXaxis) = explode('.', $this->xaxis);
 		
@@ -168,7 +173,7 @@ class TQuery extends TObjetStd {
 			
 			$data.=' ]';
 		}
-		
+		if($this->show_details) print $data;
 		$height = empty($this->height) ? 500 : $this->height;
 		$curveType= empty($this->curveType) ? 'function' : $this->curveType; // none or function
 		
@@ -194,7 +199,8 @@ class TQuery extends TObjetStd {
 	          ,legend: { position: "bottom" }
 			  ,animation: { "startup": true }
 			  ,height : '.$height.'
-			  ,pieHole: 0.2
+			  '.( $type == 'PieChart' ? ',pieHole: 0.2' : '').'
+			  '.( $type == 'AreaChart' ? ',isStacked: \'percent\'' : '').'
 	        };
 	
 	        var chart = new google.visualization.'.$type.'(document.getElementById("div_query_chart'.$this->getId().'"));
@@ -207,7 +213,7 @@ class TQuery extends TObjetStd {
 		</script>
 		<div id="div_query_chart'.$this->getId().'"></div>
 		
-		';
+		'; 
 		
 		return $html;
 	}

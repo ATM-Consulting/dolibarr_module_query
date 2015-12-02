@@ -1,5 +1,9 @@
 <?php
 	
+	if(!empty($_GET['uid'])) {
+		define('INC_FROM_CRON_SCRIPT',true);
+	}
+	
 	require 'config.php';
 	
 	dol_include_once('/query/class/query.class.php');
@@ -31,8 +35,17 @@
 			break;
 			
 		case 'run':
-			$dashboard->load($PDOdb, GETPOST('id'));
-			run($PDOdb, $dashboard);
+			
+			if(GETPOST('uid')) {
+				$dashboard->loadBy($PDOdb, GETPOST('uid'),'uid',true);
+				run($PDOdb, $dashboard, false);
+				
+			}
+			else {
+				$dashboard->load($PDOdb, GETPOST('id'));
+				run($PDOdb, $dashboard);
+			 
+			}
 			
 			break;		
 	
@@ -46,14 +59,10 @@
 
 
 
-function run(&$PDOdb, &$dashboard) {
+function run(&$PDOdb, &$dashboard, $withHeader = true) {
 	
-	
-	echo fiche($dashboard, 'view');
-	
-	
-	
-	
+	echo fiche($dashboard, 'view', $withHeader);
+
 }
 
 
@@ -89,7 +98,7 @@ function liste() {
 	llxFooter();
 }
 
-function fiche(&$dashboard, $action = 'edit') {
+function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 	global $langs, $conf,$user;
 	
 	$PDOdb=new TPDOdb;
@@ -98,10 +107,27 @@ function fiche(&$dashboard, $action = 'edit') {
 	
 	$cell_height = 200;
 	
-	llxHeader('', 'Query DashBoard', '', '', 0, 0, array('/query/js/dashboard.js', '/query/js/jquery.gridster.min.js') , array('/query/css/dashboard.css','/query/css/jquery.gridster.min.css') );
+	if($withHeader) {
 	
-	dol_fiche_head();
-	print_fiche_titre($dashboard->title);
+		llxHeader('', 'Query DashBoard', '', '', 0, 0, array('/query/js/dashboard.js', '/query/js/jquery.gridster.min.js') , array('/query/css/dashboard.css','/query/css/jquery.gridster.min.css') );
+	
+		dol_fiche_head();
+		print_fiche_titre($dashboard->title);
+	}
+	else {
+		?><html>
+			<head>
+				<link rel="stylesheet" type="text/css" href="<?php echo dol_buildpath('/theme/eldy/style.css.php?lang=fr_FR&theme=eldy',1); ?>">
+				<link rel="stylesheet" type="text/css" title="default" href="<?php echo dol_buildpath('/query/css/dashboard.css',1); ?>">
+				<link rel="stylesheet" type="text/css" title="default" href="<?php echo dol_buildpath('/query/css/jquery.gridster.min.css',1); ?>">
+
+				<script type="text/javascript" src="<?php echo dol_buildpath('/includes/jquery/js/jquery.min.js',1); ?>"></script>
+				<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/dashboard.js',1); ?>"></script>
+				<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/jquery.gridster.min.js',1); ?>"></script>
+			</head>
+		<body>
+		<?php	
+	}
 	
 	?>
 	<script type="text/javascript">
@@ -248,9 +274,22 @@ function fiche(&$dashboard, $action = 'edit') {
 	<div style="clear:both"></div>
 	
 	<?php
-	dol_fiche_end();
 	
-	llxFooter();
+	if($withHeader) {
+		
+		print dol_buildpath('/query/dashboard.php?action=run&uid='.$dashboard->uid,2);
+		dol_fiche_end();
+		
+		llxFooter();
+		
+	}
+	else {
+		?>
+		</body></html>
+		<?php		
+		
+	}
+	
 }
 	
 

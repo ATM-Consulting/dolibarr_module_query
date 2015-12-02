@@ -7,6 +7,7 @@ class TQDashBoard extends TObjetStd {
          
         parent::set_table(MAIN_DB_PREFIX.'qdashboard');
         parent::add_champs('fk_user,fk_user_author',array('type'=>'integer','index'=>true));
+		parent::add_champs('uid',array('index'=>true));
 		
         parent::_init_vars('title');
         parent::start();    
@@ -14,6 +15,14 @@ class TQDashBoard extends TObjetStd {
 		$this->setChild('TQDashBoardQuery', 'fk_qdashboard');
         
     }
+	
+	function save(&$PDOdb) {
+		
+		if(empty($this->uid))$this->uid = md5( time().$this->title.rand(1000,999999)  );
+		
+		parent::save($PDOdb);
+		
+	}
 	
 }
 

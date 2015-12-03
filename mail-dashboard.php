@@ -57,7 +57,7 @@
 				
 			}
 			
-			
+			unlink(dol_buildpath('/query/files/'.$row->uid.'.pdf')); // suppresion du pdf après envoi par mail
 		}
 	}
 	fclose($f1);

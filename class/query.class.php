@@ -15,7 +15,8 @@ class TQuery extends TObjetStd {
 		$this->TType = array(
 			'LIST'=>$langs->trans('List')
 			,'SIMPLELIST'=>$langs->trans('SimpleList')		
-			,'CHART'=>$langs->trans('Chart')
+			,'CHART'=>$langs->trans('Columns')
+			,'LINE'=>$langs->trans('Lines')
 			,'PIE'=>$langs->trans('Pie')
 			,'AREA'=>$langs->trans('Area')
 		);
@@ -73,9 +74,11 @@ class TQuery extends TObjetStd {
 		if(!empty($height)) $this->height = $height;
 		
 		if($this->type == 'CHART') {
-			return $this->runChart($PDOdb);
+			return $this->runChart($PDOdb,'ColumnChart');
 		}
-		else if($this->type == 'PIE') {
+		else if($this->type == 'LINE') {
+			return $this->runChart($PDOdb,'LineChart');
+		}else if($this->type == 'PIE') {
 			return $this->runChart($PDOdb,'PieChart');
 		}
 		else if($this->type == 'AREA') {

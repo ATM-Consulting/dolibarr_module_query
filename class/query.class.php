@@ -73,9 +73,7 @@ class TQuery extends TObjetStd {
 		if(!empty($height)) $this->height = $height;
 		
 		if($this->type == 'CHART') {
-			
 			return $this->runChart($PDOdb);
-			
 		}
 		else if($this->type == 'PIE') {
 			return $this->runChart($PDOdb,'PieChart');

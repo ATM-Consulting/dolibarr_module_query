@@ -715,6 +715,7 @@ class Wkhtmltopdf
         }
 
         if (mb_strlen($content['stdout'], 'utf-8') === 0) {
+        	var_dump($content);
             throw new Exception("WKHTMLTOPDF didn't return any data");
         }
 

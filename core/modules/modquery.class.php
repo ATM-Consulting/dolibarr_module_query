@@ -365,7 +365,7 @@ class modquery extends DolibarrModules
         	'leftmenu'=>'bdd_access',
         	'url'=>'/query/bdd.php',
         	'langs'=>'query.lang',
-        	'position'=>101,
+        	'position'=>301,
         	'enabled'=>'',
         	'perms'=>'$user->rights->query->bdd->write',
         	'target'=>'',

@@ -76,12 +76,20 @@ function liste() {
 
 	dol_fiche_head();
 	
-	$sql="SELECT rowid as 'Id', title 
-	FROM ".MAIN_DB_PREFIX."qdashboard
+	$sql="SELECT qd.rowid as 'Id', qd.title 
+	FROM ".MAIN_DB_PREFIX."qdashboard qd
 	WHERE 1
-	 ";
+	";
 	
-	$r=new TListviewTBS('lQuery');
+	if($user->admin) {
+		null;
+	}
+	else {
+		$sql.=" AND (qd.fk_user_author=".$user->id." OR  qd.fk_usergroup IN (SELECT fk_usergroup FROM ".MAIN_DB_PREFIX."usergroup_user WHERE fk_user=".$user->id." ) )";
+	}
+	
+	
+	$r=new TListviewTBS('lDash');
 	echo $r->render($PDOdb, $sql,array(
 		'link'=>array(
 			'Id'=>'<a href="?action=view&id=@val@">'.img_picto('Edit', 'edit.png').' @val@</a>'
@@ -99,7 +107,7 @@ function liste() {
 }
 
 function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
-	global $langs, $conf,$user;
+	global $langs, $conf,$user, $db;
 	
 	$PDOdb=new TPDOdb;
 	
@@ -124,8 +132,12 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 				<script type="text/javascript" src="<?php echo dol_buildpath('/includes/jquery/js/jquery.min.js',1); ?>"></script>
 				<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/dashboard.js',1); ?>"></script>
 				<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/jquery.gridster.min.js',1); ?>"></script>
+				<style type="text/css">
+					.pagination { display : none; }
+					
+				</style>
 			</head>
-		<body>
+		<body style="min-width: 1300px;">
 		<?php	
 	}
 	
@@ -201,7 +213,10 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 						put:'dashboard'
 						,id:<?php echo $dashboard->getId() ?>
 						,title:$('input[name=title]').val()
+						,fk_usergroup:$('select[name=fk_usergroup]').val()
+						,send_by_mail:$('select[name=send_by_mail]').val()
 					}
+					
 				}).done(function(data) {
 					  
 		              $.ajax({
@@ -229,7 +244,13 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 	if($action == 'edit') {
 		?><div><?php 
 			$TQuery = TQuery::getQueries($PDOdb);
-			echo $form->texte($langs->trans('Title'), 'title', $dashboard->title, 80,255);
+			echo $form->texte($langs->trans('Title'), 'title', $dashboard->title, 50,255);
+			
+			$formDoli=new Form($db);
+			echo ' - '.$langs->trans('LimitAccessToThisGroup').' : '.$formDoli->select_dolgroups($dashboard->fk_usergroup, 'fk_usergroup', 1);
+			
+			echo $form->combo(' - '.$langs->trans('SendByMailToThisGroup'),'send_by_mail', $dashboard->TSendByMail, $dashboard->send_by_mail);
+			
 			?>
 			<a href="#" class="butAction" id="saveDashboard"><?php echo $langs->trans('SaveDashboard'); ?></a>
 		</div>
@@ -249,12 +270,13 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 	    <ul>
 	    	<?php
 	    	foreach($dashboard->TQDashBoardQuery as $k=>&$cell) {
-	    		echo '<li data-k="'.$k.'" data-row="'.$cell->posy.'" data-col="'.$cell->posx.'" data-sizex="'.$cell->width.'" data-sizey="'.$cell->height.'">';
-	    		
+	    		echo '<li data-k="'.$k.'" data-row="'.$cell->posy.'" data-col="'.$cell->posx.'" data-sizex="'.$cell->width.'" data-sizey="'.$cell->height.'" '.($withHeader ? '' : 'style="overflow:hidden;"').'>';
 	    		/*if($action == 'edit') {
 	    			echo $cell->query->title;	
 	    		}
 				else {*/
+					if(!$withHeader && $cell->query->type == 'LIST')$cell->query->type = 'SIMPLELIST';
+					
 					echo $cell->query->run($PDOdb, false, $cell->height * $cell_height);
 				//}
 	    		

@@ -376,7 +376,9 @@ class TQuery extends TObjetStd {
 				)
 				,'orderBy'=>$this->TOrder
 				,'search'=>$TSearch
-				
+				,'export'=>array(
+					'CSV','TXT'
+				)
 				
 			)
 			,$TBind);

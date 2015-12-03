@@ -349,7 +349,7 @@ class TQuery extends TObjetStd {
 			$html.= $form->begin_form('auto','formQuery'. $this->getId(),'get');
 			
 			$html.=  $form->hidden('action', 'run');
-			$html.=  $form->hidden('id',  $this->getId());
+			$html.=  $form->hidden('id', GETPOST('id') ? GETPOST('id') : $this->getId());
 			
 			if($this->show_details) $html.= '<div class="query">'.$sql.'</div>';
 			

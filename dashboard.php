@@ -122,6 +122,16 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 		dol_fiche_head();
 		print_fiche_titre($dashboard->title);
 	}
+	else if(GETPOST('for_incusion')>0) {
+		?>
+		<div class="querydashboard">
+			<link rel="stylesheet" type="text/css" title="default" href="<?php echo dol_buildpath('/query/css/dashboard.css',1); ?>">
+			<link rel="stylesheet" type="text/css" title="default" href="<?php echo dol_buildpath('/query/css/jquery.gridster.min.css',1); ?>">
+			<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/dashboard.js',1); ?>"></script>
+			<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/jquery.gridster.min.js',1); ?>"></script>
+
+		<?php
+	}
 	else {
 		?><html>
 			<head>
@@ -134,7 +144,6 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 				<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/jquery.gridster.min.js',1); ?>"></script>
 				<style type="text/css">
 					.pagination { display : none; }
-					
 				</style>
 			</head>
 		<body style="min-width: 1300px;">
@@ -304,6 +313,9 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 		
 		llxFooter();
 		
+	}
+	else if(GETPOST('for_incusion')>0) {
+		?></div><?php	
 	}
 	else {
 		?>

@@ -182,38 +182,32 @@ class TQuery extends TObjetStd {
 		
 		$html.='<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 		<script type="text/javascript">
-
-	      // Load the Visualization API and the piechart package.
-	      google.load("visualization", "1", {"packages":["corechart"]});
+		  
+		  	  google.load("visualization", "1", {"packages":["corechart"]});
+		      google.setOnLoadCallback(drawChart'.md5($sql).');
+			
+			  function drawChart'.md5($sql).'() {
+		        var data = google.visualization.arrayToDataTable([
+		          '.$data.'
+		        ]);
 	
-	      // Set a callback to run when the Google Visualization API is loaded.
-	      google.setOnLoadCallback(drawChart);
+		        var options = {
+		          title: "'.addslashes($this->title).'",
+		          curveType: "'.$curveType.'"
+		          ,legend: { position: "bottom" }
+				  ,animation: { "startup": true }
+				  ,height : '.$height.'
+				  '.( $type == 'PieChart' ? ',pieHole: 0.2' : '').'
+				  '.( $type == 'AreaChart' ? ',isStacked: \'percent\'' : '').'
+		        };
 		
-		  function drawChart() {
-	        var data = google.visualization.arrayToDataTable([
-	          '.$data.'
-	        ]);
-
-	        var options = {
-	          title: "'.addslashes($this->title).'",
-	          curveType: "'.$curveType.'"
-	          ,legend: { position: "bottom" }
-			  ,animation: { "startup": true }
-			  ,height : '.$height.'
-			  '.( $type == 'PieChart' ? ',pieHole: 0.2' : '').'
-			  '.( $type == 'AreaChart' ? ',isStacked: \'percent\'' : '').'
-	        };
-	
-	        var chart = new google.visualization.'.$type.'(document.getElementById("div_query_chart'.$this->getId().'"));
-	
-	        chart.draw(data, options);
-	      }
-
-				
+		        var chart = new google.visualization.'.$type.'(document.getElementById("div_query_chart'.$this->getId().'"));
 		
-		</script>
+		        chart.draw(data, options);
+		      }
+		  
+	    </script>
 		<div id="div_query_chart'.$this->getId().'"></div>
-		
 		'; 
 		
 		return $html;

@@ -30,7 +30,7 @@ include_once DOL_DOCUMENT_ROOT . "/core/boxes/modules_boxes.php";
 class querybox extends ModeleBoxes
 {
 
-    public $boxcode = "mybox";
+    public $boxcode = "querybox";
     public $boximg = "query@query";
     public $boxlabel;
     public $depends = array("query");
@@ -47,7 +47,7 @@ class querybox extends ModeleBoxes
         global $langs;
         $langs->load("boxes");
 
-        $this->boxlabel = $langs->transnoentitiesnoconv("MyBox");
+        $this->boxlabel = $langs->transnoentitiesnoconv("QueryBox");
     }
 
     /**
@@ -62,16 +62,7 @@ class querybox extends ModeleBoxes
 
         $this->max = $max;
 
-        //include_once DOL_DOCUMENT_ROOT . "/query/class/query.class.php";
-
-        $text = $langs->trans("MyBoxDescription", $max);
-        $this->info_box_head = array(
-            'text' => $text,
-            'limit' => dol_strlen($text)
-        );
-
-        $this->info_box_contents[0][0] = array('td' => 'align="left"',
-            'text' => $langs->trans("MyBoxContent"));
+       
     }
 
     /**
@@ -83,6 +74,7 @@ class querybox extends ModeleBoxes
      */
     public function showBox($head = null, $contents = null)
     {
-        parent::showBox($this->info_box_head, $this->info_box_contents);
+    	print 'QUERY BOX';
+        // parent::showBox($this->info_box_head, $this->info_box_contents);
     }
 }

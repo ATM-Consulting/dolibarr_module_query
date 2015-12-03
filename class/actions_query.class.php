@@ -1,5 +1,5 @@
 <?php
-class ActionsMymodule
+class ActionsQuery
 { 
      /** Overloading the doActions function : replacing the parent's function with the one below 
       *  @param      parameters  meta datas of the hook (context, etc...) 
@@ -8,50 +8,58 @@ class ActionsMymodule
       *  @return       void 
       */
       
-    function formObjectOptions($parameters, &$object, &$action, $hookmanager) 
+    function addStatisticLine($parameters, &$object, &$action, $hookmanager) 
     {  
-      	global $langs,$db;
+      	global $langs,$db, $user;
 		
-		if (in_array('ordercard',explode(':',$parameters['context']))) 
+		if (in_array('index',explode(':',$parameters['context']))) 
         {
         	
+			$sql="SELECT qd.uid as 'uid', qd.title 
+				FROM ".MAIN_DB_PREFIX."qdashboard qd
+				WHERE uid!='' ";
+			
+			if($user->admin) {
+				null;
+			}
+			else {
+				$sql.=" AND (qd.fk_user_author=".$user->id." OR  qd.fk_usergroup IN (SELECT fk_usergroup FROM ".MAIN_DB_PREFIX."usergroup_user WHERE fk_user=".$user->id." ) )";
+			}
+			
+        	?>
+        	<script type="text/javascript">
+        		$(document).ready(function() {
+        			
+        			$select = $('<div class="titre"><?php echo $langs->trans('QueryDashBoard'); ?></div><select name="qdashboardList"><option value=""> </option><?php
+						$res = $db->query($sql);
+						while($obj = $db->fetch_object($res)) {
+							echo '<option value="'.$obj->uid.'">'.$obj->title.'</option>';
+						}
+        			?></select><div id="queryDashboardview"></div>');
+        			
+        			
+        			$select.change(function() {
+        				
+        				var uid = $(this).val();
+        				$('#queryDashboardview').empty();
+        				
+        				if(uid!='') {
+        					var url="<?php echo dol_buildpath('/query/dashboard.php',1) ?>?action=run&uid="+uid;
+        					$('#queryDashboardview').html('<iframe src="'+url+'" width="100%" frameborder="0" onload="this.height = this.contentWindow.document.body.scrollHeight + \'px\'"></iframe>');
+        				}
+        			});
+        			
+        			$('table#otherboxes').before($select);
+        			
+        			
+        			
+        		});
+        		
+        	</script>
+        	<?php
 		}
 		
 		return 0;
 	}
      
-    function formEditProductOptions($parameters, &$object, &$action, $hookmanager) 
-    {
-		
-    	if (in_array('invoicecard',explode(':',$parameters['context'])))
-        {
-        	
-        }
-		
-        return 0;
-    }
-
-	function formAddObjectLine ($parameters, &$object, &$action, $hookmanager) {
-		
-		global $db;
-		
-		if (in_array('ordercard',explode(':',$parameters['context'])) || in_array('invoicecard',explode(':',$parameters['context']))) 
-        {
-        	
-        }
-
-		return 0;
-	}
-
-	function printObjectLine ($parameters, &$object, &$action, $hookmanager){
-		
-		global $db;
-		
-		if (in_array('ordercard',explode(':',$parameters['context'])) || in_array('invoicecard',explode(':',$parameters['context']))) 
-        {
-        	
-        }
-
-		return 0;
-	}
 }

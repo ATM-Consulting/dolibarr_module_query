@@ -9,10 +9,11 @@ class ActionsQuery
       */
       
     function formObjectOptions($parameters, &$object, &$action, $hookmanager) {
-    	
+    	global $user;
+		
 		if(($parameters['currentcontext'] == 'projectcard'
 		|| $parameters['currentcontext'] == 'productcard')
-		&& $action == '') {
+		&& $action == '' && !empty($user->rights->query->dashboard->viewin)) {
 			
 			define('INC_FROM_DOLIBARR',true);
 			dol_include_once('/query/config.php');

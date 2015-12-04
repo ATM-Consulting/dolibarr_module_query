@@ -1,7 +1,7 @@
 var TTable = [];
 var TField = [];
 var TFieldInTable = [];
-var TJoin = [];
+var TJoin = {};
 var TFieldRank = [];
 
 $(document).ready(function() {
@@ -49,7 +49,7 @@ $(document).ready(function() {
 	});
 	
 	$('#save_query').click(function() {
-		
+		TJoin[t]
 		var TOperator = {};
 		$('#fields [sql-act="operator"]').each(function(i,item) {
 			if($(item).val()) {
@@ -97,10 +97,12 @@ $(document).ready(function() {
 			}
 		});
 		
-		var TFunction = {};
+		var TFunction = {}; 
 		$('#fields [sql-act="function"]').each(function(i,item) {
 			if($(item).val()) {
+				
 				TFunction[$(item).attr('field')] = $(item).val();
+				
 			}
 		});
 		
@@ -115,7 +117,7 @@ $(document).ready(function() {
 		$('input[rel=selected-field]:checked').each(function(i,item) {
 				TSelectedField.push( $(item).val() );
 		});
-		
+		console.log(TJoin);
 		var TData= {
 			'put':'query'
 			,'id' : $('form#formQuery input[name=id]').val()
@@ -336,7 +338,7 @@ function refresh_field_array(table) {
 						+ '<option value="1">Groupé</option>'
 						+ '</select>';
 				
-			var select_function	= '<select field='+field+' sql-act="function"> '
+			var select_function	= '<input type="text" size="10" field='+field+' sql-act="function" value="" /><select field='+field+' sql-act="function-select"> '
 						+ '<option value=""> </option>'
 						+ '<option value="SUM(@field@)">Somme</option>'
 						+ '<option value="COUNT(@field@)">Nombre de</option>'
@@ -345,15 +347,24 @@ function refresh_field_array(table) {
 						+ '<option value="MONTH(@field@)">Mois</option>'
 						+ '<option value="YEAR">Année</option>'
 						+ '<option value="DATE_FORMAT(@field@, \'%m/%Y\')">Année/Mois</option>'
+						//+ '<option value="FROM_UNIXTIME(@field@,\'%H:%i\')">Timestamp</option>'
+						+ '<option value="SEC_TO_TIME(@field@)">Timestamp</option>'
+						//+ '<option value="(@field@ / 3600)">/ 3600</option>'
 						+ '</select>';
 				
 			
 			var search = '<span table="'+table+'" field="'+f+'" class="selector"><div class="tagtd">'+select_equal+select_mode+'</div><div class="tagtd">'+select_order+select_hide+select_function+select_group+'</div></span>';
 
 			$li = $('<div class="field table-border-row" table="'+table+'" field="'+field+'" ><div class="fieldName">'+field+' <input tytpe="text" placeholder="Title" sql-act="title" field='+field+' value="" /></div></div>');
-				
+			
 			$li.append(search);
 			$fields.append($li);
+			
+			$("select[field='"+field+"'][sql-act=function-select]").change(function() {
+				$("input[field='"+field+"'][sql-act='function']").val(  $(this).val() );
+				
+			});
+				
 			
 		}
 			});

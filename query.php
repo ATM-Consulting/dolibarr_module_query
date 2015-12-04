@@ -181,12 +181,26 @@ function fiche(&$query) {
 				}
 				
 				if(!empty($query->TGroup)) {
-					foreach($query->TGroup as $f=>$v) {
+					foreach($query->TGroup as $f) {
 						
-						echo ' $("#fields [sql-act=\'group\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+						echo ' $("#fields [sql-act=\'group\'][field=\''.$f.'\']").val(1); ';
 						
 					}
 				}
+			
+				if(!empty($query->TJoin)) {
+					foreach($query->TJoin as $t=>$join) {
+						
+						?>
+						$("td[rel=from] select[jointure='<?php echo $t; ?>']").val("<?php echo $join[0]; ?>");
+						$("td[rel=to] select[jointure-to='<?php echo $t; ?>']").val("<?php echo $join[1]; ?>");
+						
+						TJoin['<?php echo $t; ?>'] = ["<?php echo $join[0]; ?>", "<?php echo $join[1]; ?>"]; 
+						<?php
+						
+					}
+				}
+				
 				
 			}
 						

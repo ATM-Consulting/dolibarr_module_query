@@ -313,7 +313,7 @@ function refresh_field_array(table) {
 						+ '<option value="=">=</option>'
 						+ '<option value="!=">!=</option>'
 						+ '<option value="&lt;">&lt;</option>'
-						+ '<option value="&lt;">&gt;</option>'
+						+ '<option value="&gt;">&gt;</option>'
 						+ '<option value="IN">IN</option>'
 						+ '</select>';
 						

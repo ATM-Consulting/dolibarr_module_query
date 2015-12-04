@@ -320,6 +320,7 @@ function refresh_field_array(table) {
 			var select_mode	= '<select field='+field+' sql-act="mode"> '
 						+ '<option value="value">valeur</option>'
 						+ '<option value="var">variable</option>'
+						+ '<option value="function">fonction</option>'
 						+ '</select> <input field='+field+' type="text" value="" sql-act="value" />';
 				
 			var select_order	= '<select field='+field+' sql-act="order"> '
@@ -370,7 +371,7 @@ function refresh_field_array(table) {
 			});
 
 
-	$fields.find('select[sql-act=operator], input[sql-act=title]').unbind().change( function () {
+	$fields.find('select[sql-act=operator], input[sql-act=title], input[sql-act=value]').unbind().change( function () {
 		refresh_sql();
 	});
 	
@@ -441,24 +442,23 @@ function refresh_sql() {
 		field = $(this).attr('field');
 		operator = $(this).find('select[sql-act=operator]').val();
 		sens = $(this).find('select[sql-act=order]').val();
+		value = $(this).find('input[sql-act=value]').val();
+		mode = $(this).find('select[sql-act=mode]').val();
 		
 		if(operator!='') {
 			
 			if(where!='') where+=' AND ';
 			
-			where+= field+' '+operator+' :'+field.replace(".", "_"); ;
+			if(mode == 'function') {
+				where+= field+' '+operator+' ('+value+')';
+			}
+			else{
+				where+= field+' '+operator+' :'+field.replace(".", "_"); 	
+			}
+			
 			
 		}
-		
-/*		if(sens!='') {
-			
-			if(order!='')order+=',';
-			
-			order+=field +' '+sens
-			
-		}
-*/		
-		
+
 	});
 	
 	$('#sql_query_where').val(where);

@@ -259,7 +259,10 @@ class TQuery extends TObjetStd {
 				$fBind  = strtr($f, '.', '_');
 				list($tbl, $fSearch) = explode('.', $f);
 				
-				if($m == 'var') {
+				if($m == 'function') {
+					null;
+				}
+				else if($m == 'var') {
 					$TBind[$fBind] = '%';
 				}
 				else if(!empty($this->TValue[$f])) {

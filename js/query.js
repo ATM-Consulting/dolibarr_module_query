@@ -49,7 +49,7 @@ $(document).ready(function() {
 	});
 	
 	$('#save_query').click(function() {
-		TJoin[t]
+		
 		var TOperator = {};
 		$('#fields [sql-act="operator"]').each(function(i,item) {
 			if($(item).val()) {

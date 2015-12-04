@@ -224,6 +224,7 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 						,title:$('input[name=title]').val()
 						,fk_usergroup:$('select[name=fk_usergroup]').val()
 						,send_by_mail:$('select[name=send_by_mail]').val()
+						,hook:$('select[name=hook]').val()
 					}
 					
 				}).done(function(data) {
@@ -259,6 +260,7 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 			echo ' - '.$langs->trans('LimitAccessToThisGroup').' : '.$formDoli->select_dolgroups($dashboard->fk_usergroup, 'fk_usergroup', 1);
 			
 			echo $form->combo(' - '.$langs->trans('SendByMailToThisGroup'),'send_by_mail', $dashboard->TSendByMail, $dashboard->send_by_mail);
+			echo $form->combo(' - '.$langs->trans('ShowThisInCard'),'hook', $dashboard->THook, $dashboard->hook);
 			
 			?>
 			<a href="#" class="butAction" id="saveDashboard"><?php echo $langs->trans('SaveDashboard'); ?></a>
@@ -286,7 +288,7 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 				else {*/
 					if(!$withHeader && $cell->query->type == 'LIST')$cell->query->type = 'SIMPLELIST';
 					
-					echo $cell->query->run($PDOdb, false, $cell->height * $cell_height);
+					echo $cell->query->run($PDOdb, false, $cell->height * $cell_height, GETPOST('table_element'), GETPOST('objectid'));
 				//}
 	    		
 				

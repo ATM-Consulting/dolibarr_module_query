@@ -7,7 +7,7 @@ class TQDashBoard extends TObjetStd {
          
         parent::set_table(MAIN_DB_PREFIX.'qdashboard');
         parent::add_champs('fk_user,fk_user_author,fk_usergroup',array('type'=>'integer','index'=>true));
-		parent::add_champs('uid,send_by_mail',array('index'=>true));
+		parent::add_champs('uid,send_by_mail,hook',array('index'=>true));
 		
         parent::_init_vars('title');
         parent::start();    
@@ -21,6 +21,13 @@ class TQDashBoard extends TObjetStd {
 			,'MONTH'=>$langs->trans('EveryMonth')
 		);
 		
+		$this->THook = array(
+			''=>$langs->trans('No')
+			,'projectcard'=>$langs->trans('Project')
+			,'productcard'=>$langs->trans('Product')
+			,'thirdpartycard'=>$langs->trans('Thirdparty')
+		);
+		
     }
 	
 	function save(&$PDOdb) {
@@ -32,6 +39,21 @@ class TQDashBoard extends TObjetStd {
 		
 		parent::save($PDOdb);
 		
+	}
+	
+	static function getDashboard(&$PDOdb, $hook='') {
+		$Tab = array();
+		
+		$sql = "SELECT rowid, uid FROM ".MAIN_DB_PREFIX."qdashboard 
+		WHERE 1 ";
+		
+		if($hook) $sql.=" AND hook='".$hook."'";
+		
+		$sql.=" ORDER BY title";
+		
+		$Tab = TRequeteCore::_get_id_by_sql($PDOdb, $sql, 'uid', 'rowid');
+		
+		return $Tab;
 	}
 	
 }

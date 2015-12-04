@@ -8,6 +8,36 @@ class ActionsQuery
       *  @return       void 
       */
       
+    function formObjectOptions($parameters, &$object, &$action, $hookmanager) {
+    	
+		if(($parameters['currentcontext'] == 'projectcard'
+		|| $parameters['currentcontext'] == 'productcard')
+		&& $action == '') {
+			
+			define('INC_FROM_DOLIBARR',true);
+			dol_include_once('/query/config.php');
+			dol_include_once('/query/class/dashboard.class.php');
+			dol_include_once('/query/class/query.class.php');
+			
+			$PDOdb=new TPDOdb;
+			$TDash = TQDashBoard::getDashboard($PDOdb, $parameters['currentcontext']);
+			
+			foreach($TDash as $uid) {
+				$url = dol_buildpath('/query/dashboard.php?action=run&uid='.$uid.'&table_element='.$object->table_element.'&objectid='.$object->id,1);
+				
+				?>
+				<tr>
+					<td colspan="2">
+						<iframe src="<?php echo $url ?>" width="100%" frameborder="0" onload="this.height = this.contentWindow.document.body.scrollHeight + 'px'"></iframe>
+					</td>
+				</tr>
+				<?php
+				
+			}			
+			
+		} 
+	}	     
+	  
     function addStatisticLine($parameters, &$object, &$action, $hookmanager) 
     {  
       	global $langs,$db, $user;

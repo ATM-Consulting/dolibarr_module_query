@@ -21,7 +21,7 @@ class TQuery extends TObjetStd {
 			,'AREA'=>$langs->trans('Area')
 		);
 		
-        $this->show_details = true;
+		$this->show_details = true;
     }
 	
 	static function getQueries(&$PDOdb) {
@@ -67,40 +67,40 @@ class TQuery extends TObjetStd {
 		
 	}
 	
-	function run(&$PDOdb, $show_details = true, $height=0) {
+	function run(&$PDOdb, $show_details = true, $height=0, $table_element='', $objectid=0) {
 		
 		$this->show_details = $show_details;
 		
 		if(!empty($height)) $this->height = $height;
 		
 		if($this->type == 'CHART') {
-			return $this->runChart($PDOdb,'ColumnChart');
+			return $this->runChart($PDOdb,'ColumnChart',$table_element,$objectid);
 		}
 		else if($this->type == 'LINE') {
-			return $this->runChart($PDOdb,'LineChart');
+			return $this->runChart($PDOdb,'LineChart',$table_element,$objectid);
 		}else if($this->type == 'PIE') {
-			return $this->runChart($PDOdb,'PieChart');
+			return $this->runChart($PDOdb,'PieChart',$table_element,$objectid);
 		}
 		else if($this->type == 'AREA') {
-			return $this->runChart($PDOdb,'AreaChart');
+			return $this->runChart($PDOdb,'AreaChart',$table_element,$objectid);
 		}
 		else if($this->type == 'SIMPLELIST') {
-			return load_fiche_titre($this->title).$this->runList($PDOdb,dol_buildpath('/query/tpl/html.simplelist.tbs.html'));
+			return load_fiche_titre($this->title).$this->runList($PDOdb,dol_buildpath('/query/tpl/html.simplelist.tbs.html'),$table_element,$objectid);
 		}
 		else {
 			
-			return load_fiche_titre($this->title).$this->runList($PDOdb);	
+			return load_fiche_titre($this->title).$this->runList($PDOdb,'',$table_element,$objectid);	
 		}
 		
 		
 	}
 	
-	function runChart(&$PDOdb, $type = 'LineChart') {
+	function runChart(&$PDOdb, $type = 'LineChart',$table_element='',$objectid=0) {
 		//TODO déplacer rendu graphique dans listviewTBS Abricot
 		
 		list($tableXaxis,$fieldXaxis) = explode('.', $this->xaxis);
 		
-		$sql=$this->getSQL();
+		$sql=$this->getSQL($table_element,$objectid);
 		$TBind = $this->getBind();
 		$TSearch = $this->getSearch();
 		$THide = $this->getHide();
@@ -213,7 +213,7 @@ class TQuery extends TObjetStd {
 		return $html;
 	}
 	
-	function getSQL() {
+	function getSQL($table_element='',$objectid=0) {
 			
 		if(!empty($this->TFunction)) {
 			$this->sql_fields = '';
@@ -234,9 +234,12 @@ class TQuery extends TObjetStd {
 		
 		$sql="SELECT ".($this->sql_fields ? $this->sql_fields : '*') ."
 			FROM ".$this->sql_from."
-			WHERE ".($this->sql_where ? $this->sql_where : 1 )."
+			WHERE (".($this->sql_where ? $this->sql_where : 1 ).")
 			";
 		
+		if(!empty($table_element) && strpos($sql, $table_element)!==false) {
+			$sql.=' AND '.MAIN_DB_PREFIX.$table_element.'.rowid='.$objectid;
+		}
 		
 		if(!empty($this->TGroup)) {
 			$sql.=" GROUP BY ".implode(',', $this->TGroup);	
@@ -333,11 +336,11 @@ class TQuery extends TObjetStd {
 		return $TSearch;
 	}
 	
-	function runList(&$PDOdb, $template = '') {
+	function runList(&$PDOdb, $template = '',$table_element='',$objectid=0) {
 		
 		$html = '';
 		
-			$sql=$this->getSQL();
+			$sql=$this->getSQL($table_element,$objectid);
 			$TBind = $this->getBind();
 			$TSearch = $this->getSearch();
 			$THide = $this->getHide();

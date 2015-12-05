@@ -26,6 +26,7 @@ class TQDashBoard extends TObjetStd {
 			,'projectcard'=>$langs->trans('Project')
 			,'productcard'=>$langs->trans('Product')
 			,'thirdpartycard'=>$langs->trans('Thirdparty')
+			,'usercard'=>$langs->trans('User')
 		);
 		
     }

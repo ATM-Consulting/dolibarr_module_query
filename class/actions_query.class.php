@@ -12,7 +12,9 @@ class ActionsQuery
     	global $user;
 		
 		if(($parameters['currentcontext'] == 'projectcard'
-		|| $parameters['currentcontext'] == 'productcard')
+		|| $parameters['currentcontext'] == 'productcard'
+		|| $parameters['currentcontext'] == 'thirdpartycard'
+		|| $parameters['currentcontext'] == 'usercard')
 		&& $action == '' && !empty($user->rights->query->dashboard->viewin)) {
 			
 			define('INC_FROM_DOLIBARR',true);

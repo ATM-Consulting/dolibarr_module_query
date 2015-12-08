@@ -144,7 +144,7 @@ class TQuery extends TObjetStd {
 			
 			foreach($row as $k=>$v) {
 				
-				if($k == $fieldXaxis) {
+				if($k == $fieldXaxis || (empty($fieldXaxis) && $k == 0)) {
 					$key = $v;
 				}
 				else if(!in_array($k, $THide)) {

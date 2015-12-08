@@ -100,8 +100,6 @@ class TQuery extends TObjetStd {
 	function runChart(&$PDOdb, $type = 'LineChart',$table_element='',$objectid=0) {
 		//TODO déplacer rendu graphique dans listviewTBS Abricot
 		
-		list($tableXaxis,$fieldXaxis) = explode('.', $this->xaxis);
-		
 		$sql=$this->getSQL($table_element,$objectid);
 		$TBind = $this->getBind();
 		$TSearch = $this->getSearch();
@@ -112,6 +110,19 @@ class TQuery extends TObjetStd {
 		$TData = array();
 		$header = '';
 		$first = true;
+		
+		if(empty($this->xaxis) && !empty($Tab)) {
+			
+			$row1 = $Tab[0];
+			$fieldXaxis = key($row1);
+
+		}
+		else {
+			list($tableXaxis,$fieldXaxis) = explode('.', $this->xaxis);
+		}
+		
+		
+		
 		foreach($Tab as $row) {
 			
 			//var_dump($row);
@@ -122,7 +133,7 @@ class TQuery extends TObjetStd {
 			
 				foreach($row as $k=>$v) {
 				
-					if($k == $fieldXaxis || (empty($fieldXaxis) && $k == 0) ) {
+					if($k == $fieldXaxis) {
 						$key = $k;
 					}
 					else if(!in_array($k, $THide)) {
@@ -144,7 +155,7 @@ class TQuery extends TObjetStd {
 			
 			foreach($row as $k=>$v) {
 				
-				if($k == $fieldXaxis || (empty($fieldXaxis) && $k == 0)) {
+				if($k == $fieldXaxis) {
 					$key = $v;
 				}
 				else if(!in_array($k, $THide)) {

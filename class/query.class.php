@@ -22,6 +22,7 @@ class TQuery extends TObjetStd {
 		);
 		
 		$this->show_details = true;
+		$this->preview = false;
     }
 	
 	static function getQueries(&$PDOdb) {
@@ -67,7 +68,7 @@ class TQuery extends TObjetStd {
 		
 	}
 	
-	function run(&$PDOdb, $show_details = true, $height=0, $table_element='', $objectid=0) {
+	function run(&$PDOdb, $show_details = true, $height=0, $table_element='', $objectid=0, $preview = false) {
 		
 		$this->show_details = $show_details;
 		
@@ -84,7 +85,7 @@ class TQuery extends TObjetStd {
 		else if($this->type == 'AREA') {
 			return $this->runChart($PDOdb,'AreaChart',$table_element,$objectid);
 		}
-		else if($this->type == 'SIMPLELIST') {
+		else if($this->type == 'SIMPLELIST' || $this->preview) {
 			return load_fiche_titre($this->title).$this->runList($PDOdb,dol_buildpath('/query/tpl/html.simplelist.tbs.html'),$table_element,$objectid);
 		}
 		else {
@@ -244,6 +245,9 @@ class TQuery extends TObjetStd {
 		if(!empty($this->TGroup)) {
 			$sql.=" GROUP BY ".implode(',', $this->TGroup);	
 		}
+		
+		
+		if($this->preview && stripos($sql,'LIMIT ') === false) $sql.=" LIMIT 5";
 		
 		return $sql;			
 	}

@@ -3,6 +3,7 @@ var TField = [];
 var TFieldInTable = [];
 var TJoin = {};
 var TFieldRank = [];
+var tables = '';
 
 $(document).ready(function() {
 	
@@ -40,7 +41,7 @@ $(document).ready(function() {
 		t = $("#tables").val();
 		
 		TTable.push( t );
-		TField[t] = [];
+		TField[t] = {};
 		
 		drawFieldTables( t );
 		
@@ -135,9 +136,9 @@ $(document).ready(function() {
 			,'TField' : TSelectedField
 			,'TGroup' : TGroup
 			,'TFunction' : TFunction
-			,'sql_fields' : $('textarea[name=sql_fields]').val()
-			,'sql_from' : $('textarea[name=sql_from]').val()
-			,'sql_where' : $('textarea[name=sql_where]').val()
+			,'sql_fields' : $.base64.encode( $('textarea[name=sql_fields]').val() )
+			,'sql_from' : $.base64.encode( $('textarea[name=sql_from]').val() )
+			,'sql_where' : $.base64.encode( $('textarea[name=sql_where]').val() )
 		
 		};
 		console.log( TData);
@@ -149,15 +150,26 @@ $(document).ready(function() {
 			
 		}).done(function (idQuery) {
 			if(idQuery>0) {
-				$('form#formQuery input[name=id]').val(idQuery);	
+				if(MODQUERY_QUERYID == 0) document.location.href = "?action=view&id="+idQuery;
+				else showQueryPreview(idQuery);
 			}
 			else{
-				
+				null;
 			}
 		});
 	});		
 	
 });
+
+function showQueryPreview(idQuery) {
+	
+	var url='?action=preview&id='+idQuery;
+	
+	$('#previewRequete iframe').attr('src', url);
+	
+	$('#previewRequete').show();
+	
+}
 
 function delTable( table ) {
 	
@@ -288,7 +300,6 @@ function addJointure($obj, table) {
 }
 
 function refresh_field_array(table) {
-	
 	TField[table] = [];
 	//console.log('refresh_field_array:'+table);
 	var $fields = $('#fields');
@@ -407,7 +418,6 @@ function refresh_sql() {
 	tables = '';
 	
 	for(t in TField) {
-		
 		if(typeof TJoin[t] != 'undefined') {
 			tables+=' LEFT JOIN ';
 		}
@@ -464,7 +474,7 @@ function refresh_sql() {
 	});
 	
 	$('#sql_query_where').val(where);
-	
+
 }
 
 function getTables() {

@@ -35,6 +35,10 @@
 			
 			$query->set_values($_REQUEST);
 			
+			$query->sql_fields = base64_decode(GETPOST('sql_fields'));
+			$query->sql_from = base64_decode(GETPOST('sql_from'));
+			$query->sql_where = base64_decode(GETPOST('sql_where'));
+			
 			$query->save($PDOdb);
 			
 			print $query->getId();

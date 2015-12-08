@@ -34,6 +34,12 @@ switch ($action) {
 		
 		break;		
 
+	case 'preview':
+		$query->load($PDOdb, GETPOST('id'));
+		run($PDOdb, $query, true);
+		
+		break;
+
 	default:
 		
 		liste();
@@ -44,18 +50,43 @@ switch ($action) {
 
 
 
-function run(&$PDOdb, &$query) {
+function run(&$PDOdb, &$query, $preview = false) {
+	global $conf;
 	
-	llxHeader('', 'Query', '', '', 0, 0, array() , array('/query/css/query.css') );
-	dol_fiche_head();
+	if(!$preview) {
+		llxHeader('', 'Query', '', '', 0, 0, array() , array('/query/css/query.css') );
+		dol_fiche_head();
+	}
+	else{
+		
+		?><html>
+			<head>
+				<link rel="stylesheet" type="text/css" href="/dolibarr/3.9/htdocs/theme/eldy/style.css.php">
+				<script type="text/javascript" src="/dolibarr/3.9/htdocs/includes/jquery/js/jquery.min.js"></script>
+			</head>
+		<body style="margin:0 0 0 0;padding:0 0 0 0;"><?php
+		
+	}
 	
 	if(empty($query->sql_from)) die('InvalidQuery');
 	
-	echo $query->run($PDOdb);
+	$show_details = true;
 	
-	dol_fiche_end();
+	if($preview) {
+		$query->preview = true;
+		$show_details = false;	
+	}
 	
-	llxFooter();
+	echo $query->run($PDOdb, $show_details);
+	
+	if(!$preview) {
+		dol_fiche_end();
+		llxFooter();
+		
+	}
+	else{
+		?></body></html><?php
+	}
 }
 
 
@@ -93,12 +124,13 @@ function liste() {
 function fiche(&$query) {
 	global $langs, $conf,$user;
 	
-	llxHeader('', 'Query', '', '', 0, 0, array('/query/js/query.js') , array('/query/css/query.css') );
+	llxHeader('', 'Query', '', '', 0, 0, array('/query/js/query.js','/query/js/jquery.base64.min.js') , array('/query/css/query.css') );
 	dol_fiche_head();
 	
 	?>
 	<script type="text/javascript">
 		var MODQUERY_INTERFACE = "<?php echo dol_buildpath('/query/script/interface.php',1); ?>";
+		var MODQUERY_QUERYID = <?php echo $query->getId(); ?>;
 		
 		function _init_query() {
 			
@@ -112,15 +144,19 @@ function fiche(&$query) {
 		
 				}
 			
-				if(empty($query->TField)) {
+				if(empty($query->TField) && !empty($query->sql_fields)) {
 					$query->TField = explode(',', $query->sql_fields );
 				}
 				//$TField = 
-				
-				foreach($query->TField as $field) {
+				if(!empty($query->TField )) {
+					foreach($query->TField as $field) {
+						
+						echo ' checkField("'.$field.'"); ';
 					
-					echo ' checkField("'.$field.'"); ';
-				
+					}
+					
+					echo 'showQueryPreview('.$query->getId().');';
+					
 				}
 				
 				if(!empty($query->TMode)) {
@@ -225,6 +261,9 @@ function fiche(&$query) {
 			?>
 			<input class="button" type="button" id="save_query" value="<?php echo $langs->trans('SaveQuery') ?>" />
 		</div>
+		<?php
+		if($query->getId()>0) {
+		?>
 		<div>
 			<?php echo $langs->trans('AddOneOfThisTables') ?> : <select id="tables"></select>
 			<input class="button" type="button" id="add_this_table" value="<?php echo $langs->trans('AddThisTable') ?>" />
@@ -233,13 +272,17 @@ function fiche(&$query) {
 		<div id="selected_tables">
 			
 		</div>
-		
+		<?php
+		}
+		?>
 	</div>
-	
+	<?php
+		if($query->getId()>0) {
+	?>
 	<div class="selected_fields">
 		<div class="border" id="fields"><div class="liste_titre"><?php echo $langs->trans('FieldsOrder'); ?></div></div>
 	</div>
-	
+	<div style="clear:both; border-top:1px solid #000;"></div>
 	<div id="results">
 		<div>
 		<?php echo $langs->trans('Fields'); ?><br />
@@ -260,9 +303,17 @@ function fiche(&$query) {
 		</div>
 	</div>
 	
+	<div style="clear:both; border-top:1px solid #000;"></div>
+	<div id="previewRequete" style="display: none;">
+		<iframe src="#" width="100%" frameborder="0" onload="this.height = this.contentWindow.document.body.scrollHeight + 'px'"></iframe>
+	</div>
+	
+	<?php
+		}
+	?>
 	</form>
 	
-	<div style="clear:both"></div>
+	
 	
 	<?php
 	dol_fiche_end();

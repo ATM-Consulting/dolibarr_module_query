@@ -8,6 +8,7 @@ class TQuery extends TObjetStd {
         parent::set_table(MAIN_DB_PREFIX.'query');
         parent::add_champs('sql_fields,sql_from,sql_where',array('type'=>'text'));
 		parent::add_champs('TField,TTable,TOrder,TTitle,TLink,THide,TMode,TOperator,TGroup,TFunction,TValue,TJoin',array('type'=>'array'));
+		parent::add_champs('expert',array('type'=>'int'));
 		
         parent::_init_vars('title,type,xaxis');
         parent::start();    

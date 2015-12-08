@@ -14,6 +14,13 @@ $PDOdb=new TPDOdb;
 
 
 switch ($action) {
+	case 'set-expert':
+		$query->load($PDOdb, GETPOST('id'));
+		$query->expert = 1;
+		$query->save($PDOdb);
+		fiche($query);
+	
+		break;
 	case 'view':
 		
 		$query->load($PDOdb, GETPOST('id'));
@@ -61,8 +68,9 @@ function run(&$PDOdb, &$query, $preview = false) {
 		
 		?><html>
 			<head>
-				<link rel="stylesheet" type="text/css" href="/dolibarr/3.9/htdocs/theme/eldy/style.css.php">
-				<script type="text/javascript" src="/dolibarr/3.9/htdocs/includes/jquery/js/jquery.min.js"></script>
+				<link rel="stylesheet" type="text/css" href="<?php echo dol_buildpath('/theme/eldy/style.css.php',1) ?>">
+				<link rel="stylesheet" type="text/css" href="<?php echo dol_buildpath('/query/css/query.css',1) ?>">
+				<script type="text/javascript" src="<?php echo dol_buildpath('/includes/jquery/js/jquery.min.js',1) ?>"></script>
 			</head>
 		<body style="margin:0 0 0 0;padding:0 0 0 0;"><?php
 		
@@ -74,7 +82,7 @@ function run(&$PDOdb, &$query, $preview = false) {
 	
 	if($preview) {
 		$query->preview = true;
-		$show_details = false;	
+		
 	}
 	
 	echo $query->run($PDOdb, $show_details);
@@ -99,7 +107,7 @@ function liste() {
 	llxHeader('', 'Query', '', '', 0, 0, array() , array('/query/css/query.css') );
 	dol_fiche_head();
 	
-	$sql="SELECT rowid as 'Id', title 
+	$sql="SELECT rowid as 'Id', title,expert
 	FROM ".MAIN_DB_PREFIX."query
 	WHERE 1
 	 ";
@@ -112,6 +120,10 @@ function liste() {
 		)
 		,'title'=>array(
 			'title'=>$langs->trans('Title')
+			,'expert'=>$langs->trans('Expert')
+		)
+		,'translate'=>array(
+			'expert'=>array( 0=>$langs->trans('No'), 1=>$langs->trans('Yes') )
 		)
 	
 	));
@@ -138,111 +150,121 @@ function fiche(&$query) {
 
 			if($query->getId()>0) {
 				
-				foreach($query->TTable as $table) {
-					
-					echo 'addTable("'.$table.'"); ';
-		
-				}
-			
-				if(empty($query->TField) && !empty($query->sql_fields)) {
-					$query->TField = explode(',', $query->sql_fields );
-				}
-				//$TField = 
-				if(!empty($query->TField )) {
-					foreach($query->TField as $field) {
-						
-						echo ' checkField("'.$field.'"); ';
-					
-					}
-					
+				if($query->expert) {
+				
 					echo 'showQueryPreview('.$query->getId().');';
+						
+				
+				}
+				else {
 					
-				}
-				
-				if(!empty($query->TMode)) {
-					foreach($query->TMode as $f=>$v) {
+					foreach($query->TTable as $table) {
 						
-						echo ' $("#fields [sql-act=\'mode\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
-						
-					}
-					
-				}
-				
-				if(!empty($query->TOrder)) {
-					foreach($query->TOrder as $f=>$v) {
-					
-						echo ' $("#fields [sql-act=\'order\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
-						
-					}
-				}
-							
-				if(!empty($query->TOperator)) {
-					foreach($query->TOperator as $f=>$v) {
-						
-						echo ' $("#fields [sql-act=\'operator\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
-						
-					}
-				}
-				
-				if(!empty($query->TValue)) {
-					foreach($query->TValue as $f=>$v) {
-						
-						echo ' $("#fields [sql-act=\'value\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
-						
-					}
-				}
-				
-				if(!empty($query->THide)) {
-					foreach($query->THide as $f=>$v) {
-						
-						echo ' $("#fields [sql-act=\'hide\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
-						
-					}
-				}
-				
-				if(!empty($query->TTitle)) {
-					foreach($query->TTitle as $f=>$v) {
-						
-						echo ' $("#fields [sql-act=\'title\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
-						
-					}
-				}
-				
-				if(!empty($query->TFunction)) {
-					foreach($query->TFunction as $f=>$v) {
-						
-						echo ' $("#fields [sql-act=\'function\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
-						
-					}
-				}
-				
-				if(!empty($query->TGroup)) {
-					foreach($query->TGroup as $f) {
-						
-						echo ' $("#fields [sql-act=\'group\'][field=\''.$f.'\']").val(1); ';
-						
-					}
-				}
+						echo 'addTable("'.$table.'"); ';
 			
-				if(!empty($query->TJoin)) {
-					foreach($query->TJoin as $t=>$join) {
+					}
+				
+					if(empty($query->TField) && !empty($query->sql_fields)) {
+						$query->TField = explode(',', $query->sql_fields );
+					}
+					//$TField = 
+					if(!empty($query->TField )) {
+						foreach($query->TField as $field) {
+							
+							echo ' checkField("'.$field.'"); ';
 						
-						?>
-						$("td[rel=from] select[jointure='<?php echo $t; ?>']").val("<?php echo $join[0]; ?>");
-						$("td[rel=to] select[jointure-to='<?php echo $t; ?>']").val("<?php echo $join[1]; ?>");
+						}
 						
-						TJoin['<?php echo $t; ?>'] = ["<?php echo $join[0]; ?>", "<?php echo $join[1]; ?>"]; 
-						<?php
+						echo 'showQueryPreview('.$query->getId().');';
 						
 					}
+					
+					if(!empty($query->TMode)) {
+						foreach($query->TMode as $f=>$v) {
+							
+							echo ' $("#fields [sql-act=\'mode\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+							
+						}
+						
+					}
+					
+					if(!empty($query->TOrder)) {
+						foreach($query->TOrder as $f=>$v) {
+						
+							echo ' $("#fields [sql-act=\'order\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+							
+						}
+					}
+								
+					if(!empty($query->TOperator)) {
+						foreach($query->TOperator as $f=>$v) {
+							
+							echo ' $("#fields [sql-act=\'operator\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+							
+						}
+					}
+					
+					if(!empty($query->TValue)) {
+						foreach($query->TValue as $f=>$v) {
+							
+							echo ' $("#fields [sql-act=\'value\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+							
+						}
+					}
+					
+					if(!empty($query->THide)) {
+						foreach($query->THide as $f=>$v) {
+							
+							echo ' $("#fields [sql-act=\'hide\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+							
+						}
+					}
+					
+					if(!empty($query->TTitle)) {
+						foreach($query->TTitle as $f=>$v) {
+							
+							echo ' $("#fields [sql-act=\'title\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+							
+						}
+					}
+					
+					if(!empty($query->TFunction)) {
+						foreach($query->TFunction as $f=>$v) {
+							
+							echo ' $("#fields [sql-act=\'function\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+							
+						}
+					}
+					
+					if(!empty($query->TGroup)) {
+						foreach($query->TGroup as $f) {
+							
+							echo ' $("#fields [sql-act=\'group\'][field=\''.$f.'\']").val(1); ';
+							
+						}
+					}
+				
+					if(!empty($query->TJoin)) {
+						foreach($query->TJoin as $t=>$join) {
+							
+							?>
+							$("td[rel=from] select[jointure='<?php echo $t; ?>']").val("<?php echo $join[0]; ?>");
+							$("td[rel=to] select[jointure-to='<?php echo $t; ?>']").val("<?php echo $join[1]; ?>");
+							
+							TJoin['<?php echo $t; ?>'] = ["<?php echo $join[0]; ?>", "<?php echo $join[1]; ?>"]; 
+							<?php
+							
+						}
+					}
+							
+					?>
+					refresh_sql();
+					<?php
+					
 				}
-				
-				
 			}
 						
 			?>
-			
-			refresh_sql();
 		}
 		
 	</script>
@@ -251,6 +273,17 @@ function fiche(&$query) {
 		<input type="hidden" name="id" value="<?php echo $query->getId(); ?>" />
 		
 	<div>
+		<?php
+			if($query->getId()>0 && !$query->expert && !empty($user->rights->query->all->expert) ) {
+				
+				?>
+				<div style="float:right">
+					<a class="butAction" href="?action=set-expert&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('setExpertMode') ?></a>
+				</div>
+				<?php
+				
+			}
+		?>
 		<div>
 			<?php echo $langs->trans('Title') ?> : 
 			<input type="text" name="title" size="80" value="<?php echo $query->title; ?>" />
@@ -262,7 +295,7 @@ function fiche(&$query) {
 			<input class="button" type="button" id="save_query" value="<?php echo $langs->trans('SaveQuery') ?>" />
 		</div>
 		<?php
-		if($query->getId()>0) {
+		if($query->getId()>0 && !$query->expert) {
 		?>
 		<div>
 			<?php echo $langs->trans('AddOneOfThisTables') ?> : <select id="tables"></select>
@@ -277,29 +310,31 @@ function fiche(&$query) {
 		?>
 	</div>
 	<?php
-		if($query->getId()>0) {
+		if($query->getId()>0 && !$query->expert) {
 	?>
 	<div class="selected_fields">
 		<div class="border" id="fields"><div class="liste_titre"><?php echo $langs->trans('FieldsOrder'); ?></div></div>
 	</div>
+	<?php
+		}
+		
+		if($query->getId()>0) {
+	?>
 	<div style="clear:both; border-top:1px solid #000;"></div>
 	<div id="results">
 		<div>
 		<?php echo $langs->trans('Fields'); ?><br />
-		<textarea id="sql_query_fields" name="sql_fields">
-		</textarea>
+		<textarea id="sql_query_fields" name="sql_fields"><?php echo $query->sql_fields ?></textarea>
 		</div>
 		
 		<div>
 		<?php echo $langs->trans('From'); ?><br />
-		<textarea id="sql_query_from" name="sql_from">
-		</textarea>
+		<textarea id="sql_query_from" name="sql_from"><?php echo $query->sql_from ?></textarea>
 		</div>
 		
 		<div>
 		<?php echo $langs->trans('Where'); ?><br />
-		<textarea id="sql_query_where" name="sql_where">
-		</textarea>
+		<textarea id="sql_query_where" name="sql_where"><?php echo $query->sql_where ?></textarea>
 		</div>
 	</div>
 	

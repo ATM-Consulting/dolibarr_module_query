@@ -7,3 +7,4 @@ InvalidQuery=Requête non valide
 AddOneOfThisTables=Ajouter l'une de ces tables
 Fields=Champs
 Where=Condition
+setExpertMode=Passer en mode expert

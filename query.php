@@ -335,6 +335,18 @@ function fiche(&$query) {
 		<div>
 		<?php echo $langs->trans('Where'); ?><br />
 		<textarea id="sql_query_where" name="sql_where"><?php echo $query->sql_where ?></textarea>
+		
+		<?php
+			if($query->expert) {
+					
+				echo $langs->trans('AfterWhere'); ?><br />
+				<textarea id="sql_query_afterwhere" name="sql_afterwhere"><?php echo $query->sql_afterwhere ?></textarea>
+					<?php
+				
+			}
+		
+		?>
+		
 		</div>
 	</div>
 	

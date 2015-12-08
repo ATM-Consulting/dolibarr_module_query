@@ -139,6 +139,7 @@ $(document).ready(function() {
 			,'sql_fields' : $.base64.encode( $('textarea[name=sql_fields]').val() )
 			,'sql_from' : $.base64.encode( $('textarea[name=sql_from]').val() )
 			,'sql_where' : $.base64.encode( $('textarea[name=sql_where]').val() )
+			,'sql_afterwhere': $.base64.encode( $('textarea[name=sql_afterwhere]').val() )
 		
 		};
 		console.log( TData);

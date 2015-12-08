@@ -6,7 +6,7 @@ class TQuery extends TObjetStd {
         global $langs;
          
         parent::set_table(MAIN_DB_PREFIX.'query');
-        parent::add_champs('sql_fields,sql_from,sql_where',array('type'=>'text'));
+        parent::add_champs('sql_fields,sql_from,sql_where,sql_afterwhere',array('type'=>'text'));
 		parent::add_champs('TField,TTable,TOrder,TTitle,TLink,THide,TMode,TOperator,TGroup,TFunction,TValue,TJoin',array('type'=>'array'));
 		parent::add_champs('expert',array('type'=>'int'));
 		
@@ -237,7 +237,7 @@ class TQuery extends TObjetStd {
 		$sql="SELECT ".($this->sql_fields ? $this->sql_fields : '*') ."
 			FROM ".$this->sql_from."
 			WHERE (".($this->sql_where ? $this->sql_where : 1 ).")
-			";
+			".$this->sql_afterwhere;
 		
 		if(!empty($table_element) && strpos($sql, $table_element)!==false) {
 			$sql.=' AND '.MAIN_DB_PREFIX.$table_element.'.rowid='.$objectid;

@@ -7,7 +7,7 @@ class TQuery extends TObjetStd {
          
         parent::set_table(MAIN_DB_PREFIX.'query');
         parent::add_champs('sql_fields,sql_from,sql_where,sql_afterwhere',array('type'=>'text'));
-		parent::add_champs('TField,TTable,TOrder,TTitle,TLink,THide,TMode,TOperator,TGroup,TFunction,TValue,TJoin',array('type'=>'array'));
+		parent::add_champs('TField,TTable,TOrder,TTitle,TLink,THide,TTranslate,TMode,TOperator,TGroup,TFunction,TValue,TJoin',array('type'=>'array'));
 		parent::add_champs('expert',array('type'=>'int'));
 		
         parent::_init_vars('title,type,xaxis');
@@ -105,6 +105,7 @@ class TQuery extends TObjetStd {
 		$TSearch = $this->getSearch();
 		$THide = $this->getHide();
 		$TTitle = $this->getTitle();
+		$TTranslate = $this->getTranslate();
 		
 		$Tab = $PDOdb->ExecuteAsArray($sql, $TBind);
 		$TData = array();
@@ -134,7 +135,7 @@ class TQuery extends TObjetStd {
 				foreach($row as $k=>$v) {
 				
 					if($k == $fieldXaxis) {
-						$key = $k;
+						$key =  !empty($TTitle[$k]) ? $TTitle[$k] : $k;
 					}
 					else if(!in_array($k, $THide)) {
 						$TValue[] = !empty($TTitle[$k]) ? $TTitle[$k] : $k;
@@ -156,10 +157,10 @@ class TQuery extends TObjetStd {
 			foreach($row as $k=>$v) {
 				
 				if($k == $fieldXaxis) {
-					$key = $v;
+					$key =!empty($TTranslate[$k][$v]) ?$TTranslate[$k][$v] : $v;
 				}
 				else if(!in_array($k, $THide)) {
-					$TValue[] = $v;
+					$TValue[] = !empty($TTranslate[$k][$v]) ?$TTranslate[$k][$v] : $v;
 				}
 				
 			}
@@ -329,7 +330,36 @@ class TQuery extends TObjetStd {
 		}
 		return $THide;
 	}
-	
+	function getTranslate() {
+		
+		$Tab = array();
+		if(!empty($this->TTranslate)) {
+			
+			foreach($this->TTranslate as $f=>$v) {
+				list($tbl, $field) = explode('.', $f);
+				$Tab[$field]=array();
+				
+				$TPair = str_getcsv($v, ',','"');
+				
+				foreach($TPair as $pair) {
+					
+					$pos = strpos($pair,':');
+					if($pos!==false) {
+						$from = substr($pair, 0, $pos );
+						$to = substr($pair, $pos+1 );
+						
+						$Tab[$field]["$from"] = $to; 	
+					}
+					
+					
+				}
+				
+			}
+			
+		}
+		
+		return $Tab;
+	}
 	function getSearch() {
 		
 		
@@ -363,6 +393,7 @@ class TQuery extends TObjetStd {
 			$TBind = $this->getBind();
 			$TSearch = $this->getSearch();
 			$THide = $this->getHide();
+			$TTranslate = $this->getTranslate();
 			
 			$form=new TFormCore();
 			$html.= $form->begin_form('auto','formQuery'. $this->getId(),'get');
@@ -394,6 +425,7 @@ class TQuery extends TObjetStd {
 					'titre'=>''
 				)
 				,'orderBy'=>$this->TOrder
+				,'translate'=>$TTranslate
 				,'search'=>$TSearch
 				,'export'=>array(
 					'CSV','TXT'

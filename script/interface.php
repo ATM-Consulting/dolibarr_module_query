@@ -35,6 +35,14 @@
 			
 			$query->set_values($_REQUEST);
 			
+			$query->THide = GETPOST('THide');
+			$query->TOperator = GETPOST('TOperator');
+			$query->TGroup = GETPOST('TGroup');
+			$query->TFunction = GETPOST('TFunction');
+			$query->TValue = GETPOST('TValue');
+			$query->TOrder = GETPOST('TOrder');
+			$query->TTranslate = GETPOST('TTranslate');
+			
 			$query->sql_fields = base64_decode(GETPOST('sql_fields'));
 			$query->sql_from = base64_decode(GETPOST('sql_from'));
 			$query->sql_where = base64_decode(GETPOST('sql_where'));

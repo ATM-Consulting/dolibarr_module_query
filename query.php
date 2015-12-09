@@ -338,11 +338,10 @@ function fiche(&$query) {
 		
 		<?php
 			if($query->expert) {
-					
-				echo $langs->trans('AfterWhere'); ?><br />
-				<textarea id="sql_query_afterwhere" name="sql_afterwhere"><?php echo $query->sql_afterwhere ?></textarea>
-					<?php
-				
+				echo $langs->trans('AfterWhere'); ?><br /><textarea id="sql_query_afterwhere" name="sql_afterwhere"><?php echo $query->sql_afterwhere ?></textarea><?php
+			}
+			else {
+				?><input type="hidden" id="sql_query_afterwhere" name="sql_afterwhere" value="<?php echo $query->sql_afterwhere ?>" /><?php
 			}
 		
 		?>

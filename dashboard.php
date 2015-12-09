@@ -246,7 +246,7 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 					else {
 						echo 'document.location.href="?action=view&id="+data;';
 					}
-				  	?>
+				  ?>
 					  	
 		              
 				});

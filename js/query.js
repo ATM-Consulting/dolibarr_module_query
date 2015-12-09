@@ -29,9 +29,11 @@ $(document).ready(function() {
 	
 	getTables();
 	
-	$('#fields').sortable({
+	$('#fieldsview').sortable({
 		 items: "> div.field"
-	  	 ,stop: function( event, ui ) { refresh_sql();  }
+	  	 ,stop: function( event, ui ) { 
+	  	 	refresh_sql();  
+	  	 }
 	});
 	
 	$('select[name=xaxis]').val( $('select[name=xaxis]').attr('initValue') );
@@ -90,7 +92,7 @@ $(document).ready(function() {
 				THide[$(item).attr('field')] = $(item).val();
 			}
 		});
-		
+				
 		var TGroup = [];
 		$('#fields [sql-act="group"]').each(function(i,item) {
 			if($(item).val()) {
@@ -108,7 +110,7 @@ $(document).ready(function() {
 		});
 		
 		var TTitle = {};
-		$('#fields [sql-act="title"]').each(function(i,item) {
+		$('#fieldsview [sql-act="title"]').each(function(i,item) {
 			if($(item).val()) {
 				TTitle[$(item).attr('field')] = $(item).val();
 			}
@@ -118,7 +120,14 @@ $(document).ready(function() {
 		$('input[rel=selected-field]:checked').each(function(i,item) {
 				TSelectedField.push( $(item).val() );
 		});
-		console.log(TJoin);
+		
+		var TTranslate = {};
+		$('#fieldsview [sql-act="translate"]').each(function(i,item) {
+			if($(item).val()) {
+				TTranslate[$(item).attr('field')] = $(item).val();
+			}
+		});
+		
 		var TData= {
 			'put':'query'
 			,'id' : $('form#formQuery input[name=id]').val()
@@ -134,15 +143,16 @@ $(document).ready(function() {
 			,'THide' : THide
 			,'TTitle' : TTitle
 			,'TField' : TSelectedField
+			,'TTranslate' : TTranslate
 			,'TGroup' : TGroup
 			,'TFunction' : TFunction
-			,'sql_fields' : $.base64.encode( $('textarea[name=sql_fields]').val() )
-			,'sql_from' : $.base64.encode( $('textarea[name=sql_from]').val() )
-			,'sql_where' : $.base64.encode( $('textarea[name=sql_where]').val() )
-			,'sql_afterwhere': $.base64.encode( $('[name=sql_afterwhere]').val() )
-		
+			,'sql_fields' : btoa( $('textarea[name=sql_fields]').val() )
+			,'sql_from' : btoa( $('textarea[name=sql_from]').val() )
+			,'sql_where' : btoa( $('textarea[name=sql_where]').val() )
+			,'sql_afterwhere': btoa( $('[name=sql_afterwhere]').val() )
 		};
-		console.log( TData);
+		
+		
 		$.ajax({
 			url: MODQUERY_INTERFACE
 			,data:TData
@@ -304,10 +314,12 @@ function refresh_field_array(table) {
 	TField[table] = [];
 	//console.log('refresh_field_array:'+table);
 	var $fields = $('#fields');
+	var $fieldsView = $('#fieldsview');
 	//$fields.find('li[table='+table+']').remove();
 	
 	$('tr[table='+table+'] input').not(':checked').each(function(i,item) {
 		$fields.find('div[table="'+table+'"][field="'+$(item).val()+'"]').remove();
+		$fieldsView.find('div[table="'+table+'"][field="'+$(item).val()+'"]').remove();
 		$('select[name=xaxis] option[table="'+table+'"][field="'+$(item).val()+'"]').remove();
 	});
 	
@@ -370,7 +382,7 @@ function refresh_field_array(table) {
 			
 			var search = '<span table="'+table+'" field="'+f+'" class="selector"><div class="tagtd">'+select_equal+select_mode+'</div><div class="tagtd">'+select_order+select_hide+select_function+select_group+'</div></span>';
 
-			$li = $('<div class="field table-border-row" table="'+table+'" field="'+field+'" ><div class="fieldName">'+field+' <input tytpe="text" placeholder="Title" sql-act="title" field='+field+' value="" /></div></div>');
+			$li = $('<div class="field table-border-row" table="'+table+'" field="'+field+'" ><div class="fieldName">'+field+'</div></div>');
 			
 			$li.append(search);
 			$fields.append($li);
@@ -380,6 +392,10 @@ function refresh_field_array(table) {
 				
 			});
 				
+			$liView = $('<div class="field" table="'+table+'" field="'+field+'" ><div class="fieldName">'+field+'</div> <input tytpe="text" placeholder="Title" sql-act="title" field='+field+' value="" /></div>');
+			$liView.append('<input type="text" placeholder="Translation (value:translation, ...)" sql-act="translate" field='+field+' value="" />');
+			
+			$fieldsView.append($liView);
 			
 		}
 			});

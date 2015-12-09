@@ -136,7 +136,7 @@ function liste() {
 function fiche(&$query) {
 	global $langs, $conf,$user;
 	
-	llxHeader('', 'Query', '', '', 0, 0, array('/query/js/query.js','/query/js/jquery.base64.min.js') , array('/query/css/query.css') );
+	llxHeader('', 'Query', '', '', 0, 0, array('/query/js/query.js'/*,'/query/js/jquery.base64.min.js'*/) , array('/query/css/query.css') );
 	dol_fiche_head();
 	
 	?>
@@ -223,7 +223,15 @@ function fiche(&$query) {
 					if(!empty($query->TTitle)) {
 						foreach($query->TTitle as $f=>$v) {
 							
-							echo ' $("#fields [sql-act=\'title\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+							echo ' $("#fieldsview [sql-act=\'title\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+							
+						}
+					}
+					
+					if(!empty($query->TTranslate)) {
+						foreach($query->TTranslate as $f=>$v) {
+							
+							echo ' $("#fieldsview [sql-act=\'translate\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
 							
 						}
 					}
@@ -277,7 +285,7 @@ function fiche(&$query) {
 			if($query->getId()>0 && !$query->expert && !empty($user->rights->query->all->expert) ) {
 				
 				?>
-				<div style="float:right">
+				<div style="float:right;">
 					<a class="butAction" href="?action=set-expert&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('setExpertMode') ?></a>
 				</div>
 				<?php
@@ -320,8 +328,7 @@ function fiche(&$query) {
 		
 		if($query->getId()>0) {
 	?>
-	<div style="clear:both; border-top:1px solid #000;"></div>
-	<div id="results">
+	<div id="results" style="display:<?php echo !$query->expert ? 'none':'block'; ?>;">
 		<div>
 		<?php echo $langs->trans('Fields'); ?><br />
 		<textarea id="sql_query_fields" name="sql_fields"><?php echo $query->sql_fields ?></textarea>
@@ -350,6 +357,15 @@ function fiche(&$query) {
 	</div>
 	
 	<div style="clear:both; border-top:1px solid #000;"></div>
+	<?php
+		if($query->getId()>0 && !$query->expert) {
+	?>
+	<div class="selected_fields_view">
+		<div class="border" id="fieldsview"><div class="liste_titre"><?php echo $langs->trans('FieldsView'); ?></div></div>
+	</div>
+	<?php
+		}
+	?>
 	<div id="previewRequete" style="display: none;">
 		<iframe src="#" width="100%" frameborder="0" onload="this.height = this.contentWindow.document.body.scrollHeight + 'px'"></iframe>
 	</div>

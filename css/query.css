@@ -51,3 +51,10 @@ div.query {
 	padding:20px;
 	background-color: #EEFFEE;
 }
+div#fieldsview div.field {
+	border-bottom: 1px solid #eee;
+	
+}
+div#fieldsview div.field div.fieldName {
+	cursor:move;
+}

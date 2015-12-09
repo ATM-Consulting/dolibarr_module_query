@@ -8,3 +8,5 @@ AddOneOfThisTables=Ajouter l'une de ces tables
 Fields=Champs
 Where=Condition
 setExpertMode=Passer en mode expert
+FieldsOrder=Paramètres des champs
+FieldsView=Affichage des champs

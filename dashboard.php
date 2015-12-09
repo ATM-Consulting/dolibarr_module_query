@@ -28,8 +28,6 @@
 			
 			if(empty($user->rights->query->dashboard->create)) accessforbidden();
 			
-			$dashboard->save($PDOdb);
-			
 			fiche($dashboard);
 			
 			break;
@@ -228,8 +226,9 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 					}
 					
 				}).done(function(data) {
-					  
-		              $.ajax({
+				   <?php
+					if($dashboard->getId()> 0) {
+						?>$.ajax({
 							url: MODQUERY_INTERFACE
 							,data: {
 								put:'dashboard-query-link'
@@ -239,15 +238,40 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 							,dataType:'json'
 							
 					  }).done(function(data) {
-					  	
 					  	$button.show();
-					  	
 					  });
+						
+						<?php
+					}					  	
+					else {
+						echo 'document.location.href="?action=view&id="+data;';
+					}
+				  	?>
+					  	
+		              
 				});
 				
 			});
 		
 		});
+		
+		function delTile(idTile) {
+			$('li[tile-id='+idTile+']').css('opacity',.5);
+			
+			$.ajax({
+				url: MODQUERY_INTERFACE
+				,data: {
+					put:'dashboard-query-remove'
+					,id : idTile
+				}
+				,dataType:'json'
+				
+			}).done(function(data) {
+				$('li[tile-id='+idTile+']').toggle();
+				//document.location.hre
+			});
+			
+		}
 			
 	</script>
 	<?php
@@ -265,6 +289,9 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 			?>
 			<a href="#" class="butAction" id="saveDashboard"><?php echo $langs->trans('SaveDashboard'); ?></a>
 		</div>
+		<?php
+		if($dashboard->getId()>0) {
+		?>
 		<div>
 			<?php
 				$TQuery = TQuery::getQueries($PDOdb);
@@ -273,7 +300,8 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 			<a href="#" class="butAction" id="addQuery"><?php echo $langs->trans('AddThisQuery'); ?></a>
 		</div>
 		
-	<?php
+		<?php
+		}
 	}
 	?>		
 	
@@ -281,17 +309,12 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 	    <ul>
 	    	<?php
 	    	foreach($dashboard->TQDashBoardQuery as $k=>&$cell) {
-	    		echo '<li data-k="'.$k.'" data-row="'.$cell->posy.'" data-col="'.$cell->posx.'" data-sizex="'.$cell->width.'" data-sizey="'.$cell->height.'" '.($withHeader ? '' : 'style="overflow:hidden;"').'>';
-	    		/*if($action == 'edit') {
-	    			echo $cell->query->title;	
-	    		}
-				else {*/
+	    		echo '<li tile-id="'.$cell->getId().'" data-k="'.$k.'" data-row="'.$cell->posy.'" data-col="'.$cell->posx.'" data-sizex="'.$cell->width.'" data-sizey="'.$cell->height.'" '.($withHeader ? '' : 'style="overflow:hidden;"').'>';
+		    		if($action == 'edit') {
+		    			echo '<a style="position:absolute; top:3px; right:3px; z-index:999;" href="javascript:delTile('.$cell->getId().')">'.img_delete('DeleteThisTile').'</a>';	
+		    		}
 					if(!$withHeader && $cell->query->type == 'LIST')$cell->query->type = 'SIMPLELIST';
-					
 					echo $cell->query->run($PDOdb, false, $cell->height * $cell_height, GETPOST('table_element'), GETPOST('objectid'));
-				//}
-	    		
-				
 				
 	    		echo '</li>';
 				
@@ -310,7 +333,7 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 	
 	if($withHeader) {
 		
-		print dol_buildpath('/query/dashboard.php?action=run&uid='.$dashboard->uid,2);
+		if($dashboard->getId()>0) print dol_buildpath('/query/dashboard.php?action=run&uid='.$dashboard->uid,2);
 		dol_fiche_end();
 		
 		llxFooter();

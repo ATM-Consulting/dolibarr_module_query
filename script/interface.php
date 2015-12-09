@@ -80,6 +80,14 @@
 			
 			break;
 		
+		case 'dashboard-query-remove':
+			$tile = new TQDashBoardQuery;
+			$tile->load($PDOdb, GETPOST('id'));
+			$tile->delete($PDOdb);
+		
+			echo 1;
+		
+			break;
 		case 'dashboard-query':
 			$dash=new TQDashBoard;
 			if($dash->load($PDOdb, GETPOST('fk_qdashboard'))) {

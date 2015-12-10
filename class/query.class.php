@@ -100,6 +100,8 @@ class TQuery extends TObjetStd {
 	function runChart(&$PDOdb, $type = 'LineChart',$table_element='',$objectid=0) {
 		//TODO déplacer rendu graphique dans listviewTBS Abricot
 		
+		global $conf;
+		
 		$sql=$this->getSQL($table_element,$objectid);
 		$TBind = $this->getBind();
 		$TSearch = $this->getSearch();
@@ -190,7 +192,7 @@ class TQuery extends TObjetStd {
 		}
 		if($this->show_details) print $data;
 		$height = empty($this->height) ? 500 : $this->height;
-		$curveType= empty($this->curveType) ? 'function' : $this->curveType; // none or function
+		$curveType= empty($this->curveType) ? $conf->global->QUERY_GRAPH_LINESTYLE : $this->curveType; // none or function
 		
 		$html = '';
 		
@@ -206,12 +208,12 @@ class TQuery extends TObjetStd {
 		        ]);
 	
 		        var options = {
-		          title: "'.addslashes($this->title).'",
-		          curveType: "'.$curveType.'"
+		          title: "'.addslashes($this->title).'"
+		          '.(!empty($curveType) ? ',curveType: "'.$curveType.'"' : '' ).'
 		          ,legend: { position: "bottom" }
 				  ,animation: { "startup": true }
 				  ,height : '.$height.'
-				  '.( $type == 'PieChart' ? ',pieHole: 0.2' : '').'
+				  '.( $type == 'PieChart' && !empty($conf->global->QUERY_GRAPH_PIEHOLE) ? ',pieHole: '.$conf->global->QUERY_GRAPH_PIEHOLE : '').'
 				  '.( $type == 'AreaChart' ? ',isStacked: \'percent\'' : '').'
 		        };
 		

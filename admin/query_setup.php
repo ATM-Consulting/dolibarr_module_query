@@ -23,16 +23,12 @@
  * 				Put some comments here
  */
 // Dolibarr environment
-$res = @include("../../main.inc.php"); // From htdocs directory
-if (! $res) {
-    $res = @include("../../../main.inc.php"); // From "custom" directory
-}
-
+require('../config.php');
 
 // Libraries
 require_once DOL_DOCUMENT_ROOT . "/core/lib/admin.lib.php";
 require_once '../lib/query.lib.php';
-//require_once "../class/myclass.class.php";
+
 // Translations
 $langs->load("query@query");
 
@@ -47,6 +43,33 @@ $action = GETPOST('action', 'alpha');
 /*
  * Actions
  */
+if (preg_match('/set_(.*)/',$action,$reg))
+{
+	$code=$reg[1];
+	if (dolibarr_set_const($db, $code, GETPOST($code), 'chaine', 0, '', $conf->entity) > 0)
+	{
+		header("Location: ".$_SERVER["PHP_SELF"]);
+		exit;
+	}
+	else
+	{
+		dol_print_error($db);
+	}
+}
+	
+if (preg_match('/del_(.*)/',$action,$reg))
+{
+	$code=$reg[1];
+	if (dolibarr_del_const($db, $code, 0) > 0)
+	{
+		Header("Location: ".$_SERVER["PHP_SELF"]);
+		exit;
+	}
+	else
+	{
+		dol_print_error($db);
+	}
+}
 
 /*
  * View
@@ -64,13 +87,48 @@ $head = queryAdminPrepareHead();
 dol_fiche_head(
     $head,
     'settings',
-    $langs->trans("Module10000Name"),
+    $langs->trans("Module104778Name"),
     0,
     "query@query"
 );
 
 // Setup page goes here
-echo $langs->trans("querySetupPage");
+$form=new Form($db);
+$var=false;
+print '<table class="noborder" width="100%">';
+print '<tr class="liste_titre">';
+print '<td>'.$langs->trans("Parameters").'</td>'."\n";
+print '<td align="center" width="20">&nbsp;</td>';
+print '<td align="center" width="100">'.$langs->trans("Value").'</td>'."\n";
+
+
+// Example with a yes / no select
+$var=!$var;
+print '<tr '.$bc[$var].'>';
+print '<td>'.$langs->trans("set_QUERY_GRAPH_PIEHOLE").'</td>';
+print '<td align="center" width="20">&nbsp;</td>';
+print '<td align="right" width="300">';
+print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
+print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+print '<input type="hidden" name="action" value="set_QUERY_GRAPH_PIEHOLE">';
+print $form->selectarray('QUERY_GRAPH_PIEHOLE', array('0'=>'0%',  '0.1'=>'10%',  '0.3'=>'30%',  '0.5'=>'50%',  '0.7'=>'70%',  '0.9'=>'90%'), $conf->global->QUERY_GRAPH_PIEHOLE );
+print '<input type="submit" class="button" value="'.$langs->trans("Modify").'">';
+print '</form>';
+print '</td></tr>';
+$var=!$var;
+print '<tr '.$bc[$var].'>';
+print '<td>'.$langs->trans("set_QUERY_GRAPH_LINESTYLE").'</td>';
+print '<td align="center" width="20">&nbsp;</td>';
+print '<td align="right" width="300">';
+print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
+print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+print '<input type="hidden" name="action" value="set_QUERY_GRAPH_LINESTYLE">';
+print $form->selectarray('QUERY_GRAPH_LINESTYLE', array('function'=>$langs->trans('Souple'), 'none'=>$langs->trans('Dur')), $conf->global->QUERY_GRAPH_LINESTYLE );
+print '<input type="submit" class="button" value="'.$langs->trans("Modify").'">';
+print '</form>';
+print '</td></tr>';
+
+print '</table>';
 
 llxFooter();
 

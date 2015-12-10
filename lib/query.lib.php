@@ -36,7 +36,7 @@ function queryAdminPrepareHead()
     $head[$h][1] = $langs->trans("Settings");
     $head[$h][2] = 'settings';
     $h++;
-    $head[$h][0] = dol_buildpath("/query/admin/about.php", 1);
+    $head[$h][0] = dol_buildpath("/query/admin/query_about.php", 1);
     $head[$h][1] = $langs->trans("About");
     $head[$h][2] = 'about';
     $h++;

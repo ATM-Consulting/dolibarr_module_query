@@ -16,9 +16,10 @@
 	
 	$dashboard=new TQDashBoard;
 	$PDOdb=new TPDOdb;
-	
-	if(empty($user->id) && !empty(GETPOST('fk_user'))) {
-		$user->fetch(GETPOST('fk_user'));
+
+	$fk_user_to_use = GETPOST('fk_user');	
+	if(empty($user->id) && !empty($fk_user_to_use)) {
+		$user->fetch($fk_user_to_use);
 	}
 	
 	switch ($action) {
@@ -143,6 +144,7 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 	else {
 		?><html>
 			<head>
+				<meta charset="UTF-8">
 				<link rel="stylesheet" type="text/css" href="<?php echo dol_buildpath('/theme/eldy/style.css.php?lang=fr_FR&theme=eldy',1); ?>">
 				<link rel="stylesheet" type="text/css" title="default" href="<?php echo dol_buildpath('/query/css/dashboard.css',1); ?>">
 				<link rel="stylesheet" type="text/css" title="default" href="<?php echo dol_buildpath('/query/css/jquery.gridster.min.css',1); ?>">

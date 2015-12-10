@@ -17,6 +17,10 @@
 	$dashboard=new TQDashBoard;
 	$PDOdb=new TPDOdb;
 	
+	if(empty($user->id) && !empty(GETPOST('fk_user'))) {
+		$user->fetch(GETPOST('fk_user'));
+	}
+	
 	switch ($action) {
 		case 'view':
 			
@@ -35,6 +39,12 @@
 		case 'run':
 			
 			if(GETPOST('uid')) {
+				
+				if(GETPOST('storechoice')>0 && $user->id > 0) {
+					dol_include_once('/core/lib/admin.lib.php');
+					$res = dolibarr_set_const($db, 'QUERY_HOME_DEFAULT_DASHBOARD_USER_'.$user->id, GETPOST('uid'));
+				}
+				
 				$dashboard->loadBy($PDOdb, GETPOST('uid'),'uid',true);
 				run($PDOdb, $dashboard, false);
 				

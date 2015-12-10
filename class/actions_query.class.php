@@ -43,11 +43,11 @@ class ActionsQuery
 	  
     function addStatisticLine($parameters, &$object, &$action, $hookmanager) 
     {  
-      	global $langs,$db, $user;
+      	global $langs,$db, $user, $conf;
 		
 		if (in_array('index',explode(':',$parameters['context']))) 
         {
-        	
+        
 			$sql="SELECT qd.uid as 'uid', qd.title 
 				FROM ".MAIN_DB_PREFIX."qdashboard qd
 				WHERE uid!='' ";
@@ -77,13 +77,21 @@ class ActionsQuery
         				$('#queryDashboardview').empty();
         				
         				if(uid!='') {
-        					var url="<?php echo dol_buildpath('/query/dashboard.php',1) ?>?action=run&uid="+uid;
+        					var url="<?php echo dol_buildpath('/query/dashboard.php',1) ?>?action=run&storechoice=1&fk_user=<?php echo $user->id ?>&uid="+uid;
         					$('#queryDashboardview').html('<iframe src="'+url+'" width="100%" frameborder="0" onload="this.height = this.contentWindow.document.body.scrollHeight + \'px\'"></iframe>');
         				}
         			});
         			
         			$('table#otherboxes').before($select);
         			
+        			<?php
+        			if(!empty($conf->global->{'QUERY_HOME_DEFAULT_DASHBOARD_USER_'.$user->id} )) {
+        				?>
+        				$select.val("<?php echo $conf->global->{'QUERY_HOME_DEFAULT_DASHBOARD_USER_'.$user->id}; ?>");
+        				$select.change();
+        				<?php
+        			}
+        			?>
         			
         			
         		});

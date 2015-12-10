@@ -31,10 +31,10 @@
 		
 		if($step == 1) {
 			$url = dol_buildpath('/query/dashboard.php?action=run&uid='.$row->uid,2);
-			fputs($f1, "wkhtmltopdf --javascript-delay 1000 --orientation Landscape".escapeshellarg($url)." ".$row->uid.".pdf  \n");
+			fputs($f1, "wkhtmltopdf --orientation Landscape ".escapeshellarg($url)." ".$row->uid.".pdf  \n");
 		
 		}
-		elseif($step == 2) {
+		elseif($step == 2 && is_file( dol_buildpath('/query/files/'.$row->uid.'.pdf') ) ) {
 			$g=new UserGroup($db);
 			if($g->fetch($row->fk_usergroup)>0) {
 				$TUser = $g->listUsersForGroup();

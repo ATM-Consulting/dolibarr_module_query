@@ -215,7 +215,7 @@ function fiche(&$query) {
 					if(!empty($query->THide)) {
 						foreach($query->THide as $f=>$v) {
 							
-							echo ' $("#fields [sql-act=\'hide\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+							echo ' $("#fieldsview [sql-act=\'hide\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
 							
 						}
 					}
@@ -248,6 +248,14 @@ function fiche(&$query) {
 						foreach($query->TGroup as $f) {
 							
 							echo ' $("#fields [sql-act=\'group\'][field=\''.$f.'\']").val(1); ';
+							
+						}
+					}
+				
+					if(!empty($query->TTotal)) {
+						foreach($query->TTotal as $f=>$v) {
+							
+							echo ' $("[sql-act=\'total\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
 							
 						}
 					}

@@ -17,3 +17,4 @@ Download=Télécharger
 set_QUERY_WKHTMLTOPDF_CMD=Commande pour la génération PDF des panneaux (WkHTMLtoPDF doit être installé sur le serveur http://wkhtmltopdf.org/)
 AbricotMustBeUpdate=Votre version du module Abricot n'est pas à jour, merci de télécharger la dernière version
 AbricotNotFound=Merci de télécharger le module complémentaire Abricot
+QueryDashBoard=Panneaux du module Query

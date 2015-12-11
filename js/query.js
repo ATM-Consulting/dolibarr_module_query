@@ -87,7 +87,7 @@ $(document).ready(function() {
 		});
 		
 		var THide = {};
-		$('#fields [sql-act="hide"]').each(function(i,item) {
+		$('#fieldsview [sql-act="hide"]').each(function(i,item) {
 			if($(item).val()) {
 				THide[$(item).attr('field')] = $(item).val();
 			}
@@ -97,6 +97,13 @@ $(document).ready(function() {
 		$('#fields [sql-act="group"]').each(function(i,item) {
 			if($(item).val()) {
 				TGroup.push($(item).attr('field'));
+			}
+		});
+
+		var TTotal = {};
+		$('#fieldsview [sql-act="total"]').each(function(i,item) {
+			if($(item).val()) {
+				TTotal[$(item).attr('field')] = $(item).val();
 			}
 		});
 		
@@ -117,8 +124,8 @@ $(document).ready(function() {
 		});
 		
 		var TSelectedField = [];
-		$('input[rel=selected-field]:checked').each(function(i,item) {
-				TSelectedField.push( $(item).val() );
+		$('[sql-act=title]').each(function(i,item) {
+				TSelectedField.push( $(item).attr('field') );
 		});
 		
 		var TTranslate = {};
@@ -145,6 +152,7 @@ $(document).ready(function() {
 			,'TField' : TSelectedField
 			,'TTranslate' : TTranslate
 			,'TGroup' : TGroup
+			,'TTotal' : TTotal
 			,'TFunction' : TFunction
 			,'sql_fields' : btoa( $('textarea[name=sql_fields]').val() )
 			,'sql_from' : btoa( $('textarea[name=sql_from]').val() )
@@ -365,6 +373,13 @@ function refresh_field_array(table) {
 						+ '<option value="1">Groupé</option>'
 						+ '</select>';
 				
+			var select_total	= '<select field='+field+' sql-act="total"> '
+						+ '<option value=""> </option>'
+						+ '<option value="sum">Total</option>'
+						+ '<option value="average">Moyenne</option>'
+						+ '<option value="count">Nombre</option>'
+						+ '</select>';
+				
 			var select_function	= '<input type="text" size="10" field='+field+' sql-act="function" value="" /><select field='+field+' sql-act="function-select"> '
 						+ '<option value=""> </option>'
 						+ '<option value="SUM(@field@)">Somme</option>'
@@ -380,7 +395,7 @@ function refresh_field_array(table) {
 						+ '</select>';
 				
 			
-			var search = '<span table="'+table+'" field="'+f+'" class="selector"><div class="tagtd">'+select_equal+select_mode+'</div><div class="tagtd">'+select_order+select_hide+select_function+select_group+'</div></span>';
+			var search = '<span table="'+table+'" field="'+f+'" class="selector"><div class="tagtd">'+select_equal+select_mode+'</div><div class="tagtd">'+select_order+select_function+select_group+'</div></span>';
 
 			$li = $('<div class="field table-border-row" table="'+table+'" field="'+field+'" ><div class="fieldName">'+field+'</div></div>');
 			
@@ -394,6 +409,7 @@ function refresh_field_array(table) {
 				
 			$liView = $('<div class="field" table="'+table+'" field="'+field+'" ><div class="fieldName">'+field+'</div> <input tytpe="text" placeholder="Title" sql-act="title" field='+field+' value="" /></div>');
 			$liView.append('<input type="text" placeholder="Translation (value:translation, ...)" sql-act="translate" field='+field+' value="" />');
+			$liView.append(select_hide+select_total);
 			
 			$fieldsView.append($liView);
 			

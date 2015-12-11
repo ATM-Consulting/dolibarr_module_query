@@ -34,7 +34,7 @@ class Wkhtmltopdf
     /**
      * Path to executable.
      */
-    protected $_bin = '/usr/bin/wkhtmltopdf';
+    var $_bin = '/usr/bin/wkhtmltopdf';
     protected $_filename = null;                // filename in $path directory
 
     /**

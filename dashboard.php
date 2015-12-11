@@ -153,7 +153,7 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 				<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/dashboard.js',1); ?>"></script>
 				<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/jquery.gridster.min.js',1); ?>"></script>
 				<style type="text/css">
-					.pagination { display : none; }
+					.pagination,.notInGeneration { display : none; }
 				</style>
 			</head>
 		<body style="min-width: 1300px;">
@@ -314,6 +314,10 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 		
 		<?php
 		}
+	}
+	else {
+		if(!empty($conf->global->QUERY_WKHTMLTOPDF_CMD))	echo '<a class="butAction" style="float:right;" href="download-dashboard.php?uid='.$dashboard->uid.'">'.$langs->trans('Download').'</a>';
+		
 	}
 	?>		
 	

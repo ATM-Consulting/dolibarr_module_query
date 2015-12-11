@@ -115,6 +115,7 @@ print $form->selectarray('QUERY_GRAPH_PIEHOLE', array('0'=>'0%',  '0.1'=>'10%', 
 print '<input type="submit" class="button" value="'.$langs->trans("Modify").'">';
 print '</form>';
 print '</td></tr>';
+
 $var=!$var;
 print '<tr '.$bc[$var].'>';
 print '<td>'.$langs->trans("set_QUERY_GRAPH_LINESTYLE").'</td>';
@@ -124,6 +125,20 @@ print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
 print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 print '<input type="hidden" name="action" value="set_QUERY_GRAPH_LINESTYLE">';
 print $form->selectarray('QUERY_GRAPH_LINESTYLE', array('function'=>$langs->trans('Souple'), 'none'=>$langs->trans('Dur')), $conf->global->QUERY_GRAPH_LINESTYLE );
+print '<input type="submit" class="button" value="'.$langs->trans("Modify").'">';
+print '</form>';
+print '</td></tr>';
+
+$var=!$var;
+print '<tr '.$bc[$var].'>';
+print '<td>'.$langs->trans("set_QUERY_WKHTMLTOPDF_CMD").'</td>';
+print '<td align="center" width="20">&nbsp;</td>';
+print '<td align="right" width="300" style="white-space:nowrap;">';
+print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
+print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+print '<input type="hidden" name="action" value="set_QUERY_WKHTMLTOPDF_CMD">';
+$formCore=new TFormCore;
+print $formCore->texte('', 'QUERY_WKHTMLTOPDF_CMD', empty($conf->global->QUERY_WKHTMLTOPDF_CMD) ? 'wkhtmltopdf' : $conf->global->QUERY_WKHTMLTOPDF_CMD, 80);
 print '<input type="submit" class="button" value="'.$langs->trans("Modify").'">';
 print '</form>';
 print '</td></tr>';

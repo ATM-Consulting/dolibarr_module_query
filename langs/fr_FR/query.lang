@@ -13,3 +13,7 @@ FieldsView=Affichage des champs
 set_QUERY_GRAPH_PIEHOLE=Largeur du trou dans les camenbers
 set_QUERY_GRAPH_LINESTYLE=Style de ligne pour les graphiques
 PleaseFindYourReportHasAttachement=Bonjour, veuillez trouver ci-joint le rapport
+Download=Télécharger
+set_QUERY_WKHTMLTOPDF_CMD=Commande pour la génération PDF des panneaux (WkHTMLtoPDF doit être installé sur le serveur http://wkhtmltopdf.org/)
+AbricotMustBeUpdate=Votre version du module Abricot n'est pas à jour, merci de télécharger la dernière version
+AbricotNotFound=Merci de télécharger le module complémentaire Abricot

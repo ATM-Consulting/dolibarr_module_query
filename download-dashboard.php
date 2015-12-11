@@ -18,8 +18,8 @@
 			
 	        $wkhtmltopdf->setTitle($dash->title);
 	        $wkhtmltopdf->setUrl(dol_buildpath('/query/dashboard.php',2).'?action=run&uid='.$dash->uid);
-			$wkhtmltopdf->_bin = 'wkhtmltopdf';
-	        $wkhtmltopdf->output(Wkhtmltopdf::MODE_EMBEDDED,$dash->uid.'.pdf');
+			$wkhtmltopdf->_bin = !empty($conf->global->QUERY_WKHTMLTOPDF_CMD) ? $conf->global->QUERY_WKHTMLTOPDF_CMD : 'wkhtmltopdf';
+	        $wkhtmltopdf->output(Wkhtmltopdf::MODE_DOWNLOAD,$dash->uid.'.pdf');
 			
 	    } catch (Exception $e) {
 	        echo $e->getMessage();

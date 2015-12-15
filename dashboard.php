@@ -316,7 +316,7 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 		}
 	}
 	else {
-		if(!empty($conf->global->QUERY_SHOW_PDF_TRANSFORM))	echo '<div style="text-align:right"><a class="butAction" style=";z-index:999;" href="download-dashboard.php?uid='.$dashboard->uid.'">'.$langs->trans('Download').'</a></div>';
+		if(!empty($conf->global->QUERY_SHOW_PDF_TRANSFORM))	echo '<div style="text-align:right" class="notInGeneration"><a class="butAction" style=";z-index:999;" href="download-dashboard.php?uid='.$dashboard->uid.'">'.$langs->trans('Download').'</a></div>';
 		
 	}
 	?>		

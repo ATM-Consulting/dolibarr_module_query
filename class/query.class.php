@@ -109,122 +109,45 @@ class TQuery extends TObjetStd {
 		$TTitle = $this->getTitle();
 		$TTranslate = $this->getTranslate();
 		
-		$Tab = $PDOdb->ExecuteAsArray($sql, $TBind);
-		$TData = array();
-		$header = '';
-		$first = true;
-		
-		if(empty($this->xaxis) && !empty($Tab)) {
-			
-			$row1 = $Tab[0];
-			$fieldXaxis = key($row1);
-
-		}
-		else {
-			list($tableXaxis,$fieldXaxis) = explode('.', $this->xaxis);
-		}
-		
-		
-		
-		foreach($Tab as $row) {
-			
-			//var_dump($row);
-			if($first) {
-				
-				$TValue=array();
-				$key = null;
-			
-				foreach($row as $k=>$v) {
-				
-					if($k == $fieldXaxis) {
-						$key =  !empty($TTitle[$k]) ? $TTitle[$k] : $k;
-					}
-					else if(!in_array($k, $THide)) {
-						$TValue[] = !empty($TTitle[$k]) ? $TTitle[$k] : $k;
-					}
-					
-				}
-				if(!is_null($key)) {
-					$header='["'.addslashes($key).'","'.implode('","', $TValue).'"]';
-				}
-				else{
-					exit('QueryChart, where is Xaxis '.$fieldXaxis.' !?');
-				}
-				$first = false;
-			}
-			$TValue=array();
-			$key = null;
-			
-			
-			foreach($row as $k=>$v) {
-				
-				if($k == $fieldXaxis) {
-					$key =!empty($TTranslate[$k][$v]) ?$TTranslate[$k][$v] : $v;
-				}
-				else if(!in_array($k, $THide)) {
-					$TValue[] = !empty($TTranslate[$k][$v]) ?$TTranslate[$k][$v] : $v;
-				}
-				
-			}
-
-			if(!is_null($key)) {
-				if(!isset($TData[$key])) $TData[$key] = $TValue;
-				else {
-					foreach($TData[$key] as $k=>$v) {
-						$TData[$key][$k]+=(float)$TValue[$k];
-					}
-					
-				}
-			}
-			
-			
-		}
-		
-		$data = $header;
-		foreach($TData as $key=>$TValue) {
-			
-			$data .= ',[ "'.$key.'", ';
-			foreach($TValue as $v) {
-				$data.=(float)$v.',';
-			}
-			
-			$data.=' ]';
-		}
-		if($this->show_details) print $data;
-		$height = empty($this->height) ? 500 : $this->height;
-		$curveType= empty($this->curveType) ? $conf->global->QUERY_GRAPH_LINESTYLE : $this->curveType; // none or function
+		list($xTable, $xaxis) = explode('.',$this->xaxis);
 		
 		$html = '';
 		
-		$html.='<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-		<script type="text/javascript">
-		  
-		  	  google.load("visualization", "1", {"packages":["corechart"]});
-		      google.setOnLoadCallback(drawChart'.md5($sql).');
+		$form=new TFormCore();
+		$html.= $form->begin_form('auto','formQuery'. $this->getId(),'get');
+		
+		$html.=  $form->hidden('action', 'run');
+		$html.=  $form->hidden('id', GETPOST('id') ? GETPOST('id') : $this->getId());
+		
+		if($this->show_details) $html.= '<div class="query">'.$sql.'</div>';
+		
+		$r=new TListviewTBS('chart'.$this->getId());
+		$html .= $r->render($PDOdb, $sql,array(
+			'type'=>'chart'
+			,'chartType'=>$type
+			,'translate'=>$TTranslate
+			,'liste'=>array(
+				'titre'=>$this->title
+			)
+			,'title'=>$TTitle
+			,'xaxis'=>$xaxis
+			,'hide'=>$THide
+			,'search'=>$TSearch
+			,'height'=>$this->height
+		),$TBind);
+		
+		if($this->show_details) {
+				$html.=  '<div class="query">';
+				$Tab=array();
+				foreach($r->TBind as $f=>$v) {
+					$Tab[] = $f.' : '.$v;
+				}
+				$html.=  implode(', ', $Tab);
+				$html.=  '</div>';
+				
+		}
 			
-			  function drawChart'.md5($sql).'() {
-		        var data = google.visualization.arrayToDataTable([
-		          '.$data.'
-		        ]);
-	
-		        var options = {
-		          title: "'.addslashes($this->title).'"
-		          '.(!empty($curveType) ? ',curveType: "'.$curveType.'"' : '' ).'
-		          ,legend: { position: "bottom" }
-				  ,animation: { "startup": true }
-				  ,height : '.$height.'
-				  '.( $type == 'PieChart' && !empty($conf->global->QUERY_GRAPH_PIEHOLE) ? ',pieHole: '.$conf->global->QUERY_GRAPH_PIEHOLE : '').'
-				  '.( $type == 'AreaChart' ? ',isStacked: \'percent\'' : '').'
-		        };
-		
-		        var chart = new google.visualization.'.$type.'(document.getElementById("div_query_chart'.$this->getId().'"));
-		
-		        chart.draw(data, options);
-		      }
-		  
-	    </script>
-		<div id="div_query_chart'.$this->getId().'"></div>
-		'; 
+		$html.=$form->end_form();
 		
 		return $html;
 	}

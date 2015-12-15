@@ -131,6 +131,19 @@ print '</td></tr>';
 
 $var=!$var;
 print '<tr '.$bc[$var].'>';
+print '<td>'.$langs->trans("set_QUERY_SHOW_PDF_TRANSFORM").'</td>';
+print '<td align="center" width="20">&nbsp;</td>';
+print '<td align="right" width="300">';
+print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
+print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+print '<input type="hidden" name="action" value="set_QUERY_SHOW_PDF_TRANSFORM">';
+print $form->selectyesno("QUERY_SHOW_PDF_TRANSFORM",$conf->global->QUERY_SHOW_PDF_TRANSFORM,1);
+print '<input type="submit" class="button" value="'.$langs->trans("Modify").'">';
+print '</form>';
+print '</td></tr>';
+
+$var=!$var;
+print '<tr '.$bc[$var].'>';
 print '<td>'.$langs->trans("set_ABRICOT_WKHTMLTOPDF_CMD").'</td>';
 print '<td align="center" width="20">&nbsp;</td>';
 print '<td align="right" width="300" style="white-space:nowrap;">';

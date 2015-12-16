@@ -134,6 +134,8 @@ class TQuery extends TObjetStd {
 			,'hide'=>$THide
 			,'search'=>$TSearch
 			,'height'=>$this->height
+			,'curveType'=>$conf->global->QUERY_GRAPH_LINESTYLE
+			,'pieHole'=>$conf->global->QUERY_GRAPH_PIEHOLE
 		),$TBind);
 		
 		if($this->show_details) {

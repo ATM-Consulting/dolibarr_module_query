@@ -97,63 +97,6 @@ class TQuery extends TObjetStd {
 		
 	}
 	
-	function runChart(&$PDOdb, $type = 'LineChart',$table_element='',$objectid=0) {
-		//TODO déplacer rendu graphique dans listviewTBS Abricot
-		
-		global $conf;
-		
-		$sql=$this->getSQL($table_element,$objectid);
-		$TBind = $this->getBind();
-		$TSearch = $this->getSearch();
-		$THide = $this->getHide();
-		$TTitle = $this->getTitle();
-		$TTranslate = $this->getTranslate();
-		
-		list($xTable, $xaxis) = explode('.',$this->xaxis);
-		
-		$html = '';
-		
-		$form=new TFormCore();
-		$html.= $form->begin_form('auto','formQuery'. $this->getId(),'get');
-		
-		$html.=  $form->hidden('action', 'run');
-		$html.=  $form->hidden('id', GETPOST('id') ? GETPOST('id') : $this->getId());
-		
-		if($this->show_details) $html.= '<div class="query">'.$sql.'</div>';
-		
-		$r=new TListviewTBS('chart'.$this->getId());
-		$html .= $r->render($PDOdb, $sql,array(
-			'type'=>'chart'
-			,'chartType'=>$type
-			,'translate'=>$TTranslate
-			,'liste'=>array(
-				'titre'=>$this->title
-			)
-			,'title'=>$TTitle
-			,'xaxis'=>$xaxis
-			,'hide'=>$THide
-			,'search'=>$TSearch
-			,'height'=>$this->height
-			,'curveType'=>$conf->global->QUERY_GRAPH_LINESTYLE
-			,'pieHole'=>$conf->global->QUERY_GRAPH_PIEHOLE
-		),$TBind);
-		
-		if($this->show_details) {
-				$html.=  '<div class="query">';
-				$Tab=array();
-				foreach($r->TBind as $f=>$v) {
-					$Tab[] = $f.' : '.$v;
-				}
-				$html.=  implode(', ', $Tab);
-				$html.=  '</div>';
-				
-		}
-			
-		$html.=$form->end_form();
-		
-		return $html;
-	}
-	
 	function getSQL($table_element='',$objectid=0) {
 			
 		if(!empty($this->TFunction)) {
@@ -234,6 +177,23 @@ class TQuery extends TObjetStd {
 		return $TBind ;
 		
 	}
+	
+	function getOperator() {
+		$Tab = array();
+		if(!empty($this->TOperator)) {
+			
+			foreach($this->TOperator as $f=>$v) {
+				if($v) {
+					list($tbl, $fSearch) = explode('.', $f);
+					$Tab[$fSearch]= $v;
+				}
+				
+			}
+			
+		}
+		return $Tab;
+	}
+	
 	function getTitle() {
 		
 		
@@ -336,7 +296,62 @@ class TQuery extends TObjetStd {
 		
 		return $TSearch;
 	}
-	
+	function runChart(&$PDOdb, $type = 'LineChart',$table_element='',$objectid=0) {
+		global $conf;
+		
+		$sql=$this->getSQL($table_element,$objectid);
+		$TBind = $this->getBind();
+		$TSearch = $this->getSearch();
+		$THide = $this->getHide();
+		$TTitle = $this->getTitle();
+		$TTranslate = $this->getTranslate();
+		$TOperator = $this->getOperator();
+		
+		list($xTable, $xaxis) = explode('.',$this->xaxis);
+		
+		$html = '';
+		
+		$form=new TFormCore();
+		$html.= $form->begin_form('auto','formQuery'. $this->getId(),'get');
+		
+		$html.=  $form->hidden('action', 'run');
+		$html.=  $form->hidden('id', GETPOST('id') ? GETPOST('id') : $this->getId());
+		
+		if($this->show_details) $html.= '<div class="query">'.$sql.'</div>';
+		
+		$r=new TListviewTBS('chart'.$this->getId());
+		$html .= $r->render($PDOdb, $sql,array(
+			'type'=>'chart'
+			,'chartType'=>$type
+			,'translate'=>$TTranslate
+			,'liste'=>array(
+				'titre'=>$this->title
+			)
+			,'title'=>$TTitle
+			,'xaxis'=>$xaxis
+			,'hide'=>$THide
+			,'search'=>$TSearch
+			,'height'=>$this->height
+			,'curveType'=>$conf->global->QUERY_GRAPH_LINESTYLE
+			,'pieHole'=>$conf->global->QUERY_GRAPH_PIEHOLE
+			,'operator'=>$TOperator
+		),$TBind);
+		
+		if($this->show_details) {
+				$html.=  '<div class="query">';
+				$Tab=array();
+				foreach($r->TBind as $f=>$v) {
+					$Tab[] = $f.' : '.$v;
+				}
+				$html.=  implode(', ', $Tab);
+				$html.=  '</div>';
+				
+		}
+			
+		$html.=$form->end_form();
+		
+		return $html;
+	}
 	function runList(&$PDOdb, $template = '',$table_element='',$objectid=0) {
 		
 		$html = '';
@@ -347,6 +362,7 @@ class TQuery extends TObjetStd {
 			$THide = $this->getHide();
 			$TTranslate = $this->getTranslate();
 			$TTotal = $this->getTotal();
+			$TOperator = $this->getOperator();
 			
 			$form=new TFormCore();
 			$html.= $form->begin_form('auto','formQuery'. $this->getId(),'get');
@@ -383,6 +399,7 @@ class TQuery extends TObjetStd {
 				,'export'=>array(
 					'CSV','TXT'
 				)
+				,'operator'=>$TOperator
 				,'math'=>$TTotal
 			)
 			,$TBind);

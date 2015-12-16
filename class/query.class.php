@@ -207,7 +207,17 @@ class TQuery extends TObjetStd {
 					null;
 				}
 				else if($m == 'var') {
-					$TBind[$fBind] = '%';
+					
+					if($this->TOperator[$f] == '<') {
+						$TBind[$fBind] = PHP_INT_MAX;
+					}
+					else if($this->TOperator[$f] == '>') {
+						$TBind[$fBind] = ~PHP_INT_MAX;
+					}
+					else {
+						$TBind[$fBind] = '%';	
+					}
+					
 				}
 				else if(!empty($this->TValue[$f])) {
 					$TBind[$fBind] = $this->TValue[$f];	

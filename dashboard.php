@@ -329,8 +329,14 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 		    		if($action == 'edit') {
 		    			echo '<a style="position:absolute; top:3px; right:3px; z-index:999;" href="javascript:delTile('.$cell->getId().')">'.img_delete('DeleteThisTile').'</a>';	
 		    		}
-					if(!$withHeader && $cell->query->type == 'LIST')$cell->query->type = 'SIMPLELIST';
-					echo $cell->query->run($PDOdb, false, $cell->height * $cell_height, GETPOST('table_element'), GETPOST('objectid'));
+					if(!$withHeader) {
+						echo $cell->query->run($PDOdb, false, $cell->height * $cell_height, GETPOST('table_element'), GETPOST('objectid'), true);
+					}
+					else{
+						echo $cell->query->run($PDOdb, false, $cell->height * $cell_height, GETPOST('table_element'), GETPOST('objectid'));	
+					}
+					
+					
 				
 	    		echo '</li>';
 				

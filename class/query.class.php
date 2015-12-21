@@ -72,6 +72,7 @@ class TQuery extends TObjetStd {
 	function run(&$PDOdb, $show_details = true, $height=0, $table_element='', $objectid=0, $preview = false) {
 		
 		$this->show_details = $show_details;
+		$this->preview = $preview;
 		
 		if(!empty($height)) $this->height = $height;
 		
@@ -274,8 +275,9 @@ class TQuery extends TObjetStd {
 	}
 	function getSearch() {
 		
-		
 		$TSearch = array();
+		
+		if($this->preview) return array(); // mode preview, pas de recherche
 		
 		if(!empty($this->TMode)) {
 			

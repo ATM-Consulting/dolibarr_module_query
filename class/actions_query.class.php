@@ -59,6 +59,8 @@ class ActionsQuery
 				$sql.=" AND (qd.fk_user_author=".$user->id." OR  qd.fk_usergroup IN (SELECT fk_usergroup FROM ".MAIN_DB_PREFIX."usergroup_user WHERE fk_user=".$user->id." ) )";
 			}
 			
+			$langs->load('query@query');
+			
         	?>
         	<script type="text/javascript">
         		$(document).ready(function() {

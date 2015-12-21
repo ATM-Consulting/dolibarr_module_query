@@ -18,5 +18,5 @@ set_ABRICOT_WKHTMLTOPDF_CMD=Commande pour la génération PDF des panneaux (WkHT
 set_ABRICOT_CONVERTPDF_CMD=Commande pour transformer des modèle ODT/ODS en PDF (libreoffice doit être installé sur le serveur)
 AbricotMustBeUpdate=Votre version du module Abricot n'est pas à jour, merci de télécharger la dernière version
 AbricotNotFound=Merci de télécharger le module complémentaire Abricot
-QueryDashBoard=Panneaux du module Query
 set_QUERY_SHOW_PDF_TRANSFORM=Voir les boutons pour transformer en PDF (attention nécessite la configuration ci-après)
+QueryDashBoard=Sélectionnez le panneau (module Query)

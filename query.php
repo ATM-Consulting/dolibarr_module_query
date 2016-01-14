@@ -21,6 +21,13 @@ switch ($action) {
 		fiche($query);
 	
 		break;
+	case 'unset-expert':
+		$query->load($PDOdb, GETPOST('id'));
+		$query->expert = 0;
+		$query->save($PDOdb);
+		fiche($query);
+	
+		break;
 	case 'view':
 		
 		$query->load($PDOdb, GETPOST('id'));
@@ -290,13 +297,22 @@ function fiche(&$query) {
 		
 	<div>
 		<?php
-			if($query->getId()>0 && !$query->expert && !empty($user->rights->query->all->expert) ) {
+			if($query->getId()>0 && !empty($user->rights->query->all->expert) ) {
 				
-				?>
-				<div style="float:right;">
-					<a class="butAction" href="?action=set-expert&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('setExpertMode') ?></a>
-				</div>
-				<?php
+				if(!$query->expert) {
+					?>
+					<div style="float:right;">
+						<a class="butAction" href="?action=set-expert&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('setExpertMode') ?></a>
+					</div>
+					<?php
+				}
+				else {
+					?>
+					<div style="float:right;">
+						<a class="butAction" href="?action=unset-expert&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('unsetExpertMode') ?></a>
+					</div>
+					<?php
+				}
 				
 			}
 		?>

@@ -20,3 +20,4 @@ AbricotMustBeUpdate=Votre version du module Abricot n'est pas à jour, merci de 
 AbricotNotFound=Merci de télécharger le module complémentaire Abricot
 set_QUERY_SHOW_PDF_TRANSFORM=Voir les boutons pour transformer en PDF (attention nécessite la configuration ci-après)
 QueryDashBoard=Sélectionnez le panneau (module Query)
+cloneQuery=Dupliquer cette requête

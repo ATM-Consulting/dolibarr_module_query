@@ -135,32 +135,44 @@ $(document).ready(function() {
 			}
 		});
 		
-		var TData= {
-			'put':'query'
-			,'id' : $('form#formQuery input[name=id]').val()
-			,'title' : $('form#formQuery input[name=title]').val()
-			,'type' : $('form#formQuery select[name=type]').val()
-			,'xaxis' : $('form#formQuery select[name=xaxis]').val()
-			,'TOperator' : TOperator
-			,'TValue' : TValue
-			,'TJoin' : TJoin
-			,'TTable': TTable
-			,'TOrder' : TOrder
-			,'TMode' : TMode
-			,'THide' : THide
-			,'TTitle' : TTitle
-			,'TField' : TSelectedField
-			,'TTranslate' : TTranslate
-			,'TGroup' : TGroup
-			,'TTotal' : TTotal
-			,'TFunction' : TFunction
-			,'sql_fields' : btoa( $('textarea[name=sql_fields]').val() )
-			,'sql_from' : btoa( $('textarea[name=sql_from]').val() )
-			,'sql_where' : btoa( $('textarea[name=sql_where]').val() )
-			,'sql_afterwhere': btoa( $('[name=sql_afterwhere]').val() )
-		};
-		
-		
+		if(MODQUERY_QUERYID == 0) {
+			var TData= {
+				'put':'query'
+				,'id' : $('form#formQuery input[name=id]').val()
+				,'title' : $('form#formQuery input[name=title]').val()
+				,'type' : $('form#formQuery select[name=type]').val()
+				,'xaxis' : $('form#formQuery select[name=xaxis]').val()
+			};
+			
+		}
+		else {
+			var TData= {
+				'put':'query'
+				,'id' : $('form#formQuery input[name=id]').val()
+				,'title' : $('form#formQuery input[name=title]').val()
+				,'type' : $('form#formQuery select[name=type]').val()
+				,'xaxis' : $('form#formQuery select[name=xaxis]').val()
+				,'TOperator' : TOperator
+				,'TValue' : TValue
+				,'TJoin' : TJoin
+				,'TTable': TTable
+				,'TOrder' : TOrder
+				,'TMode' : TMode
+				,'THide' : THide
+				,'TTitle' : TTitle
+				,'TField' : TSelectedField
+				,'TTranslate' : TTranslate
+				,'TGroup' : TGroup
+				,'TTotal' : TTotal
+				,'TFunction' : TFunction
+				,'sql_fields' :  btoa( $('textarea[name=sql_fields]').val() )
+				,'sql_from' : btoa( $('textarea[name=sql_from]').val() )
+				,'sql_where' : btoa( $('textarea[name=sql_where]').val())
+				,'sql_afterwhere': btoa( $('[name=sql_afterwhere]').val() )
+			};
+			
+		}
+
 		$.ajax({
 			url: MODQUERY_INTERFACE
 			,data:TData
@@ -171,6 +183,8 @@ $(document).ready(function() {
 			if(idQuery>0) {
 				if(MODQUERY_QUERYID == 0) document.location.href = "?action=view&id="+idQuery;
 				else showQueryPreview(idQuery);
+				
+				$.jnotify('Saved');
 			}
 			else{
 				null;
@@ -451,18 +465,18 @@ function refresh_sql() {
 	tables = '';
 	
 	for(t in TField) {
-		if(typeof TJoin[t] != 'undefined') {
-			tables+=' LEFT JOIN ';
-		}
-		
-		tables += t;
-		
-		if(typeof TJoin[t] != 'undefined') {
-			tables+=' ON ('+TJoin[t][0]+'='+TJoin[t][1]+') ';	
-		}
-		
+			if(typeof TJoin[t] != 'undefined') {
+				tables+=' LEFT JOIN ';
+			}
+			
+			tables += t;
+			
+			if(typeof TJoin[t] != 'undefined') {
+				tables+=' ON ('+TJoin[t][0]+'='+TJoin[t][1]+') ';	
+			}
+			
 	}
-
+		
 	$('#fields div.field').each(function(i,item) {
 		
 		if(fields!='') fields+=',';

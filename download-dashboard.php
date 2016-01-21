@@ -12,7 +12,7 @@
 	if($dash->loadBy($PDOdb, GETPOST('uid'),'uid',false)) {
 		try {
 			
-			dol_include_once('/query/lib/Wkhtmltopdf.php');
+			if(!class_exists('Wkhtmltopdf')) dol_include_once('/query/lib/Wkhtmltopdf.php');
 			
 	        $wkhtmltopdf = new Wkhtmltopdf(array('path' => sys_get_temp_dir()));
 			

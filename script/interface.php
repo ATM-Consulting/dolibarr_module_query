@@ -48,7 +48,6 @@
 			$query->sql_where = base64_decode(GETPOST('sql_where'));
 			$query->sql_afterwhere = base64_decode(GETPOST('sql_afterwhere'));
 			
-			
 			$query->save($PDOdb);
 			
 			print $query->getId();

@@ -329,12 +329,18 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 		    		if($action == 'edit') {
 		    			echo '<a style="position:absolute; top:3px; right:3px; z-index:999;" href="javascript:delTile('.$cell->getId().')">'.img_delete('DeleteThisTile').'</a>';	
 		    		}
-					if(!$withHeader) {
-						echo $cell->query->run($PDOdb, false, $cell->height * $cell_height, GETPOST('table_element'), GETPOST('objectid'));
+					
+					if(!empty($cell->query)) {
+						
+						if(!$withHeader) {
+							echo $cell->query->run($PDOdb, false, $cell->height * $cell_height, GETPOST('table_element'), GETPOST('objectid'));
+						}
+						else{
+							echo $cell->query->run($PDOdb, false, $cell->height * $cell_height, GETPOST('table_element'), GETPOST('objectid'));	
+						}
+						
 					}
-					else{
-						echo $cell->query->run($PDOdb, false, $cell->height * $cell_height, GETPOST('table_element'), GETPOST('objectid'));	
-					}
+					
 					
 					
 				

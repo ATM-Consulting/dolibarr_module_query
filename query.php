@@ -14,6 +14,16 @@ $PDOdb=new TPDOdb;
 
 
 switch ($action) {
+	
+	case 'clone':
+		$query->load($PDOdb, GETPOST('id'));
+		$query->rowid = 0;
+		$query->title.=' ('.$langs->trans('Copy').')';
+		$query->save($PDOdb);
+		fiche($query);
+		
+		break;
+	
 	case 'set-expert':
 		$query->load($PDOdb, GETPOST('id'));
 		$query->expert = 1;
@@ -298,21 +308,20 @@ function fiche(&$query) {
 	<div>
 		<?php
 			if($query->getId()>0 && !empty($user->rights->query->all->expert) ) {
-				
+				?><div style="float:right;"><?php 
+					
 				if(!$query->expert) {
-					?>
-					<div style="float:right;">
-						<a class="butAction" href="?action=set-expert&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('setExpertMode') ?></a>
-					</div>
-					<?php
+					
+					?><a class="butAction" href="?action=set-expert&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('setExpertMode') ?></a><?php
+					
 				}
 				else {
-					?>
-					<div style="float:right;">
-						<a class="butAction" href="?action=unset-expert&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('unsetExpertMode') ?></a>
-					</div>
-					<?php
+					?><a class="butAction" href="?action=unset-expert&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('unsetExpertMode') ?></a><?php
 				}
+				
+				?><br /><br /><a class="butAction" href="?action=clone&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('cloneQuery') ?></a><?php
+				
+				?></div><?php
 				
 			}
 		?>

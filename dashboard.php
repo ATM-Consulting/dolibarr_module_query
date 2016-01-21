@@ -165,10 +165,12 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 		var MODQUERY_INTERFACE = "<?php echo dol_buildpath('/query/script/interface.php',1); ?>";
 		
 		$(document).ready(function(){ //DOM Ready
-
+			
+			gridster_width = $('.gridster').innerWidth() / 5;
+			
 		    $(".gridster ul").gridster({
 		        widget_margins: [10, 10]
-		        ,widget_base_dimensions: [300, <?php echo $cell_height ?>]
+		        ,widget_base_dimensions: [gridster_width, <?php echo $cell_height ?>]
 		        ,min_cols:3
 		        ,min_rows:5
 		        ,serialize_params: function($w, wgd) { 

@@ -460,11 +460,11 @@ function refresh_field_array(table) {
 
 function refresh_sql() {
 	
-	
 	fields = '';
 	tables = '';
 	
 	for(t in TField) {
+		
 			if(typeof TJoin[t] != 'undefined') {
 				tables+=' LEFT JOIN ';
 			}

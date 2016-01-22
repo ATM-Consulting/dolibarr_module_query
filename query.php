@@ -256,7 +256,7 @@ function fiche(&$query) {
 				
 					echo 'showQueryPreview('.$query->getId().');';
 						
-					if(empty($query->TField) && !empty($query->sql_fields)) {
+					if(!empty($query->sql_fields)) {
 						$query->TField = explode(',', $query->sql_fields );
 					}
 					

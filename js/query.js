@@ -438,7 +438,7 @@ function refresh_field_param(field, table) {
 			$li.append(search);
 			$fields.append($li);
 			
-			$("select[field='"+field+"'][sql-act=function-select]").change(function() {
+			$('select[field="'+field+'"][sql-act=function-select]').change(function() {
 				$("input[field='"+field+"'][sql-act='function']").val(  $(this).val() );
 				
 			});

@@ -150,64 +150,9 @@ function liste() {
 	llxFooter();
 }
 
-function fiche(&$query) {
-	global $langs, $conf,$user;
+function init_js(&$query) {
 	
-	llxHeader('', 'Query', '', '', 0, 0, array('/query/js/query.js'/*,'/query/js/jquery.base64.min.js'*/) , array('/query/css/query.css') );
-	dol_fiche_head();
-	
-	?>
-	<script type="text/javascript">
-		var MODQUERY_INTERFACE = "<?php echo dol_buildpath('/query/script/interface.php',1); ?>";
-		var MODQUERY_QUERYID = <?php echo $query->getId(); ?>;
-		
-		function _init_query() {
-			
-			<?php
-
-			if($query->getId()>0) {
-				
-				if($query->expert) {
-				
-					echo 'showQueryPreview('.$query->getId().');';
-						
-					if(empty($query->TField) && !empty($query->sql_fields)) {
-						$query->TField = explode(',', $query->sql_fields );
-					}
-					
-					if(!empty($query->TField )) {
-						foreach($query->TField as $field) {
-							
-							echo ' refresh_field_param("'.$field.'"); ';
-						
-						}
-					}
-					
-				}
-				else {
-					
-					foreach($query->TTable as $table) {
-						
-						echo 'addTable("'.$table.'"); ';
-			
-					}
-				
-					if(empty($query->TField) && !empty($query->sql_fields)) {
-						$query->TField = explode(',', $query->sql_fields );
-					}
-					//$TField = 
-					if(!empty($query->TField )) {
-						foreach($query->TField as $field) {
-							
-							echo ' checkField("'.$field.'"); ';
-						
-						}
-						
-						echo 'showQueryPreview('.$query->getId().');';
-						
-					}
-					
-					if(!empty($query->TMode)) {
+	if(!empty($query->TMode)) {
 						foreach($query->TMode as $f=>$v) {
 							
 							echo ' $("#fields [sql-act=\'mode\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
@@ -287,6 +232,67 @@ function fiche(&$query) {
 							
 						}
 					}
+	
+}
+
+function fiche(&$query) {
+	global $langs, $conf,$user;
+	
+	llxHeader('', 'Query', '', '', 0, 0, array('/query/js/query.js'/*,'/query/js/jquery.base64.min.js'*/) , array('/query/css/query.css') );
+	dol_fiche_head();
+	
+	?>
+	<script type="text/javascript">
+		var MODQUERY_INTERFACE = "<?php echo dol_buildpath('/query/script/interface.php',1); ?>";
+		var MODQUERY_QUERYID = <?php echo $query->getId(); ?>;
+		
+		function _init_query() {
+			
+			<?php
+
+			if($query->getId()>0) {
+				
+				if($query->expert) {
+				
+					echo 'showQueryPreview('.$query->getId().');';
+						
+					if(empty($query->TField) && !empty($query->sql_fields)) {
+						$query->TField = explode(',', $query->sql_fields );
+					}
+					
+					if(!empty($query->TField )) {
+						foreach($query->TField as $field) {
+							
+							echo ' refresh_field_param("'.$field.'"); ';
+						
+						}
+					}
+					init_js($query);
+				}
+				else {
+					
+					foreach($query->TTable as $table) {
+						
+						echo 'addTable("'.$table.'"); ';
+			
+					}
+				
+					if(empty($query->TField) && !empty($query->sql_fields)) {
+						$query->TField = explode(',', $query->sql_fields );
+					}
+					//$TField = 
+					if(!empty($query->TField )) {
+						foreach($query->TField as $field) {
+							
+							echo ' checkField("'.$field.'"); ';
+						
+						}
+						
+						echo 'showQueryPreview('.$query->getId().');';
+						
+					}
+					
+					init_js($query);
 				
 					if(!empty($query->TJoin)) {
 						foreach($query->TJoin as $t=>$join) {

@@ -7,7 +7,7 @@ class TQuery extends TObjetStd {
          
         parent::set_table(MAIN_DB_PREFIX.'query');
         parent::add_champs('sql_fields,sql_from,sql_where,sql_afterwhere',array('type'=>'text'));
-		parent::add_champs('TField,TTable,TOrder,TTitle,TTotal,TLink,THide,TTranslate,TMode,TOperator,TGroup,TFunction,TValue,TJoin',array('type'=>'array'));
+		parent::add_champs('TField,TTable,TOrder,TTitle,TTotal,TLink,THide,TTranslate,TMode,TOperator,TGroup,TFunction,TValue,TJoin,TFilter,TType',array('type'=>'array'));
 		parent::add_champs('expert',array('type'=>'int'));
 		
         parent::_init_vars('title,type,xaxis');
@@ -212,6 +212,23 @@ class TQuery extends TObjetStd {
 		}
 		return $Tab;
 	}
+	function getType() {
+		
+		
+		$Tab = array();
+		if(!empty($this->TType)) {
+			
+			foreach($this->TType as $f=>$v) {
+				if($v) {
+					list($tbl, $fSearch) = explode('.', $f);
+					$Tab[$fSearch]= $v;
+				}
+				
+			}
+			
+		}
+		return $Tab;
+	}
 	function getHide() {
 		
 		$THide = array();
@@ -283,14 +300,17 @@ class TQuery extends TObjetStd {
 			
 			foreach($this->TMode as $f=>$m) {
 				
-				if(empty($this->TOperator[$f]) || $m!='var') continue;
+				if(($this->expert==0 && empty($this->TOperator[$f])) || $m!='var') continue;
 				
 				list($tbl, $fSearch) = explode('.', $f);
 				
+				$filter = !empty($this->TFilter[$f]) ? $this->TFilter[$f] : true; 
 				$TSearch[$fSearch] = array(
-					'recherche'=>TRUE
+					'recherche'=>$filter
 					,'table'=>$tbl
 				);
+					
+				
 				
 			}
 			
@@ -365,6 +385,7 @@ class TQuery extends TObjetStd {
 			$TTranslate = $this->getTranslate();
 			$TTotal = $this->getTotal();
 			$TOperator = $this->getOperator();
+			$TType = $this->getType();
 			
 			$form=new TFormCore();
 			$html.= $form->begin_form('auto','formQuery'. $this->getId(),'get');
@@ -395,6 +416,7 @@ class TQuery extends TObjetStd {
 				,'liste'=>array(
 					'titre'=>''
 				)
+				,'type'=>$TType
 				,'orderBy'=>$this->TOrder
 				,'translate'=>$TTranslate
 				,'search'=>$TSearch

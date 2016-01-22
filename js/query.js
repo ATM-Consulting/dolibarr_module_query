@@ -27,14 +27,17 @@ $(document).ready(function() {
 	
 	---- for test */
 	
-	getTables();
-	
-	$('#fieldsview').sortable({
-		 items: "> div.field"
-	  	 ,stop: function( event, ui ) { 
-	  	 	refresh_sql();  
-	  	 }
-	});
+	if(MODQUERY_EXPERT!=1) {
+		getTables();
+		
+		$('#fieldsview').sortable({
+			 items: "> div.field"
+		  	 ,stop: function( event, ui ) { 
+		  	 	refresh_sql();  
+		  	 }
+		});
+		
+	}
 	
 	$('select[name=xaxis]').val( $('select[name=xaxis]').attr('initValue') );
 	
@@ -135,6 +138,20 @@ $(document).ready(function() {
 			}
 		});
 		
+		var TFilter = {};
+		$('#fields [sql-act="filter"]').each(function(i,item) {
+			if($(item).val()) {
+				TFilter[$(item).attr('field')] = $(item).val();
+			}
+		});
+		
+		var TType = {};
+		$('#fieldsview [sql-act="type"]').each(function(i,item) {
+			if($(item).val()) {
+				TType[$(item).attr('field')] = $(item).val();
+			}
+		});
+		
 		if(MODQUERY_QUERYID == 0) {
 			var TData= {
 				'put':'query'
@@ -165,6 +182,8 @@ $(document).ready(function() {
 				,'TGroup' : TGroup
 				,'TTotal' : TTotal
 				,'TFunction' : TFunction
+				,'TFilter' : TFilter
+				,'TType' : TType
 				,'sql_fields' :  btoa( $('textarea[name=sql_fields]').val() )
 				,'sql_from' : btoa( $('textarea[name=sql_from]').val() )
 				,'sql_where' : btoa( $('textarea[name=sql_where]').val())
@@ -364,6 +383,14 @@ function refresh_field_param(field, table) {
 						+ '<option value="DESC">Descendant</option>'
 						+ '</select>';
 				
+			var select_filter	= '<select field='+field+' sql-act="filter"> '
+						+ '<option value="">Libre</option>'
+						+ '<option value="calendar">Date</option>'
+						+ '<option value="calendars">Dates</option>'
+						+ '</select>';
+				
+			
+				
 			var select_hide	= '<select field='+field+' sql-act="hide"> '
 						+ '<option value=""> </option>'
 						+ '<option value="1">Caché</option>'
@@ -381,9 +408,18 @@ function refresh_field_param(field, table) {
 						+ '<option value="count">Nombre</option>'
 						+ '</select>';
 				
+			var select_type	= '<select field='+field+' sql-act="type"> '
+						+ '<option value=""> </option>'
+						+ '<option value="number">Nombre</option>'
+						+ '<option value="datetime">Date/Heure</option>'
+						+ '<option value="date">Date</option>'
+						+ '<option value="hour">Heure</option>'
+						+ '</select>';
+				
 			var select_function	= '<input type="text" size="10" field='+field+' sql-act="function" value="" /><select field='+field+' sql-act="function-select"> '
 						+ '<option value=""> </option>'
 						+ '<option value="SUM(@field@)">Somme</option>'
+						+ '<option value="ROUND(@field@,2)">Arrondi 2 décimal</option>'
 						+ '<option value="COUNT(@field@)">Nombre de</option>'
 						+ '<option value="MIN(@field@)">Minimum</option>'
 						+ '<option value="MAX(@field@)">Maximum</option>'
@@ -395,8 +431,7 @@ function refresh_field_param(field, table) {
 						//+ '<option value="(@field@ / 3600)">/ 3600</option>'
 						+ '</select>';
 				
-			
-			var search = '<span table="'+table+'" field="'+field+'" class="selector"><div class="tagtd">'+select_equal+select_mode+'</div><div class="tagtd">'+select_order+select_function+select_group+'</div></span>';
+			var search = '<span table="'+table+'" field="'+field+'" class="selector"><div class="tagtd">'+select_equal+select_mode+select_filter+'</div><div class="tagtd">'+select_order+select_function+select_group+'</div></span>';
 
 			$li = $('<div class="field table-border-row" table="'+table+'" field="'+field+'" ><div class="fieldName">'+field+'</div></div>');
 			
@@ -410,11 +445,35 @@ function refresh_field_param(field, table) {
 				
 			$liView = $('<div class="field" table="'+table+'" field="'+field+'" ><div class="fieldName">'+field+'</div> <input tytpe="text" placeholder="Title" sql-act="title" field='+field+' value="" /></div>');
 			$liView.append('<input type="text" placeholder="Translation (value:translation, ...)" sql-act="translate" field='+field+' value="" />');
-			$liView.append(select_hide+select_total);
+			$liView.append(select_type+select_hide+select_total);
 			
 			$fieldsView.append($liView);
 			
-		
+			
+			$fields.find('select[sql-act=mode]').unbind().change( function () {
+			
+				var field = $(this).attr('field');
+				
+				var $input = $fields.find('input[field="'+field+'"][sql-act="value"]');
+				var $filter= $fields.find('select[field="'+field+'"][sql-act="filter"]');
+				//console.log($input, field, $(this).val());
+				if($(this).val() == 'var') {
+					if(MODQUERY_EXPERT != 1) { $input.hide(); }
+					$filter.show();
+				}
+				else{
+					if(MODQUERY_EXPERT != 1) { $input.show();}
+					$filter.hide();
+				}
+				
+				refresh_sql();
+				
+			}).change();
+			
+			if(MODQUERY_EXPERT == 1) {
+				$fields.find('select[sql-act=operator],input[sql-act=value]').hide();
+			}
+			
 }
 
 function refresh_field_array(table) {
@@ -437,36 +496,31 @@ function refresh_field_array(table) {
 		if($fields.find('div[table="'+table+'"][field="'+field+'"]').length == 0) {
 			refresh_field_param(field, table);
 		}	});
-
-
-	$fields.find('select[sql-act=operator], input[sql-act=title], input[sql-act=value]').unbind().change( function () {
-		refresh_sql();
-	});
 	
-	$fields.find('select[sql-act=mode]').unbind().change( function () {
+	if(MODQUERY_EXPERT == 1) {
+		null;
+	}
+	else {
 		
-		var field = $(this).attr('field');
-		
-		var $input = $fields.find('input[field="'+field+'"][sql-act="value"]');
-		//console.log($input, field, $(this).val());
-		if($(this).val() == 'var') {
-			$input.hide();
-		}
-		else{
-			$input.show();
 			
-		}
+		if($fields.find('select[sql-act=mode]').val() == 'var') { $input.hide(); }
+	
+		$fields.find('select[sql-act=operator], input[sql-act=title], input[sql-act=value]').unbind().change( function () {
+			refresh_sql();
+		});
 		
+		
+	
 		refresh_sql();
 		
-	});
-		
-	if($fields.find('select[sql-act=mode]').val() == 'var') { $input.hide(); }
+	}
 
-	refresh_sql();
 }
 
 function refresh_sql() {
+	
+	
+	if(MODQUERY_EXPERT == 1) return false;
 	
 	fields = '';
 	tables = '';

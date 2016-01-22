@@ -232,6 +232,22 @@ function init_js(&$query) {
 							
 						}
 					}
+					
+					if(!empty($query->TFilter)) {
+						foreach($query->TFilter as $f=>$v) {
+							
+							echo ' $("[sql-act=\'filter\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); $("[sql-act=\'filter\'][field=\''.$f.'\']").show(); ';
+							
+						}
+					}
+	
+					if(!empty($query->TType)) {
+						foreach($query->TType as $f=>$v) {
+							
+							echo ' $("[sql-act=\'type\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+							
+						}
+					}
 	
 }
 
@@ -245,6 +261,7 @@ function fiche(&$query) {
 	<script type="text/javascript">
 		var MODQUERY_INTERFACE = "<?php echo dol_buildpath('/query/script/interface.php',1); ?>";
 		var MODQUERY_QUERYID = <?php echo $query->getId(); ?>;
+		var MODQUERY_EXPERT = <?php echo (int)$query->expert; ?>;
 		
 		function _init_query() {
 			

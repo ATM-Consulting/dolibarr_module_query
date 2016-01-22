@@ -55,6 +55,6 @@ div#fieldsview div.field {
 	border-bottom: 1px solid #eee;
 	
 }
-div#fieldsview div.field div.fieldName {
+div#fieldsview div.ui-sortable-handle {
 	cursor:move;
 }

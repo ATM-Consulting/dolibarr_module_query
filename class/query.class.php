@@ -125,7 +125,7 @@ class TQuery extends TObjetStd {
 		if(!empty($table_element) && strpos($sql, $table_element)!==false) {
 			$sql.=' AND '.MAIN_DB_PREFIX.$table_element.'.rowid='.$objectid;
 		}
-		TGraphiqueType
+
 		if(!empty($this->TGroup)) {
 			$sql.=" GROUP BY ".implode(',', $this->TGroup);	
 		}
@@ -233,7 +233,7 @@ class TQuery extends TObjetStd {
 		
 		$THide = array();
 		if(!empty($this->THide)) {
-			TGraphiqueType
+
 			foreach($this->THide as $f=>$v) {
 				if($v) {
 					list($tbl, $fSearch) = explode('.', $f);

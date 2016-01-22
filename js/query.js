@@ -332,24 +332,11 @@ function addJointure($obj, table) {
 	refresh_sql();
 }
 
-function refresh_field_array(table) {
-	TField[table] = [];
-	//console.log('refresh_field_array:'+table);
+function refresh_field_param(field, table) {
+	
 	var $fields = $('#fields');
 	var $fieldsView = $('#fieldsview');
-	//$fields.find('li[table='+table+']').remove();
 	
-	$('tr[table='+table+'] input').not(':checked').each(function(i,item) {
-		$fields.find('div[table="'+table+'"][field="'+$(item).val()+'"]').remove();
-		$fieldsView.find('div[table="'+table+'"][field="'+$(item).val()+'"]').remove();
-		$('select[name=xaxis] option[table="'+table+'"][field="'+$(item).val()+'"]').remove();
-	});
-	
-	$('tr[table='+table+'] input:checked ').each(function(i,item) {
-		var field = $(item).val();
-		TField[table].push( field );
-	
-		if($fields.find('div[table="'+table+'"][field="'+field+'"]').length == 0) {
 			$('select[name=xaxis]').append('<option value="'+field+'" field="'+field+'" table="'+table+'">'+field+'</option>');
 			
 			var select_equal = '<select field='+field+' sql-act="operator"> '
@@ -409,7 +396,7 @@ function refresh_field_array(table) {
 						+ '</select>';
 				
 			
-			var search = '<span table="'+table+'" field="'+f+'" class="selector"><div class="tagtd">'+select_equal+select_mode+'</div><div class="tagtd">'+select_order+select_function+select_group+'</div></span>';
+			var search = '<span table="'+table+'" field="'+field+'" class="selector"><div class="tagtd">'+select_equal+select_mode+'</div><div class="tagtd">'+select_order+select_function+select_group+'</div></span>';
 
 			$li = $('<div class="field table-border-row" table="'+table+'" field="'+field+'" ><div class="fieldName">'+field+'</div></div>');
 			
@@ -427,8 +414,29 @@ function refresh_field_array(table) {
 			
 			$fieldsView.append($liView);
 			
-		}
-			});
+		
+}
+
+function refresh_field_array(table) {
+	TField[table] = [];
+	//console.log('refresh_field_array:'+table);
+	var $fields = $('#fields');
+	var $fieldsView = $('#fieldsview');
+	//$fields.find('li[table='+table+']').remove();
+	
+	$('tr[table='+table+'] input').not(':checked').each(function(i,item) {
+		$fields.find('div[table="'+table+'"][field="'+$(item).val()+'"]').remove();
+		$fieldsView.find('div[table="'+table+'"][field="'+$(item).val()+'"]').remove();
+		$('select[name=xaxis] option[table="'+table+'"][field="'+$(item).val()+'"]').remove();
+	});
+	
+	$('tr[table='+table+'] input:checked ').each(function(i,item) {
+		var field = $(item).val();
+		TField[table].push( field );
+	
+		if($fields.find('div[table="'+table+'"][field="'+field+'"]').length == 0) {
+			refresh_field_param(field, table);
+		}	});
 
 
 	$fields.find('select[sql-act=operator], input[sql-act=title], input[sql-act=value]').unbind().change( function () {

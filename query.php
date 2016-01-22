@@ -171,7 +171,18 @@ function fiche(&$query) {
 				
 					echo 'showQueryPreview('.$query->getId().');';
 						
-				
+					if(empty($query->TField) && !empty($query->sql_fields)) {
+						$query->TField = explode(',', $query->sql_fields );
+					}
+					
+					if(!empty($query->TField )) {
+						foreach($query->TField as $field) {
+							
+							echo ' refresh_field_param("'.$field.'"); ';
+						
+						}
+					}
+					
 				}
 				else {
 					
@@ -351,12 +362,12 @@ function fiche(&$query) {
 		?>
 	</div>
 	<?php
-		if($query->getId()>0 && !$query->expert) {
-	?>
-	<div class="selected_fields">
-		<div class="border" id="fields"><div class="liste_titre"><?php echo $langs->trans('FieldsOrder'); ?></div></div>
-	</div>
-	<?php
+		if($query->getId()>0) {
+			?>
+			<div class="selected_fields">
+				<div class="border" id="fields"><div class="liste_titre"><?php echo $langs->trans('FieldsOrder'); ?></div></div>
+			</div>
+			<?php
 		}
 		
 		if($query->getId()>0) {
@@ -391,7 +402,7 @@ function fiche(&$query) {
 	
 	<div style="clear:both; border-top:1px solid #000;"></div>
 	<?php
-		if($query->getId()>0 && !$query->expert) {
+		if($query->getId()>0) {
 	?>
 	<div class="selected_fields_view">
 		<div class="border" id="fieldsview"><div class="liste_titre"><?php echo $langs->trans('FieldsView'); ?></div></div>

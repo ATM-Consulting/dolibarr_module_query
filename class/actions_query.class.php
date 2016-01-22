@@ -26,7 +26,7 @@ class ActionsQuery
 			$TDash = TQDashBoard::getDashboard($PDOdb, $parameters['currentcontext'],$user->id);
 			
 			foreach($TDash as $uid) {
-				$url = dol_buildpath('/query/dashboard.php?action=run&uid='.$uid.'&table_element='.$object->table_element.'&objectid='.$object->id,1);
+				$url = dol_buildpath('/query/dashboard.php?action=run&allow_gen=1&uid='.$uid.'&table_element='.$object->table_element.'&objectid='.$object->id,1);
 				
 				?>
 				<tr>
@@ -79,7 +79,7 @@ class ActionsQuery
         				$('#queryDashboardview').empty();
         				
         				if(uid!='') {
-        					var url="<?php echo dol_buildpath('/query/dashboard.php',1) ?>?action=run&storechoice=1&fk_user=<?php echo $user->id ?>&uid="+uid;
+        					var url="<?php echo dol_buildpath('/query/dashboard.php',1) ?>?action=run&allow_gen=1&storechoice=1&fk_user=<?php echo $user->id ?>&uid="+uid;
         					$('#queryDashboardview').html('<iframe src="'+url+'" width="100%" frameborder="0" onload="this.height = this.contentWindow.document.body.scrollHeight + \'px\'"></iframe>');
         				}
         			});

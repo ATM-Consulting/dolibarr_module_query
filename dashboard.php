@@ -153,10 +153,11 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 				<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/dashboard.js',1); ?>"></script>
 				<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/jquery.gridster.min.js',1); ?>"></script>
 				<style type="text/css">
-					.pagination,.notInGeneration { display : none; }
+					.pagination { display : none; }
+					<?php if((int)GETPOST('allow_gen')!=1) echo '.notInGeneration { display : none; }'; ?>
 				</style>
 			</head>
-		<body style="min-width: 1300px;">
+		<body >
 		<?php	
 	}
 	
@@ -166,7 +167,8 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 		
 		$(document).ready(function(){ //DOM Ready
 			
-			gridster_width = $('.gridster').innerWidth() / 5;
+			gridster_width = Math.round($('.gridster').innerWidth() / 5);
+			if(gridster_width<50) gridster_width = 240;
 			
 		    $(".gridster ul").gridster({
 		        widget_margins: [10, 10]

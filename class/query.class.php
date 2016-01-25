@@ -7,7 +7,7 @@ class TQuery extends TObjetStd {
          
         parent::set_table(MAIN_DB_PREFIX.'query');
         parent::add_champs('sql_fields,sql_from,sql_where,sql_afterwhere',array('type'=>'text'));
-		parent::add_champs('TField,TTable,TOrder,TTitle,TTotal,TLink,THide,TTranslate,TMode,TOperator,TGroup,TFunction,TValue,TJoin,TFilter,TType',array('type'=>'array'));
+		parent::add_champs('TField,TTable,TOrder,TTitle,TTotal,TLink,THide,TTranslate,TMode,TOperator,TGroup,TFunction,TValue,TJoin,TFilter,TType,TClass',array('type'=>'array'));
 		parent::add_champs('expert',array('type'=>'int'));
 		
         parent::_init_vars('title,type,xaxis');
@@ -20,6 +20,15 @@ class TQuery extends TObjetStd {
 			,'LINE'=>$langs->trans('Lines')
 			,'PIE'=>$langs->trans('Pie')
 			,'AREA'=>$langs->trans('Area')
+		);
+		
+		$this->TClassName = array(
+			'User'=>$langs->trans('User')
+			,'Facture'=>$langs->trans('Invoice')		
+			,'Propal'=>$langs->trans('Propal')
+			,'Commande'=>$langs->trans('Order')
+			,'Task'=>$langs->trans('Task')
+			,'Project'=>$langs->trans('Project')
 		);
 		
 		$this->show_details = true;
@@ -106,12 +115,14 @@ class TQuery extends TObjetStd {
 				
 				if(!empty($this->sql_fields))$this->sql_fields.=',';
 				
+				list($t, $fname) = explode('.', $field);
+				$fname_concat = $t.'_'.$fname;
+				
 				if(!empty($this->TFunction[$field])) {
-					list($t, $fname) = explode('.', $field);
-					$this->sql_fields.=strtr($this->TFunction[$field], array('@field@'=> $field)).' as "'.$fname.'"';
+					$this->sql_fields.=strtr($this->TFunction[$field], array('@field@'=> $field)).' as "'.$fname_concat.'"';
 				}
 				else{
-					$this->sql_fields.=$field;
+					$this->sql_fields.=$field.' as "'.$fname_concat.'"';
 				}
 				
 			}
@@ -145,7 +156,7 @@ class TQuery extends TObjetStd {
 				if(empty($this->TOperator[$f])) continue;
 				
 				$fBind  = strtr($f, '.', '_');
-				list($tbl, $fSearch) = explode('.', $f);
+				$fSearch = strtr($f,'.','_');
 				
 				if($m == 'function') {
 					null;
@@ -185,7 +196,7 @@ class TQuery extends TObjetStd {
 			
 			foreach($this->TOperator as $f=>$v) {
 				if($v) {
-					list($tbl, $fSearch) = explode('.', $f);
+					$fSearch = strtr($f,'.','_');
 					$Tab[$fSearch]= $v;
 				}
 				
@@ -203,7 +214,7 @@ class TQuery extends TObjetStd {
 			
 			foreach($this->TTitle as $f=>$v) {
 				if($v) {
-					list($tbl, $fSearch) = explode('.', $f);
+					$fSearch = strtr($f,'.','_');
 					$Tab[$fSearch]= $v;
 				}
 				
@@ -212,6 +223,61 @@ class TQuery extends TObjetStd {
 		}
 		return $Tab;
 	}
+	
+	function getEval() {
+		
+		$Tab=array();
+		if(!empty($this->TClass)) {
+			
+			foreach($this->TClass as $f=>$v) {
+				if($v) {
+					$fSearch = strtr($f,'.','_');
+					$Tab[$fSearch]= 'TQuery::getNomUrl("'.$v.'", (int)@val@)';
+				}
+				
+			}
+			
+		}
+		return $Tab;
+	}
+	
+	static function getNomUrl($type, $id) {
+		
+		global $langs, $db, $conf;
+		
+		list($classname, $include) = explode(',', $type);
+		
+		if(empty($include)) {
+			if($classname == 'User') dol_include_once('/user/class/user.class.php');
+			else if($classname == 'Facture') dol_include_once('/compta/facture/class/facture.class.php');
+			else if($classname == 'Propal') dol_include_once('/comm/propal/class/propal.class.php');
+			else if($classname == 'Commande') dol_include_once('/commande/class/commande.class.php');
+			else if($classname == 'Task') dol_include_once('/projet/class/task.class.php');
+			else if($classname == 'Projet') dol_include_once('/projet/class/project.class.php');
+			else {
+				return $langs->trans('ImpossibleToIncludeClass').' : '.$classname;
+			}
+		}
+		else{
+			if(!dol_include_once($include)) {
+				return $langs->trans('ImpossibleToIncludeClass').' : '.$include;
+			}
+		}
+		
+		if(!class_exists($classname))return $langs->trans('ClassNotIncluded');
+		
+		$o=new $classname($db);
+		$o->fetch($id);
+		
+		if(method_exists($o, 'getNomUrl')) {
+			return $o->getNomUrl(1);
+		}
+		else {
+			return $langs->trans('MethodgetNomUrlNotExist');
+		}
+		
+	}
+	
 	function getType() {
 		
 		
@@ -220,7 +286,7 @@ class TQuery extends TObjetStd {
 			
 			foreach($this->TType as $f=>$v) {
 				if($v) {
-					list($tbl, $fSearch) = explode('.', $f);
+					$fSearch = strtr($f,'.','_');
 					$Tab[$fSearch]= $v;
 				}
 				
@@ -236,7 +302,7 @@ class TQuery extends TObjetStd {
 
 			foreach($this->THide as $f=>$v) {
 				if($v) {
-					list($tbl, $fSearch) = explode('.', $f);
+					$fSearch = strtr($f,'.','_');
 					$THide[]= $fSearch;
 				}
 				
@@ -251,8 +317,8 @@ class TQuery extends TObjetStd {
 		if(!empty($this->TTranslate)) {
 			
 			foreach($this->TTranslate as $f=>$v) {
-				list($tbl, $field) = explode('.', $f);
-				$Tab[$field]=array();
+				$fSearch = strtr($f,'.','_');
+				$Tab[$fSearch]=array();
 				
 				$TPair = str_getcsv($v, ',','"');
 				
@@ -282,8 +348,8 @@ class TQuery extends TObjetStd {
 		if(!empty($this->TTotal)) {
 			
 			foreach($this->TTotal as $f=>$v) {
-				list($tbl, $field) = explode('.', $f);
-				$Tab[$field]=$v;
+				$fSearch = strtr($f,'.','_');
+				$Tab[$fSearch]=$v;
 			}
 			
 		}
@@ -302,12 +368,14 @@ class TQuery extends TObjetStd {
 				
 				if(($this->expert==0 && empty($this->TOperator[$f])) || $m!='var') continue;
 				
-				list($tbl, $fSearch) = explode('.', $f);
+				list($tbl, $field) = explode('.', $f);
+				$fSearch = strtr($f,'.','_');
 				
 				$filter = !empty($this->TFilter[$f]) ? $this->TFilter[$f] : true; 
 				$TSearch[$fSearch] = array(
 					'recherche'=>$filter
 					,'table'=>$tbl
+					,'field'=>$field
 				);
 					
 				
@@ -386,6 +454,7 @@ class TQuery extends TObjetStd {
 			$TTotal = $this->getTotal();
 			$TOperator = $this->getOperator();
 			$TType = $this->getType();
+			$TEval = $this->getEval();
 			
 			$form=new TFormCore();
 			$html.= $form->begin_form('auto','formQuery'. $this->getId(),'get');
@@ -395,18 +464,7 @@ class TQuery extends TObjetStd {
 			
 			if($this->show_details) $html.= '<div class="query">'.$sql.'</div>';
 			
-			$TTitle=array();
-			if(!empty($this->TTitle)) {
-				$TTitle = $this->TTitle;
-				foreach($this->TTitle as $tableField=>$label) {
-					
-					list($t,$f) = explode('.', $tableField);
-					
-					$TTitle[$f] = $label;
-					
-				}
-					
-			}
+			$TTitle=$this->getTitle();
 			
 			$r=new TListviewTBS('lRunQuery'. $this->getId(), $template);
 			$html.=  $r->render($PDOdb, $sql,array(
@@ -425,6 +483,7 @@ class TQuery extends TObjetStd {
 				)
 				,'operator'=>$TOperator
 				,'math'=>$TTotal
+				,'eval'=>$TEval
 			)
 			,$TBind);
 			

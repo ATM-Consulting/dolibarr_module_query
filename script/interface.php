@@ -44,6 +44,7 @@
 			$query->TTranslate = GETPOST('TTranslate');
 			$query->TFilter = GETPOST('TFilter');
 			$query->TType = GETPOST('TType');
+			$query->TClass = GETPOST('TClass');
 			
 			$query->sql_fields = base64_decode(GETPOST('sql_fields'));
 			$query->sql_from = base64_decode(GETPOST('sql_from'));

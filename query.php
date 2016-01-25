@@ -153,101 +153,109 @@ function liste() {
 function init_js(&$query) {
 	
 	if(!empty($query->TMode)) {
-						foreach($query->TMode as $f=>$v) {
-							
-							echo ' $("#fields [sql-act=\'mode\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
-							
-						}
-						
-					}
-					
-					if(!empty($query->TOrder)) {
-						foreach($query->TOrder as $f=>$v) {
-						
-							echo ' $("#fields [sql-act=\'order\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
-							
-						}
-					}
-								
-					if(!empty($query->TOperator)) {
-						foreach($query->TOperator as $f=>$v) {
-							
-							echo ' $("#fields [sql-act=\'operator\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
-							
-						}
-					}
-					
-					if(!empty($query->TValue)) {
-						foreach($query->TValue as $f=>$v) {
-							
-							echo ' $("#fields [sql-act=\'value\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
-							
-						}
-					}
-					
-					if(!empty($query->THide)) {
-						foreach($query->THide as $f=>$v) {
-							
-							echo ' $("#fieldsview [sql-act=\'hide\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
-							
-						}
-					}
-					
-					if(!empty($query->TTitle)) {
-						foreach($query->TTitle as $f=>$v) {
-							
-							echo ' $("#fieldsview [sql-act=\'title\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
-							
-						}
-					}
-					
-					if(!empty($query->TTranslate)) {
-						foreach($query->TTranslate as $f=>$v) {
-							
-							echo ' $("#fieldsview [sql-act=\'translate\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
-							
-						}
-					}
-					
-					if(!empty($query->TFunction)) {
-						foreach($query->TFunction as $f=>$v) {
-							
-							echo ' $("#fields [sql-act=\'function\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
-							
-						}
-					}
-					
-					if(!empty($query->TGroup)) {
-						foreach($query->TGroup as $f) {
-							
-							echo ' $("#fields [sql-act=\'group\'][field=\''.$f.'\']").val(1); ';
-							
-						}
-					}
-				
-					if(!empty($query->TTotal)) {
-						foreach($query->TTotal as $f=>$v) {
-							
-							echo ' $("[sql-act=\'total\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
-							
-						}
-					}
-					
-					if(!empty($query->TFilter)) {
-						foreach($query->TFilter as $f=>$v) {
-							
-							echo ' $("[sql-act=\'filter\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); $("[sql-act=\'filter\'][field=\''.$f.'\']").show(); ';
-							
-						}
-					}
+		foreach($query->TMode as $f=>$v) {
+			
+			echo ' $("#fields [sql-act=\'mode\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+			
+		}
+		
+	}
 	
-					if(!empty($query->TType)) {
-						foreach($query->TType as $f=>$v) {
-							
-							echo ' $("[sql-act=\'type\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
-							
-						}
-					}
+	if(!empty($query->TOrder)) {
+		foreach($query->TOrder as $f=>$v) {
+		
+			echo ' $("#fields [sql-act=\'order\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+			
+		}
+	}
+				
+	if(!empty($query->TOperator)) {
+		foreach($query->TOperator as $f=>$v) {
+			
+			echo ' $("#fields [sql-act=\'operator\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+			
+		}
+	}
+	
+	if(!empty($query->TValue)) {
+		foreach($query->TValue as $f=>$v) {
+			
+			echo ' $("#fields [sql-act=\'value\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+			
+		}
+	}
+	
+	if(!empty($query->THide)) {
+		foreach($query->THide as $f=>$v) {
+			
+			echo ' $("#fieldsview [sql-act=\'hide\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+			
+		}
+	}
+	
+	if(!empty($query->TTitle)) {
+		foreach($query->TTitle as $f=>$v) {
+			
+			echo ' $("#fieldsview [sql-act=\'title\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+			
+		}
+	}
+	
+	if(!empty($query->TTranslate)) {
+		foreach($query->TTranslate as $f=>$v) {
+			
+			echo ' $("#fieldsview [sql-act=\'translate\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+			
+		}
+	}
+	
+	if(!empty($query->TFunction)) {
+		foreach($query->TFunction as $f=>$v) {
+			
+			echo ' $("#fields [sql-act=\'function\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+			
+		}
+	}
+	
+	if(!empty($query->TGroup)) {
+		foreach($query->TGroup as $f) {
+			
+			echo ' $("#fields [sql-act=\'group\'][field=\''.$f.'\']").val(1); ';
+			
+		}
+	}
+
+	if(!empty($query->TTotal)) {
+		foreach($query->TTotal as $f=>$v) {
+			
+			echo ' $("[sql-act=\'total\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+			
+		}
+	}
+	
+	if(!empty($query->TFilter)) {
+		foreach($query->TFilter as $f=>$v) {
+			
+			echo ' $("[sql-act=\'filter\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); $("[sql-act=\'filter\'][field=\''.$f.'\']").show(); ';
+			
+		}
+	}
+
+	if(!empty($query->TType)) {
+		foreach($query->TType as $f=>$v) {
+			
+			echo ' $("[sql-act=\'type\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+			
+		}
+	}
+	
+	if(!empty($query->TClass)) {
+		foreach($query->TClass as $f=>$v) {
+			
+			echo ' $("[sql-act=\'class\'][field=\''.$f.'\'],[sql-act=\'class-select\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+			
+		}
+	}
 	
 }
 
@@ -262,6 +270,88 @@ function fiche(&$query) {
 		var MODQUERY_INTERFACE = "<?php echo dol_buildpath('/query/script/interface.php',1); ?>";
 		var MODQUERY_QUERYID = <?php echo $query->getId(); ?>;
 		var MODQUERY_EXPERT = <?php echo (int)$query->expert; ?>;
+		
+		var select_equal = '<select sql-act="operator"> '
+					+ '<option value=""> </option>'
+					
+					+ '<option value="LIKE">LIKE</option>'
+					+ '<option value="=">=</option>'
+					+ '<option value="!=">!=</option>'
+					+ '<option value="&lt;">&lt;</option>'
+					+ '<option value="&lt;=">&lt;=</option>'
+					+ '<option value="&gt;">&gt;</option>'
+					+ '<option value="&gt;=">&gt;=</option>'
+					+ '<option value="IN">IN</option>'
+					+ '</select>';
+					
+		var select_mode	= '<select sql-act="mode"> '
+					+ '<option value="value">valeur</option>'
+					+ '<option value="var">variable</option>'
+					+ '<option value="function">fonction</option>'
+					+ '</select> <input type="text" value="" sql-act="value" />';
+			
+		var select_order	= '<select sql-act="order"> '
+					+ '<option value=""> </option>'
+					+ '<option value="ASC">Ascendant</option>'
+					+ '<option value="DESC">Descendant</option>'
+					+ '</select>';
+			
+		var select_filter	= '<select sql-act="filter"> '
+					+ '<option value="">Libre</option>'
+					+ '<option value="calendar">Date</option>'
+					+ '<option value="calendars">Dates</option>'
+					+ '</select>';
+			
+		
+			
+		var select_hide	= '<select sql-act="hide"> '
+					+ '<option value=""> </option>'
+					+ '<option value="1"><?php echo $langs->trans('Hidden') ?></option>'
+					+ '</select>';
+			
+		var select_group	= '<select sql-act="group"> '
+					+ '<option value=""> </option>'
+					+ '<option value="1">Groupé</option>'
+					+ '</select>';
+			
+		var select_total	= '<select sql-act="total"> '
+					+ '<option value=""> </option>'
+					+ '<option value="sum">Total</option>'
+					+ '<option value="average">Moyenne</option>'
+					+ '<option value="count">Nombre</option>'
+					+ '</select>';
+			
+		var select_type	= '<select sql-act="type"> '
+					+ '<option value=""> </option>'
+					+ '<option value="number">Nombre</option>'
+					+ '<option value="datetime">Date/Heure</option>'
+					+ '<option value="date">Date</option>'
+					+ '<option value="hour">Heure</option>'
+					+ '</select>';
+					
+		var select_function	= '<input type="text" size="10" sql-act="function" value="" /><select sql-act="function-select"> '
+					+ '<option value=""> </option>'
+					+ '<option value="SUM(@field@)">Somme</option>'
+					+ '<option value="ROUND(@field@,2)">Arrondi 2 décimal</option>'
+					+ '<option value="COUNT(@field@)">Nombre de</option>'
+					+ '<option value="MIN(@field@)">Minimum</option>'
+					+ '<option value="MAX(@field@)">Maximum</option>'
+					+ '<option value="MONTH(@field@)">Mois</option>'
+					+ '<option value="YEAR">Année</option>'
+					+ '<option value="DATE_FORMAT(@field@, \'%m/%Y\')">Année/Mois</option>'
+					//+ '<option value="FROM_UNIXTIME(@field@,\'%H:%i\')">Timestamp</option>'
+					+ '<option value="SEC_TO_TIME(@field@)">Timestamp</option>'
+					//+ '<option value="(@field@ / 3600)">/ 3600</option>'
+					+ '</select>';
+		
+		var select_class = '<input type="text" size="10" sql-act="class" value="" placeholder="<?php echo $langs->trans('Classname'); ?>" /><select sql-act="class-select"> '
+						+ '<option value=""> </option>'
+			<?php
+				foreach($query->TClassName as $class=>$label) {
+					echo ' +\'<option value="'.$class.'">'.$label.'</option>\'';
+				}
+			?>
+			+ '</select>';
 		
 		function _init_query() {
 			

@@ -152,12 +152,21 @@ $(document).ready(function() {
 			}
 		});
 		
+		var TClass = {};
+		$('#fieldsview [sql-act="class"]').each(function(i,item) {
+			if($(item).val()) {
+				TClass[$(item).attr('field')] = $(item).val();
+			}
+		});
+		
 		if(MODQUERY_QUERYID == 0) {
 			var TData= {
 				'put':'query'
 				,'id' : $('form#formQuery input[name=id]').val()
 				,'title' : $('form#formQuery input[name=title]').val()
 				,'type' : $('form#formQuery select[name=type]').val()
+	
+	
 				,'xaxis' : $('form#formQuery select[name=xaxis]').val()
 			};
 			
@@ -184,6 +193,7 @@ $(document).ready(function() {
 				,'TFunction' : TFunction
 				,'TFilter' : TFilter
 				,'TType' : TType
+				,'TClass' : TClass
 				,'sql_fields' :  btoa( $('textarea[name=sql_fields]').val() )
 				,'sql_from' : btoa( $('textarea[name=sql_from]').val() )
 				,'sql_where' : btoa( $('textarea[name=sql_where]').val())
@@ -358,84 +368,11 @@ function refresh_field_param(field, table) {
 	
 			$('select[name=xaxis]').append('<option value="'+field+'" field="'+field+'" table="'+table+'">'+field+'</option>');
 			
-			var select_equal = '<select field='+field+' sql-act="operator"> '
-						+ '<option value=""> </option>'
-						
-						+ '<option value="LIKE">LIKE</option>'
-						+ '<option value="=">=</option>'
-						+ '<option value="!=">!=</option>'
-						+ '<option value="&lt;">&lt;</option>'
-						+ '<option value="&lt;=">&lt;=</option>'
-						+ '<option value="&gt;">&gt;</option>'
-						+ '<option value="&gt;=">&gt;=</option>'
-						+ '<option value="IN">IN</option>'
-						+ '</select>';
-						
-			var select_mode	= '<select field='+field+' sql-act="mode"> '
-						+ '<option value="value">valeur</option>'
-						+ '<option value="var">variable</option>'
-						+ '<option value="function">fonction</option>'
-						+ '</select> <input field='+field+' type="text" value="" sql-act="value" />';
-				
-			var select_order	= '<select field='+field+' sql-act="order"> '
-						+ '<option value=""> </option>'
-						+ '<option value="ASC">Ascendant</option>'
-						+ '<option value="DESC">Descendant</option>'
-						+ '</select>';
-				
-			var select_filter	= '<select field='+field+' sql-act="filter"> '
-						+ '<option value="">Libre</option>'
-						+ '<option value="calendar">Date</option>'
-						+ '<option value="calendars">Dates</option>'
-						+ '</select>';
-				
-			
-				
-			var select_hide	= '<select field='+field+' sql-act="hide"> '
-						+ '<option value=""> </option>'
-						+ '<option value="1">Caché</option>'
-						+ '</select>';
-				
-			var select_group	= '<select field='+field+' sql-act="group"> '
-						+ '<option value=""> </option>'
-						+ '<option value="1">Groupé</option>'
-						+ '</select>';
-				
-			var select_total	= '<select field='+field+' sql-act="total"> '
-						+ '<option value=""> </option>'
-						+ '<option value="sum">Total</option>'
-						+ '<option value="average">Moyenne</option>'
-						+ '<option value="count">Nombre</option>'
-						+ '</select>';
-				
-			var select_type	= '<select field='+field+' sql-act="type"> '
-						+ '<option value=""> </option>'
-						+ '<option value="number">Nombre</option>'
-						+ '<option value="datetime">Date/Heure</option>'
-						+ '<option value="date">Date</option>'
-						+ '<option value="hour">Heure</option>'
-						+ '</select>';
-				
-			var select_function	= '<input type="text" size="10" field='+field+' sql-act="function" value="" /><select field='+field+' sql-act="function-select"> '
-						+ '<option value=""> </option>'
-						+ '<option value="SUM(@field@)">Somme</option>'
-						+ '<option value="ROUND(@field@,2)">Arrondi 2 décimal</option>'
-						+ '<option value="COUNT(@field@)">Nombre de</option>'
-						+ '<option value="MIN(@field@)">Minimum</option>'
-						+ '<option value="MAX(@field@)">Maximum</option>'
-						+ '<option value="MONTH(@field@)">Mois</option>'
-						+ '<option value="YEAR">Année</option>'
-						+ '<option value="DATE_FORMAT(@field@, \'%m/%Y\')">Année/Mois</option>'
-						//+ '<option value="FROM_UNIXTIME(@field@,\'%H:%i\')">Timestamp</option>'
-						+ '<option value="SEC_TO_TIME(@field@)">Timestamp</option>'
-						//+ '<option value="(@field@ / 3600)">/ 3600</option>'
-						+ '</select>';
-				
 			var search = '<span table="'+table+'" field="'+field+'" class="selector"><div class="tagtd">'+select_equal+select_mode+select_filter+'</div><div class="tagtd">'+select_order+select_function+select_group+'</div></span>';
 
 			$li = $('<div class="field table-border-row" table="'+table+'" field="'+field+'" ><div class="fieldName">'+field+'</div></div>');
 			
-			$li.append(search);
+			$li.append($(search).find('input,select').attr('field', field));
 			$fields.append($li);
 			
 			$('select[field="'+field+'"][sql-act=function-select]').change(function() {
@@ -445,10 +382,18 @@ function refresh_field_param(field, table) {
 				
 			$liView = $('<div class="field" table="'+table+'" field="'+field+'" ><div class="fieldName">'+field+'</div> <input tytpe="text" placeholder="Title" sql-act="title" field='+field+' value="" /></div>');
 			$liView.append('<input type="text" placeholder="Translation (value:translation, ...)" sql-act="translate" field='+field+' value="" />');
-			$liView.append(select_type+select_hide+select_total);
+			$liView.append(select_type+select_hide+select_total+select_class);
+			$liView.find('input,select').attr('field', field);
 			
 			$fieldsView.append($liView);
 			
+			$fieldsView.find('select[sql-act="class-select"]').unbind().change( function () {
+				var field = $(this).attr('field');
+				var $input = $fieldsView.find('input[field="'+field+'"][sql-act="class"]');
+				var value = $(this).val();
+				
+				$input.val(value);
+			});
 			
 			$fields.find('select[sql-act=mode]').unbind().change( function () {
 			

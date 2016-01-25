@@ -518,6 +518,9 @@ function refresh_sql() {
 			if(mode == 'function') {
 				where+= field+' '+operator+' ('+value+')';
 			}
+			else if(operator=='=') {
+				null;
+			}
 			else{
 				where+= field+' '+operator+' :'+field.replace(".", "_"); 	
 			}

@@ -275,7 +275,7 @@ function fiche(&$query) {
 					+ '<option value=""> </option>'
 					
 					+ '<option value="LIKE">LIKE</option>'
-					+ '<option value="=">=</option>'
+					/*+ '<option value="=">=</option>'*/
 					+ '<option value="!=">!=</option>'
 					+ '<option value="&lt;">&lt;</option>'
 					+ '<option value="&lt;=">&lt;=</option>'

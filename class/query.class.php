@@ -163,7 +163,10 @@ class TQuery extends TObjetStd {
 				}
 				else if($m == 'var') {
 					
-					if($this->TOperator[$f] == '<') {
+					if($this->TOperator[$f] == '=') {
+						null; //impossible case
+					}
+					else if($this->TOperator[$f] == '<') {
 						$TBind[$fBind] = PHP_INT_MAX;
 					}
 					else if($this->TOperator[$f] == '>') {
@@ -329,7 +332,7 @@ class TQuery extends TObjetStd {
 						$from = substr($pair, 0, $pos );
 						$to = substr($pair, $pos+1 );
 						
-						$Tab[$field]["$from"] = $to; 	
+						$Tab[$fSearch]["$from"] = $to; 	
 					}
 					
 					
@@ -360,6 +363,8 @@ class TQuery extends TObjetStd {
 		
 		$TSearch = array();
 		
+		$TTranslate = $this->getTranslate();
+		
 		if($this->preview) return array(); // mode preview, pas de recherche
 		
 		if(!empty($this->TMode)) {
@@ -374,7 +379,16 @@ class TQuery extends TObjetStd {
 				}
 				$fSearch = strtr($f,'.','_');
 				
-				$filter = !empty($this->TFilter[$f]) ? $this->TFilter[$f] : true; 
+				if(!empty($this->TFilter[$f])) {
+					$filter = $this->TFilter[$f];
+				}
+				else if(!empty($TTranslate[$fSearch]) && is_array($TTranslate[$fSearch])) {
+					$filter = $TTranslate[$fSearch];
+				}
+				else {
+					$filter = true;
+				}
+				 
 				$TSearch[$fSearch] = array(
 					'recherche'=>$filter
 					,'table'=>$tbl

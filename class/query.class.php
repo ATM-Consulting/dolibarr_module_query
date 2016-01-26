@@ -414,8 +414,9 @@ class TQuery extends TObjetStd {
 		$TTranslate = $this->getTranslate();
 		$TOperator = $this->getOperator();
 		
-		list($xTable, $xaxis) = explode('.',$this->xaxis);
-		
+		//list($xTable, $xaxis) = explode('.',$this->xaxis);
+		$xaxis = strtr($this->xaxis,'.','_');
+
 		$html = '';
 		
 		$form=new TFormCore();

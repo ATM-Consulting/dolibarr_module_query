@@ -109,23 +109,21 @@ class TQuery extends TObjetStd {
 	
 	function getSQL($table_element='',$objectid=0) {
 			
-		if(!empty($this->TFunction)) {
-			$this->sql_fields = '';
-			foreach($this->TField as $field) {
-				
-				if(!empty($this->sql_fields))$this->sql_fields.=',';
-				
-				list($t, $fname) = explode('.', $field);
-				$fname_concat = $t.'_'.$fname;
-				
-				if(!empty($this->TFunction[$field])) {
-					$this->sql_fields.=strtr($this->TFunction[$field], array('@field@'=> $field)).' as "'.$fname_concat.'"';
-				}
-				else{
-					$this->sql_fields.=$field.' as "'.$fname_concat.'"';
-				}
-				
+		$this->sql_fields = '';
+		foreach($this->TField as $field) {
+			
+			if(!empty($this->sql_fields))$this->sql_fields.=',';
+			
+			list($t, $fname) = explode('.', $field);
+			$fname_concat = $t.'_'.$fname;
+			
+			if(!empty($this->TFunction[$field])) {
+				$this->sql_fields.=strtr($this->TFunction[$field], array('@field@'=> $field)).' as "'.$fname_concat.'"';
 			}
+			else{
+				$this->sql_fields.=$field.' as "'.$fname_concat.'"';
+			}
+			
 		}
 		
 		$sql="SELECT ".($this->sql_fields ? $this->sql_fields : '*') ."

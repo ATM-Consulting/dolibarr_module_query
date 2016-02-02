@@ -23,6 +23,14 @@ switch ($action) {
 		fiche($query);
 		
 		break;
+	case 'delete':
+		$query->load($PDOdb, GETPOST('id'));
+		$query->delete($PDOdb);
+		setEventMessage($langs->trans('DeleteSuccess'));
+		header('Location:query.php');
+		exit;
+	
+		break;
 	
 	case 'set-expert':
 		$query->load($PDOdb, GETPOST('id'));
@@ -124,7 +132,7 @@ function liste() {
 	llxHeader('', 'Query', '', '', 0, 0, array() , array('/query/css/query.css') );
 	dol_fiche_head();
 	
-	$sql="SELECT rowid as 'Id', title,expert
+	$sql="SELECT rowid as 'Id', title,expert,0 as 'delete' 
 	FROM ".MAIN_DB_PREFIX."query
 	WHERE 1
 	 ";
@@ -134,10 +142,12 @@ function liste() {
 		'link'=>array(
 			'Id'=>'<a href="?action=view&id=@val@">'.img_picto('Edit', 'edit.png').' @val@</a>'
 			,'title'=>'<a href="?action=run&id=@Id@">'.img_picto('Run', 'object_cron.png').' @val@</a>'
+			,'delete'=>'<a href="?action=delete&id=@Id@" onclick="return(confirm(\''.$langs->trans('ConfirmDeleteMessage').'\'));">'.img_picto('Delete', 'delete.png').'</a>'
 		)
 		,'title'=>array(
 			'title'=>$langs->trans('Title')
 			,'expert'=>$langs->trans('Expert')
+			,'delete'=>$langs->trans('Delete')
 		)
 		,'translate'=>array(
 			'expert'=>array( 0=>$langs->trans('No'), 1=>$langs->trans('Yes') )

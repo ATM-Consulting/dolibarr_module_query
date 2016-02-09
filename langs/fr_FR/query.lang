@@ -28,6 +28,8 @@ set_QUERY_SHOW_PDF_TRANSFORM=Voir les boutons pour transformer en PDF (attention
 QueryDashBoard=Sélectionnez le panneau (module Query)
 cloneQuery=Dupliquer cette requête
 AfterWhere=Après la condition (Groupement, etc)
+Free=Libre
+setExpertFreeMode=Mode expert libre
 
 ConfirmDeleteMessage=Êtes vous sûre de vouloir supprimer cette requête ?
 DeleteSuccess=Requête supprimée avec succès

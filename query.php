@@ -40,6 +40,13 @@ switch ($action) {
 		fiche($query);
 	
 		break;
+	case 'set-free':	
+		$query->load($PDOdb, GETPOST('id'));
+		$query->expert = 2;
+		$query->save($PDOdb);
+		fiche($query);
+	
+		break;
 	case 'unset-expert':
 		$query->load($PDOdb, GETPOST('id'));
 		$query->expert = 0;
@@ -370,7 +377,12 @@ function fiche(&$query) {
 
 			if($query->getId()>0) {
 				
-				if($query->expert) {
+				if($query->expert == 2) {
+						
+					echo 'showQueryPreview('.$query->getId().');';
+					init_js($query);
+				}
+				else if($query->expert == 1) {
 				
 					echo 'showQueryPreview('.$query->getId().');';
 						
@@ -447,13 +459,18 @@ function fiche(&$query) {
 			if($query->getId()>0 && !empty($user->rights->query->all->expert) ) {
 				?><div style="float:right;"><?php 
 					
-				if(!$query->expert) {
+				if($query->expert == 0) {
 					
 					?><a class="butAction" href="?action=set-expert&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('setExpertMode') ?></a><?php
 					
 				}
+				else if($query->expert == 2) {
+					?><a class="butAction" href="?action=set-expert&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('setExpertMode') ?></a><?php
+					?><br /><br /><a class="butAction" href="?action=unset-expert&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('unsetExpertMode') ?></a><?php
+				}
 				else {
-					?><a class="butAction" href="?action=unset-expert&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('unsetExpertMode') ?></a><?php
+					?><a class="butAction" href="?action=set-free&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('setExpertFreeMode') ?></a><?php
+					?><br /><br /><a class="butAction" href="?action=unset-expert&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('unsetExpertMode') ?></a><?php
 				}
 				
 				?><br /><br /><a class="butAction" href="?action=clone&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('cloneQuery') ?></a><?php
@@ -488,7 +505,7 @@ function fiche(&$query) {
 		?>
 	</div>
 	<?php
-		if($query->getId()>0) {
+		if($query->getId()>0 && $query->expert!=2) {
 			?>
 			<div class="selected_fields">
 				<div class="border" id="fields"><div class="liste_titre"><?php echo $langs->trans('FieldsOrder'); ?></div></div>
@@ -498,24 +515,24 @@ function fiche(&$query) {
 		
 		if($query->getId()>0) {
 	?>
-	<div id="results" style="display:<?php echo !$query->expert ? 'none':'block'; ?>;">
+	<div id="results" style="display:<?php echo $query->expert > 0 ? 'block':'none'; ?>;">
 		<div>
 		<?php echo $langs->trans('Fields'); ?><br />
-		<textarea id="sql_query_fields" name="sql_fields"><?php echo $query->sql_fields ?></textarea>
+		<textarea id="sql_query_fields" name="sql_fields" <?php echo $query->expert==2 ? ' style="width:700px;height:100px;" ' : '' ?>><?php echo $query->sql_fields ?></textarea>
 		</div>
 		
 		<div>
 		<?php echo $langs->trans('From'); ?><br />
-		<textarea id="sql_query_from" name="sql_from"><?php echo $query->sql_from ?></textarea>
+		<textarea id="sql_query_from" name="sql_from" <?php echo $query->expert==2 ? 'style="width:700px;height:100px;"' : '' ?>><?php echo $query->sql_from ?></textarea>
 		</div>
 		
 		<div>
 		<?php echo $langs->trans('Where'); ?><br />
-		<textarea id="sql_query_where" name="sql_where"><?php echo $query->sql_where ?></textarea>
+		<textarea id="sql_query_where" name="sql_where" <?php echo $query->expert==2 ? 'style="width:700px;height:200px;"' : '' ?>><?php echo $query->sql_where ?></textarea>
 		
 		<?php
-			if($query->expert) {
-				echo $langs->trans('AfterWhere'); ?><br /><textarea id="sql_query_afterwhere" name="sql_afterwhere"><?php echo $query->sql_afterwhere ?></textarea><?php
+			if($query->expert>0) {
+				echo $langs->trans('AfterWhere'); ?><br /><textarea id="sql_query_afterwhere" name="sql_afterwhere" <?php echo $query->expert==2 ? 'style="width:700px;height:100px;"' : '' ?>><?php echo $query->sql_afterwhere ?></textarea><?php
 			}
 			else {
 				?><input type="hidden" id="sql_query_afterwhere" name="sql_afterwhere" value="" /><?php
@@ -528,12 +545,12 @@ function fiche(&$query) {
 	
 	<div style="clear:both; border-top:1px solid #000;"></div>
 	<?php
-		if($query->getId()>0) {
-	?>
-	<div class="selected_fields_view">
-		<div class="border" id="fieldsview"><div class="liste_titre"><?php echo $langs->trans('FieldsView'); ?></div></div>
-	</div>
-	<?php
+		if($query->getId()>0 && $query->expert!=2) {
+		?>
+		<div class="selected_fields_view">
+			<div class="border" id="fieldsview"><div class="liste_titre"><?php echo $langs->trans('FieldsView'); ?></div></div>
+		</div>
+		<?php
 		}
 	?>
 	<div id="previewRequete" style="display: none;">

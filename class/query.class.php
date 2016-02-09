@@ -117,47 +117,59 @@ class TQuery extends TObjetStd {
 	}
 
 	function getSQL($table_element='',$objectid=0) {
-		
-		if($this->expert>0) {
+		if($this->expert == 2) {
 			return  "SELECT ".$this->sql_fields."
 				FROM ".$this->sql_from."
 	                        WHERE (".($this->sql_where ? $this->sql_where : 1 ).")
         	                ".$this->sql_afterwhere;
 		}
+		else if($this->expert == 1) {
+			
+			if(empty($this->sql_afterwhere) && !empty($this->TGroup)) {
+					$this->sql_afterwhere=" GROUP BY ".implode(',', $this->TGroup);	
+			}
+			
+			return  "SELECT ".$this->sql_fields."
+				FROM ".$this->sql_from."
+	                        WHERE (".($this->sql_where ? $this->sql_where : 1 ).")
+        	                ".$this->sql_afterwhere;
+		}
+		else {
+			$this->sql_fields = '';
+			foreach($this->TField as $field) {
+				
+				if(!empty($this->sql_fields))$this->sql_fields.=',';
+				
+				$fname_concat = $this->getField($field);
+				
+				if(!empty($this->TFunction[$field])) {
+					$this->sql_fields.=strtr($this->TFunction[$field], array('@field@'=> $field)).' as "'.$fname_concat.'"';
+				}
+				else{
+					$this->sql_fields.=$field.' as "'.$fname_concat.'"';
+				}
+				
+			}
+			
+			$sql="SELECT ".($this->sql_fields ? $this->sql_fields : '*') ."
+				FROM ".$this->sql_from."
+				WHERE (".($this->sql_where ? $this->sql_where : 1 ).")
+				".$this->sql_afterwhere;
+			
+			if(!empty($table_element) && strpos($sql, $table_element)!==false) {
+				$sql.=' AND '.MAIN_DB_PREFIX.$table_element.'.rowid='.$objectid;
+			}
 	
-		$this->sql_fields = '';
-		foreach($this->TField as $field) {
-			
-			if(!empty($this->sql_fields))$this->sql_fields.=',';
-			
-			$fname_concat = $this->getField($field);
-			
-			if(!empty($this->TFunction[$field])) {
-				$this->sql_fields.=strtr($this->TFunction[$field], array('@field@'=> $field)).' as "'.$fname_concat.'"';
-			}
-			else{
-				$this->sql_fields.=$field.' as "'.$fname_concat.'"';
+			if(!empty($this->TGroup)) {
+				$sql.=" GROUP BY ".implode(',', $this->TGroup);	
 			}
 			
+			
+			if($this->preview && stripos($sql,'LIMIT ') === false) $sql.=" LIMIT 5";
+			
+			return $sql;	
 		}
-		
-		$sql="SELECT ".($this->sql_fields ? $this->sql_fields : '*') ."
-			FROM ".$this->sql_from."
-			WHERE (".($this->sql_where ? $this->sql_where : 1 ).")
-			".$this->sql_afterwhere;
-		
-		if(!empty($table_element) && strpos($sql, $table_element)!==false) {
-			$sql.=' AND '.MAIN_DB_PREFIX.$table_element.'.rowid='.$objectid;
-		}
-
-		if(!empty($this->TGroup)) {
-			$sql.=" GROUP BY ".implode(',', $this->TGroup);	
-		}
-		
-		
-		if($this->preview && stripos($sql,'LIMIT ') === false) $sql.=" LIMIT 5";
-		
-		return $sql;			
+				
 	}
 
 	function getBind() {

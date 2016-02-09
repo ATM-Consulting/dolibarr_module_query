@@ -53,3 +53,76 @@ function queryAdminPrepareHead()
 
     return $head;
 }
+function explode_brackets($str, $separator=",", $leftbracket="(", $rightbracket=")", $quote="'", $ignore_escaped_quotes=true ) {
+
+    $buffer = '';
+    $stack = array();
+    $depth = 0;
+    $betweenquotes = false;
+    $len = strlen($str);
+    for ($i=0; $i<$len; $i++) {
+      $previouschar = $char;
+      $char = $str[$i];
+      switch ($char) {
+        case $separator:
+          if (!$betweenquotes) {
+            if (!$depth) {
+              if ($buffer !== '') {
+                $stack[] = $buffer;
+                $buffer = '';
+              }
+              continue 2;
+            }
+          }
+          break;
+        case $quote:
+          if ($ignore_escaped_quotes) {
+            if ($previouschar!="\\") {
+              $betweenquotes = !$betweenquotes;
+            }
+          } else {
+            $betweenquotes = !$betweenquotes;
+          }
+          break;
+        case $leftbracket:
+          if (!$betweenquotes) {
+            $depth++;
+          }
+          break;
+        case $rightbracket:
+          if (!$betweenquotes) {
+            if ($depth) {
+              $depth--;
+            } else {
+              $stack[] = $buffer.$char;
+              $buffer = '';
+              continue 2;
+            }
+          }
+          break;
+        }
+        $buffer .= $char;
+    }
+    if ($buffer !== '') {
+      $stack[] = $buffer;
+    }
+
+    return $stack;
+}
+
+function _getFieldName($field){
+
+	$pos = strrpos(strtolower($field),' as ');
+
+	if($pos!==false) {
+		return trim(strtr(substr($field, $pos+2),array("'"=>'')));
+	}
+	else {
+		
+		//$field = strtr($field,'.','_');
+		
+	}
+	
+	return $field;
+
+}

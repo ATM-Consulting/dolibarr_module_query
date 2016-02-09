@@ -120,7 +120,8 @@ function _getFieldName($field){
 	else {
 		
 		//$field = strtr($field,'.','_');
-		
+		list($t,$f) = explode('.',$field);
+		$field = empty($f) ? $t : $f;
 	}
 	
 	return $field;

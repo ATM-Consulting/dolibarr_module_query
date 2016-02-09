@@ -24,6 +24,7 @@ class TQuery extends TObjetStd {
 		
 		$this->TClassName = array(
 			'User'=>$langs->trans('User')
+			,'Societe'=>$langs->trans('Company')		
 			,'Facture'=>$langs->trans('Invoice')		
 			,'Propal'=>$langs->trans('Propal')
 			,'Commande'=>$langs->trans('Order')
@@ -269,6 +270,7 @@ class TQuery extends TObjetStd {
 			else if($classname == 'Commande') dol_include_once('/commande/class/commande.class.php');
 			else if($classname == 'Task') dol_include_once('/projet/class/task.class.php');
 			else if($classname == 'Projet') dol_include_once('/projet/class/project.class.php');
+			else if($classname == 'Societe') dol_include_once('/societe/class/societe.class.php');
 			else {
 				return $langs->trans('ImpossibleToIncludeClass').' : '.$classname;
 			}

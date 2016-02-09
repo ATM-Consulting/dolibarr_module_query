@@ -115,7 +115,7 @@ function _getFieldName($field){
 	$pos = strrpos(strtolower($field),' as ');
 
 	if($pos!==false) {
-		return trim(strtr(substr($field, $pos+2),array("'"=>'')));
+		return trim(strtr(substr($field, $pos+3),array("'"=>'')));
 	}
 	else {
 		

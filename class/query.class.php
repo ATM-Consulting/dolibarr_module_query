@@ -107,15 +107,29 @@ class TQuery extends TObjetStd {
 		
 	}
 	
+	private function getField($field) {
+
+		list($t, $fname) = explode('.', $field);
+                $fname_concat = empty($fname) ? $t : $t.'_'.$fname;
+
+		return  $fname_concat;
+	}
+
 	function getSQL($table_element='',$objectid=0) {
-			
+		
+		if($this->expert>0) {
+			return  "SELECT ".$this->sql_fields."
+				FROM ".$this->sql_from."
+	                        WHERE (".($this->sql_where ? $this->sql_where : 1 ).")
+        	                ".$this->sql_afterwhere;
+		}
+	
 		$this->sql_fields = '';
 		foreach($this->TField as $field) {
 			
 			if(!empty($this->sql_fields))$this->sql_fields.=',';
 			
-			list($t, $fname) = explode('.', $field);
-			$fname_concat = $t.'_'.$fname;
+			$fname_concat = $this->getField($field);
 			
 			if(!empty($this->TFunction[$field])) {
 				$this->sql_fields.=strtr($this->TFunction[$field], array('@field@'=> $field)).' as "'.$fname_concat.'"';

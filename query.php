@@ -104,6 +104,7 @@ function run(&$PDOdb, &$query, $preview = false) {
 				<link rel="stylesheet" type="text/css" href="<?php echo dol_buildpath('/theme/eldy/style.css.php',1) ?>">
 				<link rel="stylesheet" type="text/css" href="<?php echo dol_buildpath('/query/css/query.css',1) ?>">
 				<script type="text/javascript" src="<?php echo dol_buildpath('/includes/jquery/js/jquery.min.js',1) ?>"></script>
+				<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 			</head>
 		<body style="margin:0 0 0 0;padding:0 0 0 0;"><?php
 		
@@ -158,7 +159,7 @@ function liste() {
 			,'delete'=>$langs->trans('Delete')
 		)
 		,'translate'=>array(
-			'expert'=>array( 0=>$langs->trans('No'), 1=>$langs->trans('Yes') )
+			'expert'=>array( 0=>$langs->trans('No'), 1=>$langs->trans('Yes'),2=>$langs->trans('Free') )
 		)
 	
 	));
@@ -518,21 +519,29 @@ function fiche(&$query) {
 	<div id="results" style="display:<?php echo $query->expert > 0 ? 'block':'none'; ?>;">
 		<div>
 		<?php echo $langs->trans('Fields'); ?><br />
-		<textarea id="sql_query_fields" name="sql_fields" <?php echo $query->expert==2 ? ' style="width:700px;height:100px;" ' : '' ?>><?php echo $query->sql_fields ?></textarea>
+		<textarea id="sql_query_fields" name="sql_fields" <?php echo $query->expert==2 ? ' style="width:700px;height:100px;" ' : '' ?>><?php 
+			echo htmlentities($query->sql_fields,0,ini_get("default_charset"));
+		?></textarea>
 		</div>
 		
 		<div>
 		<?php echo $langs->trans('From'); ?><br />
-		<textarea id="sql_query_from" name="sql_from" <?php echo $query->expert==2 ? 'style="width:700px;height:100px;"' : '' ?>><?php echo $query->sql_from ?></textarea>
+		<textarea id="sql_query_from" name="sql_from" <?php echo $query->expert==2 ? 'style="width:700px;height:100px;"' : '' ?>><?php 
+			 echo htmlentities($query->sql_from,0,ini_get("default_charset"));
+		?></textarea>
 		</div>
 		
 		<div>
 		<?php echo $langs->trans('Where'); ?><br />
-		<textarea id="sql_query_where" name="sql_where" <?php echo $query->expert==2 ? 'style="width:700px;height:200px;"' : '' ?>><?php echo $query->sql_where ?></textarea>
+		<textarea id="sql_query_where" name="sql_where" <?php echo $query->expert==2 ? 'style="width:700px;height:200px;"' : '' ?>><?php 
+			echo htmlentities($query->sql_where,0,ini_get("default_charset"));
+		?></textarea>
 		
 		<?php
 			if($query->expert>0) {
-				echo $langs->trans('AfterWhere'); ?><br /><textarea id="sql_query_afterwhere" name="sql_afterwhere" <?php echo $query->expert==2 ? 'style="width:700px;height:100px;"' : '' ?>><?php echo $query->sql_afterwhere ?></textarea><?php
+				echo $langs->trans('AfterWhere'); ?><br /><textarea id="sql_query_afterwhere" name="sql_afterwhere" <?php echo $query->expert==2 ? 'style="width:700px;height:100px;"' : '' ?>><?php 
+					echo htmlentities($query->sql_afterwhere,0,ini_get("default_charset"));  
+				?></textarea><?php
 			}
 			else {
 				?><input type="hidden" id="sql_query_afterwhere" name="sql_afterwhere" value="" /><?php

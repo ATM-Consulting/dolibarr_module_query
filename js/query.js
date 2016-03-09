@@ -522,7 +522,7 @@ function refresh_sql() {
 				null;
 			}
 			else{
-				where+= field+' '+operator+' :'+field.replace(".", "_"); 	
+				where+= field+' '+operator+' ( :'+field.replace(".", "_")+' ) '; 	
 			}
 			
 			

@@ -87,7 +87,8 @@ function _list(&$PDOdb) {
 	
 	$l=new TListviewTBS('lMenu');
 	$sql = "SELECT rowid, mainmenu,leftmenu,title,date_cre 
-	FROM ".MAIN_DB_PREFIX."query_menu ";
+	FROM ".MAIN_DB_PREFIX."query_menu 
+	WHERE entity IN (0,".$conf->entity.")";
 	
 	
 	

@@ -558,7 +558,7 @@ class TQueryMenu extends TObjetStd {
         global $langs;
          
         parent::set_table(MAIN_DB_PREFIX.'query_menu');
-        parent::add_champs('fk_menu,fk_query',array('type'=>'int','index'=>true));
+        parent::add_champs('fk_menu,fk_query,entity',array('type'=>'int','index'=>true));
 		parent::_init_vars('title,perms,mainmenu,leftmenu');
         parent::start();    
 		
@@ -567,6 +567,9 @@ class TQueryMenu extends TObjetStd {
 	function save(&$PDOdb) {
 		
 		global $db,$conf,$user;
+		$this->entity = $conf->entity;
+		
+		
 		if($this->fk_menu == 0) {
 			
 			$menu = new Menubase($db,'all');

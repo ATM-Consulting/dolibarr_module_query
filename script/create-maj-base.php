@@ -29,6 +29,9 @@ $o->init_db_by_vars($PDOdb);
 $o=new TQDashBoardQuery($db);
 $o->init_db_by_vars($PDOdb);
 
+$o=new TQueryMenu($db);
+$o->init_db_by_vars($PDOdb);
+
 
 $PDOdb->Execute("INSERT INTO `llx_qdashboard` (`rowid`, `date_cre`, `date_maj`, `fk_user`, `fk_user_author`, `fk_usergroup`, `uid`, `send_by_mail`, `hook`, `title`) VALUES
 (1, '2015-12-04 16:20:45', '2015-12-09 17:48:27', 1, 2, 4, '5239255d1f9cb26f08f8a52125178c38', '', 'projectcard', 'Projets'),

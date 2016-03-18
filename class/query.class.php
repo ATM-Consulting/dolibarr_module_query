@@ -549,3 +549,108 @@ class TQuery extends TObjetStd {
 	}
 	
 }
+
+
+dol_include_once('/core/class/menubase.class.php');
+	
+class TQueryMenu extends TObjetStd {
+	function __construct() {
+        global $langs;
+         
+        parent::set_table(MAIN_DB_PREFIX.'query_menu');
+        parent::add_champs('fk_menu,fk_query',array('type'=>'int','index'=>true));
+		parent::_init_vars('title,perms,mainmenu,leftmenu');
+        parent::start();    
+		
+	}
+	
+	function save(&$PDOdb) {
+		
+		global $db,$conf,$user;
+		if($this->fk_menu == 0) {
+			
+			$menu = new Menubase($db,'all');
+			
+		    $menu->module='query';
+			$menu->type='left';
+	        $menu->mainmenu=$menu->fk_mainmenu=$this->mainmenu;
+	        $menu->fk_leftmenu=$this->leftmenu;
+			
+			$menu->leftmenu = 'querymenu'.$this->getId();
+			
+	        $menu->fk_menu=-1;
+			
+	        $menu->position=500 + $this->getId();
+	        $menu->url='/query/query.php?action=run&id='.$this->fk_query.'&_a='.time();
+	        $menu->target='';
+	        $menu->titre=$this->title;
+	        $menu->langs='query.lang';
+	        $menu->perms=$this->perms;
+	        $menu->enabled=0;
+	        $menu->user=2;
+	        
+	        $menu->level=0;
+			$res = $menu->create($user);
+			
+			if($res<=0) {
+				var_dump($menu);
+				exit('Erreur lors de la création du menu');
+			} 
+			
+			$this->fk_menu = $menu->id;
+			
+			
+		}
+		else{
+			
+			$menu = new Menubase($db,'all');
+			if($menu->fetch($this->fk_menu)>0) {
+				
+				$menu->mainmenu=$menu->fk_mainmenu=$this->mainmenu;
+	        	$menu->fk_leftmenu=$this->leftmenu;
+				$menu->url='/query/query.php?action=run&id='.$this->fk_query.'&_a='.time();
+				$menu->leftmenu = 'querymenu'.$this->getId();
+				$menu->position=500 + $this->getId();
+				$menu->titre=$this->title;
+				$menu->enabled=0;
+				$menu->level=0;
+				$menu->user=2; 
+				$menu->update($user);
+				
+			}
+			
+		}
+		
+		parent::save($PDOdb);
+	}
+	
+	function delete(&$PDOdb) {
+		
+		parent::delete($PDOdb);
+		
+		if($this->fk_menu > 0) {
+			global $db,$conf,$user;
+			$menu = new Menubase($db,'all');
+			if($menu->fetch($this->fk_menu)>0) {
+		
+				$menu->delete($user);
+			}
+		}
+	}
+	
+	static function getMenu(&$PDOdb, $type) {
+		global $langs;
+		
+		if($type == 'main') {
+			$Tab = TRequeteCore::_get_id_by_sql($PDOdb, "SELECT DISTINCT mainmenu FROM ".MAIN_DB_PREFIX."menu WHERE 1 ORDER BY mainmenu", 'mainmenu', 'mainmenu');
+		}
+		else{
+			$Tab = TRequeteCore::_get_id_by_sql($PDOdb, "SELECT DISTINCT leftmenu FROM ".MAIN_DB_PREFIX."menu WHERE 1 ORDER BY leftmenu", 'leftmenu', 'leftmenu');
+		
+		}
+		
+		
+		return $Tab;
+	}
+	
+}

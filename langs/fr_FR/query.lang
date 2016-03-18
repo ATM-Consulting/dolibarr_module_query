@@ -30,6 +30,8 @@ cloneQuery=Dupliquer cette requête
 AfterWhere=Après la condition (Groupement, etc)
 Free=Libre
 setExpertFreeMode=Mode expert libre
-
+Query=Requête
+MainMenu=Menu principal
+LeftMenu=Sous menu
 ConfirmDeleteMessage=Êtes vous sûre de vouloir supprimer cette requête ?
 DeleteSuccess=Requête supprimée avec succès

@@ -360,6 +360,37 @@ class modquery extends DolibarrModules
         $this->menu[$r]=array(
         	'fk_menu'=>'fk_mainmenu=tools,fk_leftmenu=query',
         	'type'=>'left',
+        	'titre'=>'Liste des entrées menu',
+        	'mainmenu'=>'tools',
+        	'leftmenu'=>'menu_query_list',
+        	'url'=>'/query/menu.php',
+        	'perms'=>'$user->rights->query->all->create',
+        	'position'=>311,
+        	'target'=>'',
+        	'user'=>2
+        );
+		$r++;
+
+        $this->menu[$r]=array(
+        	'fk_menu'=>'fk_mainmenu=tools,fk_leftmenu=query',
+        	'type'=>'left',
+        	'titre'=>'Créer une entrée menu',
+        	'mainmenu'=>'tools',
+        	'leftmenu'=>'menu_query_add',
+        	'url'=>'/query/menu.php?action=add',
+        	'langs'=>'query.lang',
+        	'position'=>312,
+        	'perms'=>'$user->rights->query->all->create',
+        	'target'=>'',
+        	'user'=>2
+        );
+		
+        $r++;
+
+        
+        $this->menu[$r]=array(
+        	'fk_menu'=>'fk_mainmenu=tools,fk_leftmenu=query',
+        	'type'=>'left',
         	'titre'=>'Accès base de données',
         	'mainmenu'=>'tools',
         	'leftmenu'=>'bdd_access',
@@ -373,6 +404,7 @@ class modquery extends DolibarrModules
         );
 		
         $r++;
+		
 		
         //$this->menu[$r]=array(
         //	// Use r=value where r is index key used for the parent menu entry

@@ -15,8 +15,17 @@
 	switch ($action) {
 		case 'save':
 			$object->load($PDOdb, GETPOST('id'));
-			$object->set_values($_POST);
-			$object->save($PDOdb);
+			
+			if(GETPOST('bt_delete')!='') {
+				$object->delete($PDOdb);
+				setEventMessage('MenuDeleted');
+			}
+			else{
+				$object->set_values($_POST);
+				$object->save($PDOdb);
+				setEventMessage('MenuSaved');				
+			}
+			
 			
 			_list($PDOdb);
 			
@@ -58,7 +67,7 @@ function _card(&$PDOdb, &$object) {
 		)
 		,'view'=>array(
 			'langs'=>$langs
-			,'buttons'=>$formCore->btsubmit($langs->trans('Save'), 'bt_save')
+			,'buttons'=>$formCore->btsubmit($langs->trans('Delete'), 'bt_delete','','butActionDelete').' &nbsp; '. $formCore->btsubmit($langs->trans('Save'), 'bt_save')
 		)
 	));
 	

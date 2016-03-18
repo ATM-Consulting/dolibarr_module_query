@@ -112,7 +112,7 @@ function run(&$PDOdb, &$query, $preview = false) {
 	
 	if(empty($query->sql_from)) die('InvalidQuery');
 	
-	$show_details = true;
+	$show_details = GETPOST('_a') == '' ? true : false;
 	
 	if($preview) {
 		$query->preview = true;

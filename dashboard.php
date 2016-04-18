@@ -155,6 +155,10 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 				<style type="text/css">
 					.pagination { display : none; }
 					<?php if((int)GETPOST('allow_gen')!=1) echo '.notInGeneration { display : none; }'; ?>
+
+					table.liste tr.impair,table.liste tr.pair,table.liste tr.liste_titre,div.titre {
+						font-size: 12px;
+					}
 				</style>
 			</head>
 		<body >
@@ -335,7 +339,6 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 		    		}
 					
 					if(!empty($cell->query)) {
-						
 						if(!$withHeader) {
 							echo $cell->query->run($PDOdb, false, $cell->height * $cell_height, GETPOST('table_element'), GETPOST('objectid'));
 						}

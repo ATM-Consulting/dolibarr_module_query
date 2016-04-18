@@ -101,7 +101,6 @@ class TQuery extends TObjetStd {
 			return load_fiche_titre($this->title).$this->runList($PDOdb,dol_buildpath('/query/tpl/html.simplelist.tbs.html'),$table_element,$objectid);
 		}
 		else {
-			
 			return load_fiche_titre($this->title).$this->runList($PDOdb,'',$table_element,$objectid);	
 		}
 		
@@ -275,6 +274,8 @@ class TQuery extends TObjetStd {
 		
 		list($classname, $include) = explode(',', $type);
 		
+		dol_include_once('/core/class/html.form.class.php');
+
 		if(empty($include)) {
 			if($classname == 'User') dol_include_once('/user/class/user.class.php');
 			else if($classname == 'Facture') dol_include_once('/compta/facture/class/facture.class.php');
@@ -511,6 +512,7 @@ class TQuery extends TObjetStd {
 			$TTitle=$this->getTitle();
 			
 			$r=new TListviewTBS('lRunQuery'. $this->getId(), $template);
+//echo 3;
 			$html.=  $r->render($PDOdb, $sql,array(
 				'link'=>$this->TLink
 				,'hide'=>$THide
@@ -530,7 +532,7 @@ class TQuery extends TObjetStd {
 				,'eval'=>$TEval
 			)
 			,$TBind);
-			
+//echo 4;			
 			if($this->show_details) {
 				$html.=  '<div class="query">';
 				$Tab=array();
@@ -544,7 +546,7 @@ class TQuery extends TObjetStd {
 			
 			
 			$html.= $form->end_form();
-			
+//			var_dump(htmlentities($html));
 			return $html;
 	}
 	

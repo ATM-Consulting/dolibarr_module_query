@@ -95,7 +95,9 @@ function run(&$PDOdb, &$query, $preview = false) {
 	
 	if(!$preview) {
 		llxHeader('', 'Query', '', '', 0, 0, array() , array('/query/css/query.css') );
-		dol_fiche_head();
+		$head = TQueryMenu::getHeadForObject(GETPOST('tab_object'),GETPOST('fk_object'));
+		dol_fiche_head($head, 'tabQuery'.GETPOST('menuId'), 'Query');
+		
 	}
 	else{
 		
@@ -282,8 +284,8 @@ function fiche(&$query) {
 	global $langs, $conf,$user;
 	
 	llxHeader('', 'Query', '', '', 0, 0, array('/query/js/query.js'/*,'/query/js/jquery.base64.min.js'*/) , array('/query/css/query.css') );
-	dol_fiche_head();
 	
+	dol_fiche_head($query->title);
 	?>
 	<script type="text/javascript">
 		var MODQUERY_INTERFACE = "<?php echo dol_buildpath('/query/script/interface.php',1); ?>";

@@ -662,9 +662,11 @@ class TQueryMenu extends TObjetStd {
 	
 	
 	private function setTab() {
-		
-		$tab = $this->tab_object.':+tabQuery'.$this->getId().':'.$this->title.':query@query:'.$this->getUrl().'&tab_object='.$this->tab_object;
 		global $db;
+		
+		$tab = $this->tab_object.':+tabQuery'.$this->getId().':'.$this->title.':query@query:'.$this->getUrl()
+			.'&tab_object='.$this->tab_object.'&fk_object=__ID__&menuId='.$this->getId();
+		
 		dolibarr_set_const($db,'MAIN_MODULE_QUERY_TABS_'.$this->getId(), $tab);
 			
 	}
@@ -728,6 +730,66 @@ class TQueryMenu extends TObjetStd {
 		
 		
 		return $Tab;
+	}
+	
+	static function getHeadForObject($tab_object,$fk_object) {
+		global $db,$conf,$langs,$user;
+		$head = array();
+		
+		if(empty($tab_object)) return $head;
+		
+		if($tab_object === 'product' ) {
+			dol_include_once('/product/class/product.class.php');
+			dol_include_once('/core/lib/product.lib.php');
+			$object = new Product($db);
+			$object->fetch($fk_object);
+			$head=product_prepare_head($object);
+			
+		}
+		else if($tab_object === 'thirdparty' ) {
+			dol_include_once('/societe/class/societe.class.php');
+			dol_include_once('/core/lib/company.lib.php');
+			$object = new Societe($db);
+			$object->fetch($fk_object);
+			$head=societe_prepare_head($object);
+			
+		}
+		else if($tab_object === 'contact' ) {
+			dol_include_once('/contact/class/contact.class.php');
+			dol_include_once('/core/lib/contact.lib.php');
+			$object = new Contact($db);
+			$object->fetch($fk_object);
+			$head=contact_prepare_head($object);
+			
+		}
+		else if($tab_object === 'user' ) {
+			dol_include_once('/user/class/user.class.php');
+			dol_include_once('/core/lib/usergroups.lib.php');
+			$object = new User($db);
+			$object->fetch($fk_object);
+			$head=user_prepare_head($object);
+			
+		}
+		else if($tab_object === 'group' ) {
+			dol_include_once('/user/class/usergroup.class.php');
+			dol_include_once('/lib/usergroups.lib.php');
+			$object = new UserGroup($db);
+			$object->fetch($fk_object);
+			$head=group_prepare_head($object);
+			
+		}
+		else if($tab_object === 'project' ) {
+			dol_include_once('/projet/class/project.class.php');
+			dol_include_once('/core/lib/project.lib.php');
+			$object = new Project($db);
+			$object->fetch($fk_object);
+			$head=project_prepare_head($object);
+			
+		}
+				
+		
+		
+		return $head;
 	}
 	
 }

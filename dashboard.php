@@ -128,7 +128,8 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 	
 		llxHeader('', 'Query DashBoard', '', '', 0, 0, array('/query/js/dashboard.js', '/query/js/jquery.gridster.min.js') , array('/query/css/dashboard.css','/query/css/jquery.gridster.min.css') );
 	
-		dol_fiche_head();
+		$head = TQueryMenu::getHeadForObject(GETPOST('tab_object'),GETPOST('fk_object'));
+		dol_fiche_head($head, 'tabQuery'.GETPOST('menuId'), 'Query');
 		print_fiche_titre($dashboard->title);
 	}
 	else if(GETPOST('for_incusion')>0) {

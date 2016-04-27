@@ -57,8 +57,8 @@ function _card(&$PDOdb, &$object) {
 	echo $formCore->hidden('action', 'save');
 	echo $formCore->hidden('id', $object->getId());
 	
-	$TQuery = array_merge(array(0=>'----'), TQuery::getQueries($PDOdb));
-	$TDashBoard = array_merge(array(0=>'----'), TQDashBoard::getDashboard($PDOdb,'',0,true));
+	$TQuery = array('0'=>'----') + TQuery::getQueries($PDOdb);
+	$TDashBoard = array('0'=>'----') + TQDashBoard::getDashboard($PDOdb,'',0,true);
 	
 	$tbs=new TTemplateTBS;
 	echo $tbs->render('tpl/menu.html',array(),array(

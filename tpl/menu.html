@@ -1,11 +1,19 @@
 <table class="border" width="100%">
 	<tr>
-		<td width="20%">[view.langs.transnoentities(MainMenu)]</td>
+		<td width="20%">[view.langs.transnoentities(TypeMenu)]</td>
+		<td>[menu.type_menu; strconv=no]</td>
+	</tr>
+	<tr rel="type_menu">
+		<td>[view.langs.transnoentities(MainMenu)]</td>
 		<td>[menu.mainmenu; strconv=no]</td>
 	</tr>
-	<tr>
+	<tr rel="type_menu">
 		<td>[view.langs.transnoentities(LeftMenu)]</td>
 		<td>[menu.leftmenu; strconv=no]</td>
+	</tr>
+	<tr rel="type_tab">
+		<td>[view.langs.transnoentities(TabsObject)]</td>
+		<td>[menu.tab_object; strconv=no]</td>
 	</tr>
 	<tr>
 		<td>[view.langs.transnoentities(Query)]</td>
@@ -35,7 +43,25 @@
 		$('#fk_query').val(0);	
 	});
 	
+	$('#type_menu').change(function() {
+		
+		_switch_type_menu();
+		
+	});
+
+	function _switch_type_menu() {
+		if($('#type_menu').val() == 'MENU') {
+			$('tr[rel=type_menu]').show();
+			$('tr[rel=type_tab]').hide();
+		}
+		else{
+			$('tr[rel=type_menu]').hide();
+			$('tr[rel=type_tab]').show();
+		}
+
+	}
 	
+	_switch_type_menu();
 </script>
 <p align="center">
 	[view.buttons; strconv=no]

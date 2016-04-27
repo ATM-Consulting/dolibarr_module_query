@@ -63,7 +63,9 @@ function _card(&$PDOdb, &$object) {
 	$tbs=new TTemplateTBS;
 	echo $tbs->render('tpl/menu.html',array(),array(
 		'menu'=>array(
-			'mainmenu'=>$formCore->combo('', 'mainmenu', TQueryMenu::getMenu($PDOdb, 'main'), $object->mainmenu)
+			'type_menu'=>$formCore->combo('', 'type_menu', $object->TTypeMenu, $object->type_menu)
+			,'tab_object'=>$formCore->combo('', 'tab_object', $object->TTabObject, $object->tab_object)
+			,'mainmenu'=>$formCore->combo('', 'mainmenu', TQueryMenu::getMenu($PDOdb, 'main'), $object->mainmenu)
 			,'leftmenu'=>$formCore->combo('', 'leftmenu', TQueryMenu::getMenu($PDOdb, 'left'), $object->leftmenu)
 			,'fk_query'=>$formCore->combo('', 'fk_query', $TQuery, $object->fk_query)
 			,'fk_dashboard'=>$formCore->combo('', 'fk_dashboard', $TDashBoard, $object->fk_dashboard)

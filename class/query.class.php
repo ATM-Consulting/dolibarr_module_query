@@ -560,9 +560,39 @@ class TQueryMenu extends TObjetStd {
         global $langs;
          
         parent::set_table(MAIN_DB_PREFIX.'query_menu');
-        parent::add_champs('fk_menu,fk_query,fk_dashboard,entity',array('type'=>'int','index'=>true));
-		parent::_init_vars('title,perms,mainmenu,leftmenu');
+        parent::add_champs('fk_menu,fk_const_tab,fk_query,fk_dashboard,entity',array('type'=>'int','index'=>true));
+		parent::_init_vars('title,perms,mainmenu,leftmenu,type_menu,tab_object');
         parent::start();    
+		
+		$this->type_menu = 'MENU';
+		$this->TTypeMenu=array(
+			'MENU'=>$langs->trans('Menu')
+			,'TAB'=>$langs->trans('Tab')
+		);
+		
+		$this->TTabObject=array(
+		
+			'thirdparty'=>$langs->trans('Thirdparty')
+			,'contact'=>$langs->trans('Contact')
+			,'product'=>$langs->trans('Product')
+			,'user'=>$langs->trans('User')
+			,'group'=>$langs->trans('Group')
+			
+	        // 'intervention'		to add a tab in intervention view
+	        // 'order_supplier'		to add a tab in supplier order view
+	        // 'invoice_supplier'	to add a tab in supplier invoice view
+	        // 'invoice'			to add a tab in customer invoice view
+	        // 'order'				to add a tab in customer order view
+	        // 'product'			to add a tab in product view
+	        // 'stock'				to add a tab in stock view
+	        // 'propal'				to add a tab in propal view
+	        // 'member'				to add a tab in fundation member view
+	        // 'contract'			to add a tab in contract view
+	        // 'user'				to add a tab in user view
+	        // 'group'				to add a tab in group view
+	        // 'contact'	
+				
+		);
 		
 	}
 	
@@ -573,14 +603,9 @@ class TQueryMenu extends TObjetStd {
 		return $url;
 	}
 	
-	function save(&$PDOdb) {
-		
-		global $db,$conf,$user;
-		$this->entity = $conf->entity;
-		
+	private function setMenu() {
 		
 		if($this->fk_menu == 0) {
-			
 			$menu = new Menubase($db,'all');
 			
 		    $menu->module='query';
@@ -612,8 +637,6 @@ class TQueryMenu extends TObjetStd {
 			} 
 			
 			$this->fk_menu = $menu->id;
-			
-			
 		}
 		else{
 			
@@ -635,20 +658,60 @@ class TQueryMenu extends TObjetStd {
 			
 		}
 		
+	}
+	
+	
+	private function setTab() {
+		
+		$tab = $this->tab_object.':+tabQuery'.$this->getId().':'.$this->title.':query@query:'.$this->getUrl().'&tab_object='.$this->tab_object;
+		global $db;
+		dolibarr_set_const($db,'MAIN_MODULE_QUERY_TABS_'.$this->getId(), $tab);
+			
+	}
+	
+	
+	function save(&$PDOdb) {
+		
+		global $db,$conf,$user;
+		$this->entity = $conf->entity;
+		
+		if($this->type_menu=='MENU') {
+			$this->setMenu();
+			$this->deleteTab();
+		}
+		
 		parent::save($PDOdb);
+		
+		if($this->type_menu=='TAB'){
+			$this->deleteMenu();
+			$this->setTab();
+		}
+		
+		
 	}
 	
 	function delete(&$PDOdb) {
 		
 		parent::delete($PDOdb);
 		
+		$this->deleteMenu();
+	}
+	private function deleteMenu() {
 		if($this->fk_menu > 0) {
 			global $db,$conf,$user;
 			$menu = new Menubase($db,'all');
 			if($menu->fetch($this->fk_menu)>0) {
-		
 				$menu->delete($user);
 			}
+		}
+	}
+	
+	private function deleteTab() {
+		if($this->fk_const_tab > 0) {
+			global $db,$conf,$user;
+			
+			dolibarr_del_const($db, (int)$this->fk_const_tab );
+			
 		}
 	}
 	

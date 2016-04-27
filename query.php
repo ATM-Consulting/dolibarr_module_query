@@ -289,6 +289,7 @@ function fiche(&$query) {
 		var MODQUERY_INTERFACE = "<?php echo dol_buildpath('/query/script/interface.php',1); ?>";
 		var MODQUERY_QUERYID = <?php echo $query->getId(); ?>;
 		var MODQUERY_EXPERT = <?php echo (int)$query->expert; ?>;
+		var MODQUERY_PREFIX = "<?php echo MAIN_DB_PREFIX ?>";
 		
 		var select_equal = '<select sql-act="operator"> '
 					+ '<option value=""> </option>'

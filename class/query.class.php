@@ -560,10 +560,17 @@ class TQueryMenu extends TObjetStd {
         global $langs;
          
         parent::set_table(MAIN_DB_PREFIX.'query_menu');
-        parent::add_champs('fk_menu,fk_query,entity',array('type'=>'int','index'=>true));
+        parent::add_champs('fk_menu,fk_query,fk_dashboard,entity',array('type'=>'int','index'=>true));
 		parent::_init_vars('title,perms,mainmenu,leftmenu');
         parent::start();    
 		
+	}
+	
+	private function getUrl() {
+		if($this->fk_query>0) $url = '/query/query.php?action=run&id='.$this->fk_query.'&_a='.time();
+		else if($this->fk_dashboard>0)$url = '/query/dashboard.php?action=run&id='.$this->fk_dashboard.'&_a='.time();
+		
+		return $url;
 	}
 	
 	function save(&$PDOdb) {
@@ -586,7 +593,9 @@ class TQueryMenu extends TObjetStd {
 	        $menu->fk_menu=-1;
 			
 	        $menu->position=500 + $this->getId();
-	        $menu->url='/query/query.php?action=run&id='.$this->fk_query.'&_a='.time();
+			
+	        $menu->url=$this->getUrl();
+	        
 	        $menu->target='';
 	        $menu->titre=$this->title;
 	        $menu->langs='query.lang';
@@ -613,7 +622,7 @@ class TQueryMenu extends TObjetStd {
 				
 				$menu->mainmenu=$menu->fk_mainmenu=$this->mainmenu;
 	        	$menu->fk_leftmenu=$this->leftmenu;
-				$menu->url='/query/query.php?action=run&id='.$this->fk_query.'&_a='.time();
+				$menu->url=$this->getUrl();
 				$menu->leftmenu = 'querymenu'.$this->getId();
 				$menu->position=500 + $this->getId();
 				$menu->titre=$this->title;

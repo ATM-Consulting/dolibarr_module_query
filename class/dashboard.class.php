@@ -42,10 +42,10 @@ class TQDashBoard extends TObjetStd {
 		
 	}
 	
-	static function getDashboard(&$PDOdb, $hook='', $fk_user = 0) {
+	static function getDashboard(&$PDOdb, $hook='', $fk_user = 0, $withTitle=false) {
 		$Tab = array();
 		
-		$sql = "SELECT rowid, uid FROM ".MAIN_DB_PREFIX."qdashboard qd 
+		$sql = "SELECT rowid, uid, title FROM ".MAIN_DB_PREFIX."qdashboard qd 
 		WHERE 1 ";
 		
 		if($hook) $sql.=" AND qd.hook='".$hook."'";
@@ -54,7 +54,7 @@ class TQDashBoard extends TObjetStd {
 		
 		$sql.=" ORDER BY title";
 		
-		$Tab = TRequeteCore::_get_id_by_sql($PDOdb, $sql, 'uid', 'rowid');
+		$Tab = TRequeteCore::_get_id_by_sql($PDOdb, $sql, ($withTitle ? 'title' : 'uid'), 'rowid');
 		
 		return $Tab;
 	}

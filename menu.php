@@ -3,6 +3,7 @@
 	require 'config.php';
 	
 	dol_include_once('/query/class/query.class.php');
+	dol_include_once('/query/class/dashboard.class.php');
 	
 	$PDOdb = new TPDOdb;
 	
@@ -56,12 +57,16 @@ function _card(&$PDOdb, &$object) {
 	echo $formCore->hidden('action', 'save');
 	echo $formCore->hidden('id', $object->getId());
 	
+	$TQuery = array_merge(array(0=>'----'), TQuery::getQueries($PDOdb));
+	$TDashBoard = array_merge(array(0=>'----'), TQDashBoard::getDashboard($PDOdb,'',0,true));
+	
 	$tbs=new TTemplateTBS;
 	echo $tbs->render('tpl/menu.html',array(),array(
 		'menu'=>array(
 			'mainmenu'=>$formCore->combo('', 'mainmenu', TQueryMenu::getMenu($PDOdb, 'main'), $object->mainmenu)
 			,'leftmenu'=>$formCore->combo('', 'leftmenu', TQueryMenu::getMenu($PDOdb, 'left'), $object->leftmenu)
-			,'fk_query'=>$formCore->combo('', 'fk_query', TQuery::getQueries($PDOdb), $object->fk_query,0," $('#title').val( $(this).find(':selected').text() ) ")
+			,'fk_query'=>$formCore->combo('', 'fk_query', $TQuery, $object->fk_query)
+			,'fk_dashboard'=>$formCore->combo('', 'fk_dashboard', $TDashBoard, $object->fk_dashboard)
 			,'title'=>$formCore->texte('','title', $object->title,80,255)
 			,'perms'=>$formCore->texte('','perms', $object->perms,80,255)
 		)

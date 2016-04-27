@@ -12,6 +12,10 @@
 		<td>[menu.fk_query; strconv=no]</td>
 	</tr>
 	<tr>
+		<td>[view.langs.transnoentities(Or)] [view.langs.transnoentities(Dashboard)]</td>
+		<td>[menu.fk_dashboard; strconv=no]</td>
+	</tr>
+	<tr>
 		<td>[view.langs.transnoentities(Title)]</td>
 		<td>[menu.title; strconv=no]</td>
 	</tr>
@@ -20,7 +24,19 @@
 		<td>[menu.perms; strconv=no]</td>
 	</tr>
 </table>
-
+<script type="text/javascript">
+	$('#fk_query').change(function() {
+		$('#title').val( $(this).find(':selected').text() );	
+		$('#fk_dashboard').val(0);
+	});
+	
+	$('#fk_dashboard').change(function() {
+		$('#title').val( $(this).find(':selected').text() );
+		$('#fk_query').val(0);	
+	});
+	
+	
+</script>
 <p align="center">
 	[view.buttons; strconv=no]
 </p>

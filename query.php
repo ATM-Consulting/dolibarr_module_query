@@ -108,7 +108,7 @@ function run(&$PDOdb, &$query, $preview = false) {
 				<script type="text/javascript" src="<?php echo dol_buildpath('/includes/jquery/js/jquery.min.js',1) ?>"></script>
 				<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 			</head>
-		<body style="margin:0 0 0 0;padding:0 0 0 0;"><?php
+		<body style="margin:0 0 0 0;padding:0 0 0 0;"><?phpview
 		
 	}
 	
@@ -121,7 +121,18 @@ function run(&$PDOdb, &$query, $preview = false) {
 		
 	}
 	
-	echo $query->run($PDOdb, $show_details);
+	$tab_object = GETPOST('tab_object');
+	$table_element = GETPOST('table_element');
+	$fk_object = GETPOST('fk_object');
+	
+	if(empty($table_element)) {
+		if($tab_object == 'thirdparty') $table_element = 'societe';
+		else if($tab_object == 'project') $table_element = 'projet';
+		else $table_element = $tab_object;
+	}
+	
+	
+	echo $query->run($PDOdb, $show_details,0,$table_element, $fk_object);
 	
 	if(!$preview) {
 		dol_fiche_end();
@@ -162,6 +173,7 @@ function liste() {
 		)
 		,'translate'=>array(
 			'expert'=>array( 0=>$langs->trans('No'), 1=>$langs->trans('Yes'),2=>$langs->trans('Free') )
+			
 		)
 	
 	));

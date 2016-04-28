@@ -577,7 +577,7 @@ class TQueryMenu extends TObjetStd {
 			,'product'=>$langs->trans('Product')
 			,'user'=>$langs->trans('User')
 			,'group'=>$langs->trans('Group')
-			
+			,'project'=>$langs->trans('Project')
 	        // 'intervention'		to add a tab in intervention view
 	        // 'order_supplier'		to add a tab in supplier order view
 	        // 'invoice_supplier'	to add a tab in supplier invoice view

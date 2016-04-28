@@ -23,6 +23,16 @@
 	}
 	
 	switch ($action) {
+		case 'delete':
+			
+			$dashboard->load($PDOdb, GETPOST('id'));
+			$dashboard->delete($PDOdb);
+			setEventMessage($langs->trans('DeleteSuccess'));
+			header('Location:dashboard.php');
+			exit;
+		
+		
+			break;
 		case 'view':
 			
 			$dashboard->load($PDOdb, GETPOST('id'));
@@ -85,7 +95,7 @@ function liste() {
 
 	dol_fiche_head();
 	
-	$sql="SELECT qd.rowid as 'Id', qd.title 
+	$sql="SELECT qd.rowid as 'Id', qd.title , '' as 'delete'
 	FROM ".MAIN_DB_PREFIX."qdashboard qd
 	WHERE 1
 	";
@@ -103,9 +113,12 @@ function liste() {
 		'link'=>array(
 			'Id'=>'<a href="?action=view&id=@val@">'.img_picto('Edit', 'edit.png').' @val@</a>'
 			,'title'=>'<a href="?action=run&id=@Id@">'.img_picto('Run', 'object_cron.png').' @val@</a>'
+			,'delete'=>'<a href="?action=delete&id=@Id@" onclick="return(confirm(\''.$langs->trans('ConfirmDeleteMessage').'\'));">'.img_picto('Delete', 'delete.png').'</a>'
+		
 		)
 		,'title'=>array(
 			'title'=>$langs->trans('Title')
+			,'delete'=>$langs->trans('DeleteQuery')
 		)
 	
 	));
@@ -124,11 +137,22 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 	
 	$cell_height = 200;
 	
+	$tab_object = GETPOST('tab_object');
+	$table_element = GETPOST('table_element');
+	$fk_object = GETPOST('fk_object');
+	
+	if(empty($table_element)) {
+		if($tab_object == 'thirdparty') $table_element = 'societe';
+		else if($tab_object == 'project') $table_element = 'projet';
+		else $table_element = $tab_object;
+	}
+	
+	
 	if($withHeader) {
 	
 		llxHeader('', 'Query DashBoard', '', '', 0, 0, array('/query/js/dashboard.js', '/query/js/jquery.gridster.min.js') , array('/query/css/dashboard.css','/query/css/jquery.gridster.min.css') );
 	
-		$head = TQueryMenu::getHeadForObject(GETPOST('tab_object'),GETPOST('fk_object'));
+		$head = TQueryMenu::getHeadForObject($tab_object,$fk_object);
 		dol_fiche_head($head, 'tabQuery'.GETPOST('menuId'), 'Query');
 		print_fiche_titre($dashboard->title);
 	}
@@ -341,10 +365,10 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 					
 					if(!empty($cell->query)) {
 						if(!$withHeader) {
-							echo $cell->query->run($PDOdb, false, $cell->height * $cell_height, GETPOST('table_element'), GETPOST('objectid'));
+							echo $cell->query->run($PDOdb, false, $cell->height * $cell_height, $table_element, $fk_object);
 						}
 						else{
-							echo $cell->query->run($PDOdb, false, $cell->height * $cell_height, GETPOST('table_element'), GETPOST('objectid'));	
+							echo $cell->query->run($PDOdb, false, $cell->height * $cell_height, $table_element, $fk_object);	
 						}
 						
 					}

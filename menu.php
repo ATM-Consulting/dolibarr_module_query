@@ -93,11 +93,11 @@ function _list(&$PDOdb) {
 	
 	
 	$l=new TListviewTBS('lMenu');
-	$sql = "SELECT rowid, mainmenu,leftmenu,title,date_cre 
+	$sql = "SELECT rowid,title, type_menu, tab_object, mainmenu,leftmenu,date_cre 
 	FROM ".MAIN_DB_PREFIX."query_menu 
 	WHERE entity IN (0,".$conf->entity.")";
 	
-	
+	$menu_static = new TQueryMenu;
 	
 	echo $l->render($PDOdb, $sql,array(
 	
@@ -106,6 +106,12 @@ function _list(&$PDOdb) {
 			,'leftmenu'=>$langs->trans('LeftMenu')
 			,'mainmenu'=>$langs->trans('MainMenu')
 			,'date_cre'=>$langs->trans('Date')
+			,'tab_object'=>$langs->trans('TabsObject')
+			,'type_menu'=>$langs->trans('TypeMenu')
+		)
+		,'translate'=>array(
+			'tab_object'=>$menu_static->TTabObject
+			,'type_menu'=>$menu_static->TTypeMenu
 		)
 		,'link'=>array(
 			'title'=>'<a href="?id=@rowid@&action=edit">@val@</a>'

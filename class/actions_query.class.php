@@ -26,7 +26,7 @@ class ActionsQuery
 			$TDash = TQDashBoard::getDashboard($PDOdb, $parameters['currentcontext'],$user->id);
 			
 			foreach($TDash as $uid) {
-				$url = dol_buildpath('/query/dashboard.php?action=run&allow_gen=1&uid='.$uid.'&table_element='.$object->table_element.'&objectid='.$object->id,1);
+				$url = dol_buildpath('/query/dashboard.php?action=run&allow_gen=1&uid='.$uid.'&table_element='.$object->table_element.'&fk_object='.$object->id,1);
 				
 				?>
 				<tr>

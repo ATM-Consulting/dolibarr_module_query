@@ -3,6 +3,7 @@
 	require 'config.php';
 	
 	dol_include_once('/query/class/query.class.php');
+	dol_include_once('/query/class/dashboard.class.php');
 	
 	$PDOdb = new TPDOdb;
 	
@@ -56,12 +57,18 @@ function _card(&$PDOdb, &$object) {
 	echo $formCore->hidden('action', 'save');
 	echo $formCore->hidden('id', $object->getId());
 	
+	$TQuery = array('0'=>'----') + TQuery::getQueries($PDOdb);
+	$TDashBoard = array('0'=>'----') + TQDashBoard::getDashboard($PDOdb,'',0,true);
+	
 	$tbs=new TTemplateTBS;
 	echo $tbs->render('tpl/menu.html',array(),array(
 		'menu'=>array(
-			'mainmenu'=>$formCore->combo('', 'mainmenu', TQueryMenu::getMenu($PDOdb, 'main'), $object->mainmenu)
+			'type_menu'=>$formCore->combo('', 'type_menu', $object->TTypeMenu, $object->type_menu)
+			,'tab_object'=>$formCore->combo('', 'tab_object', $object->TTabObject, $object->tab_object)
+			,'mainmenu'=>$formCore->combo('', 'mainmenu', TQueryMenu::getMenu($PDOdb, 'main'), $object->mainmenu)
 			,'leftmenu'=>$formCore->combo('', 'leftmenu', TQueryMenu::getMenu($PDOdb, 'left'), $object->leftmenu)
-			,'fk_query'=>$formCore->combo('', 'fk_query', TQuery::getQueries($PDOdb), $object->fk_query,0," $('#title').val( $(this).find(':selected').text() ) ")
+			,'fk_query'=>$formCore->combo('', 'fk_query', $TQuery, $object->fk_query)
+			,'fk_dashboard'=>$formCore->combo('', 'fk_dashboard', $TDashBoard, $object->fk_dashboard)
 			,'title'=>$formCore->texte('','title', $object->title,80,255)
 			,'perms'=>$formCore->texte('','perms', $object->perms,80,255)
 		)
@@ -86,11 +93,11 @@ function _list(&$PDOdb) {
 	
 	
 	$l=new TListviewTBS('lMenu');
-	$sql = "SELECT rowid, mainmenu,leftmenu,title,date_cre 
+	$sql = "SELECT rowid,title, type_menu, tab_object, mainmenu,leftmenu,date_cre 
 	FROM ".MAIN_DB_PREFIX."query_menu 
 	WHERE entity IN (0,".$conf->entity.")";
 	
-	
+	$menu_static = new TQueryMenu;
 	
 	echo $l->render($PDOdb, $sql,array(
 	
@@ -99,6 +106,12 @@ function _list(&$PDOdb) {
 			,'leftmenu'=>$langs->trans('LeftMenu')
 			,'mainmenu'=>$langs->trans('MainMenu')
 			,'date_cre'=>$langs->trans('Date')
+			,'tab_object'=>$langs->trans('TabsObject')
+			,'type_menu'=>$langs->trans('TypeMenu')
+		)
+		,'translate'=>array(
+			'tab_object'=>$menu_static->TTabObject
+			,'type_menu'=>$menu_static->TTypeMenu
 		)
 		,'link'=>array(
 			'title'=>'<a href="?id=@rowid@&action=edit">@val@</a>'

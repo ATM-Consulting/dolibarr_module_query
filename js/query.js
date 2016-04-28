@@ -545,6 +545,8 @@ function getTables() {
 		,async:false
 	}).done(function(data) {
 		
+		var l = MODQUERY_PREFIX.length;
+		
 		$tables = $("#tables");
 		
 		$tables.empty();
@@ -552,7 +554,7 @@ function getTables() {
 		for (x in data) {
 			//console.log(data[x], jQuery.inArray(data[x], TTable));
 			if(jQuery.inArray(data[x], TTable) == -1 ) {
-				$tables.append('<option>'+data[x]+'</option>');	
+				$tables.append('<option value="'+data[x]+'">'+data[x].substring(l)+'</option>');	
 			}
 			
 			

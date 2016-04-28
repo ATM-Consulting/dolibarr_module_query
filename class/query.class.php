@@ -102,7 +102,6 @@ class TQuery extends TObjetStd {
 			return load_fiche_titre($this->title).$this->runList($PDOdb,dol_buildpath('/query/tpl/html.simplelist.tbs.html'),$table_element,$objectid);
 		}
 		else {
-			
 			return load_fiche_titre($this->title).$this->runList($PDOdb,'',$table_element,$objectid);	
 		}
 		
@@ -276,6 +275,8 @@ class TQuery extends TObjetStd {
 		
 		list($classname, $include) = explode(',', $type);
 		
+		dol_include_once('/core/class/html.form.class.php');
+
 		if(empty($include)) {
 			if($classname == 'User') dol_include_once('/user/class/user.class.php');
 			else if($classname == 'Facture') dol_include_once('/compta/facture/class/facture.class.php');
@@ -513,6 +514,7 @@ class TQuery extends TObjetStd {
 			$TTitle=$this->getTitle();
 			
 			$r=new TListviewTBS('lRunQuery'. $this->getId(), $template);
+//echo 3;
 			$html.=  $r->render($PDOdb, $sql,array(
 				'link'=>$this->TLink
 				,'hide'=>$THide
@@ -532,7 +534,7 @@ class TQuery extends TObjetStd {
 				,'eval'=>$TEval
 			)
 			,$TBind);
-			
+//echo 4;			
 			if($this->show_details) {
 				$html.=  '<div class="query">';
 				$Tab=array();
@@ -546,7 +548,7 @@ class TQuery extends TObjetStd {
 			
 			
 			$html.= $form->end_form();
-			
+//			var_dump(htmlentities($html));
 			return $html;
 	}
 	
@@ -560,20 +562,52 @@ class TQueryMenu extends TObjetStd {
         global $langs;
          
         parent::set_table(MAIN_DB_PREFIX.'query_menu');
-        parent::add_champs('fk_menu,fk_query,entity',array('type'=>'int','index'=>true));
-		parent::_init_vars('title,perms,mainmenu,leftmenu');
+        parent::add_champs('fk_menu,fk_const_tab,fk_query,fk_dashboard,entity',array('type'=>'int','index'=>true));
+		parent::_init_vars('title,perms,mainmenu,leftmenu,type_menu,tab_object');
         parent::start();    
+		
+		$this->type_menu = 'MENU';
+		$this->TTypeMenu=array(
+			'MENU'=>$langs->trans('Menu')
+			,'TAB'=>$langs->trans('Tab')
+		);
+		
+		$this->TTabObject=array(
+		
+			'thirdparty'=>$langs->trans('Thirdparty')
+			,'contact'=>$langs->trans('Contact')
+			,'product'=>$langs->trans('Product')
+			,'user'=>$langs->trans('User')
+			,'group'=>$langs->trans('Group')
+			,'project'=>$langs->trans('Project')
+	        // 'intervention'		to add a tab in intervention view
+	        // 'order_supplier'		to add a tab in supplier order view
+	        // 'invoice_supplier'	to add a tab in supplier invoice view
+	        // 'invoice'			to add a tab in customer invoice view
+	        // 'order'				to add a tab in customer order view
+	        // 'product'			to add a tab in product view
+	        // 'stock'				to add a tab in stock view
+	        // 'propal'				to add a tab in propal view
+	        // 'member'				to add a tab in fundation member view
+	        // 'contract'			to add a tab in contract view
+	        // 'user'				to add a tab in user view
+	        // 'group'				to add a tab in group view
+	        // 'contact'	
+				
+		);
 		
 	}
 	
-	function save(&$PDOdb) {
+	private function getUrl() {
+		if($this->fk_query>0) $url = '/query/query.php?action=run&id='.$this->fk_query.'&_a='.time();
+		else if($this->fk_dashboard>0)$url = '/query/dashboard.php?action=run&id='.$this->fk_dashboard.'&_a='.time();
 		
-		global $db,$conf,$user;
-		$this->entity = $conf->entity;
-		
+		return $url;
+	}
+	
+	private function setMenu() {
 		
 		if($this->fk_menu == 0) {
-			
 			$menu = new Menubase($db,'all');
 			
 		    $menu->module='query';
@@ -586,7 +620,9 @@ class TQueryMenu extends TObjetStd {
 	        $menu->fk_menu=-1;
 			
 	        $menu->position=500 + $this->getId();
-	        $menu->url='/query/query.php?action=run&id='.$this->fk_query.'&_a='.time();
+			
+	        $menu->url=$this->getUrl();
+	        
 	        $menu->target='';
 	        $menu->titre=$this->title;
 	        $menu->langs='query.lang';
@@ -603,8 +639,6 @@ class TQueryMenu extends TObjetStd {
 			} 
 			
 			$this->fk_menu = $menu->id;
-			
-			
 		}
 		else{
 			
@@ -613,7 +647,7 @@ class TQueryMenu extends TObjetStd {
 				
 				$menu->mainmenu=$menu->fk_mainmenu=$this->mainmenu;
 	        	$menu->fk_leftmenu=$this->leftmenu;
-				$menu->url='/query/query.php?action=run&id='.$this->fk_query.'&_a='.time();
+				$menu->url=$this->getUrl();
 				$menu->leftmenu = 'querymenu'.$this->getId();
 				$menu->position=500 + $this->getId();
 				$menu->titre=$this->title;
@@ -626,20 +660,62 @@ class TQueryMenu extends TObjetStd {
 			
 		}
 		
+	}
+	
+	
+	private function setTab() {
+		global $db;
+		
+		$tab = $this->tab_object.':+tabQuery'.$this->getId().':'.$this->title.':query@query:'.$this->getUrl()
+			.'&tab_object='.$this->tab_object.'&fk_object=__ID__&menuId='.$this->getId();
+		
+		dolibarr_set_const($db,'MAIN_MODULE_QUERY_TABS_'.$this->getId(), $tab);
+			
+	}
+	
+	
+	function save(&$PDOdb) {
+		
+		global $db,$conf,$user;
+		$this->entity = $conf->entity;
+		
+		if($this->type_menu=='MENU') {
+			$this->setMenu();
+			$this->deleteTab();
+		}
+		
 		parent::save($PDOdb);
+		
+		if($this->type_menu=='TAB'){
+			$this->deleteMenu();
+			$this->setTab();
+		}
+		
+		
 	}
 	
 	function delete(&$PDOdb) {
 		
 		parent::delete($PDOdb);
 		
+		$this->deleteMenu();
+	}
+	private function deleteMenu() {
 		if($this->fk_menu > 0) {
 			global $db,$conf,$user;
 			$menu = new Menubase($db,'all');
 			if($menu->fetch($this->fk_menu)>0) {
-		
 				$menu->delete($user);
 			}
+		}
+	}
+	
+	private function deleteTab() {
+		if($this->fk_const_tab > 0) {
+			global $db,$conf,$user;
+			
+			dolibarr_del_const($db, (int)$this->fk_const_tab );
+			
 		}
 	}
 	
@@ -656,6 +732,66 @@ class TQueryMenu extends TObjetStd {
 		
 		
 		return $Tab;
+	}
+	
+	static function getHeadForObject($tab_object,$fk_object) {
+		global $db,$conf,$langs,$user;
+		$head = array();
+		
+		if(empty($tab_object)) return $head;
+		
+		if($tab_object === 'product' ) {
+			dol_include_once('/product/class/product.class.php');
+			dol_include_once('/core/lib/product.lib.php');
+			$object = new Product($db);
+			$object->fetch($fk_object);
+			$head=product_prepare_head($object);
+			
+		}
+		else if($tab_object === 'thirdparty' ) {
+			dol_include_once('/societe/class/societe.class.php');
+			dol_include_once('/core/lib/company.lib.php');
+			$object = new Societe($db);
+			$object->fetch($fk_object);
+			$head=societe_prepare_head($object);
+			
+		}
+		else if($tab_object === 'contact' ) {
+			dol_include_once('/contact/class/contact.class.php');
+			dol_include_once('/core/lib/contact.lib.php');
+			$object = new Contact($db);
+			$object->fetch($fk_object);
+			$head=contact_prepare_head($object);
+			
+		}
+		else if($tab_object === 'user' ) {
+			dol_include_once('/user/class/user.class.php');
+			dol_include_once('/core/lib/usergroups.lib.php');
+			$object = new User($db);
+			$object->fetch($fk_object);
+			$head=user_prepare_head($object);
+			
+		}
+		else if($tab_object === 'group' ) {
+			dol_include_once('/user/class/usergroup.class.php');
+			dol_include_once('/lib/usergroups.lib.php');
+			$object = new UserGroup($db);
+			$object->fetch($fk_object);
+			$head=group_prepare_head($object);
+			
+		}
+		else if($tab_object === 'project' ) {
+			dol_include_once('/projet/class/project.class.php');
+			dol_include_once('/core/lib/project.lib.php');
+			$object = new Project($db);
+			$object->fetch($fk_object);
+			$head=project_prepare_head($object);
+			
+		}
+				
+		
+		
+		return $head;
 	}
 	
 }

@@ -606,8 +606,8 @@ class TQueryMenu extends TObjetStd {
 	}
 	
 	private function setMenu() {
-		
-		if($this->fk_menu == 0) {
+	global $db,$langs,$conf,$user;		
+		if($this->fk_menu <= 0) {
 			$menu = new Menubase($db,'all');
 			
 		    $menu->module='query';
@@ -665,7 +665,7 @@ class TQueryMenu extends TObjetStd {
 	
 	private function setTab() {
 		global $db;
-		
+		dol_include_once('/core/lib/admin.lib.php');
 		$tab = $this->tab_object.':+tabQuery'.$this->getId().':'.$this->title.':query@query:'.$this->getUrl()
 			.'&tab_object='.$this->tab_object.'&fk_object=__ID__&menuId='.$this->getId();
 		
@@ -699,6 +699,7 @@ class TQueryMenu extends TObjetStd {
 		parent::delete($PDOdb);
 		
 		$this->deleteMenu();
+		$this->deleteTab();
 	}
 	private function deleteMenu() {
 		if($this->fk_menu > 0) {
@@ -711,12 +712,11 @@ class TQueryMenu extends TObjetStd {
 	}
 	
 	private function deleteTab() {
-		if($this->fk_const_tab > 0) {
 			global $db,$conf,$user;
-			
-			dolibarr_del_const($db, (int)$this->fk_const_tab );
-			
-		}
+			dol_include_once('/core/lib/admin.lib.php');
+                
+	                dolibarr_del_const($db,'MAIN_MODULE_QUERY_TABS_'.$this->getId());
+
 	}
 	
 	static function getMenu(&$PDOdb, $type) {

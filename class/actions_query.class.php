@@ -47,7 +47,7 @@ class ActionsQuery
 		
 		if (in_array('index',explode(':',$parameters['context']))) 
         {
-        
+       
 			$sql="SELECT qd.uid as 'uid', qd.title 
 				FROM ".MAIN_DB_PREFIX."qdashboard qd
 				WHERE uid!='' ";
@@ -65,12 +65,12 @@ class ActionsQuery
         	<script type="text/javascript">
         		$(document).ready(function() {
         			
-        			$select = $('<div class="titre"><?php echo $langs->trans('QueryDashBoard'); ?></div><select name="qdashboardList"><option value=""> </option><?php
+        			$select = $('<div class="box"><table class="noborder boxtable" width="100%" summary="Query"><tr class="liste_titre"><th class="liste_titre"><?php echo $langs->trans('QueryDashBoard'); ?> <select name="qdashboardList"><option value=""> </option><?php
 						$res = $db->query($sql);
 						while($obj = $db->fetch_object($res)) {
 							echo '<option value="'.$obj->uid.'">'.$obj->title.'</option>';
 						}
-        			?></select><div id="queryDashboardview"></div>');
+        			?></select></th></tr><tr><td class="impair"><div id="queryDashboardview"></div></td></tr></table></div>');
         			
         			
         			$select.change(function() {
@@ -84,7 +84,15 @@ class ActionsQuery
         				}
         			});
         			
-        			$('table#otherboxes').before($select);
+        			<?php
+        			if(DOL_VERSION>=4.0) {
+						?> $('#left').before($select);<?php
+        			}
+					else{
+						?> $('table#otherboxes').before($select); <?php
+					}
+        			?>
+        			
         			
         			<?php
         			if(!empty($conf->global->{'QUERY_HOME_DEFAULT_DASHBOARD_USER_'.$user->id} )) {

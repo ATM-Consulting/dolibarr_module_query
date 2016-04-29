@@ -108,7 +108,7 @@ function run(&$PDOdb, &$query, $preview = false) {
 				<script type="text/javascript" src="<?php echo dol_buildpath('/includes/jquery/js/jquery.min.js',1) ?>"></script>
 				<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 			</head>
-		<body style="margin:0 0 0 0;padding:0 0 0 0;"><?phpview
+		<body style="margin:0 0 0 0;padding:0 0 0 0;"><?php
 		
 	}
 	

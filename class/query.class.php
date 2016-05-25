@@ -384,6 +384,11 @@ class TQuery extends TObjetStd {
 		if(!empty($this->TTotal)) {
 			
 			foreach($this->TTotal as $f=>$v) {
+				
+				if(is_array($v)) {
+					$v[1] = strtr($v[1],'.','_');
+				}
+				
 				$fSearch = strtr($f,'.','_');
 				$Tab[$fSearch]=$v;
 			}

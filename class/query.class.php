@@ -88,6 +88,8 @@ class TQuery extends TObjetStd {
 		
 		if(empty($this->nb_result_max)) $this->nb_result_max =empty($conf->global->ABRICOT_NB_MAX_RESULT_SQL) ? 2000 : $conf->global->ABRICOT_NB_MAX_RESULT_SQL;
 		
+		if($this->preview)$this->nb_result_max = 10;
+		
 		if(!empty($height)) $this->height = $height;
 		
 		if($this->type == 'CHART') {
@@ -467,6 +469,7 @@ class TQuery extends TObjetStd {
 			,'liste'=>array(
 				'titre'=>$this->title
 			)
+			,'limit'=>array('global'=> $this->nb_result_max)
 			,'title'=>$TTitle
 			,'xaxis'=>$xaxis
 			,'hide'=>$THide

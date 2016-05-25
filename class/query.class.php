@@ -8,7 +8,7 @@ class TQuery extends TObjetStd {
         parent::set_table(MAIN_DB_PREFIX.'query');
         parent::add_champs('sql_fields,sql_from,sql_where,sql_afterwhere',array('type'=>'text'));
 		parent::add_champs('TField,TTable,TOrder,TTitle,TTotal,TLink,THide,TTranslate,TMode,TOperator,TGroup,TFunction,TValue,TJoin,TFilter,TType,TClass',array('type'=>'array'));
-		parent::add_champs('expert',array('type'=>'int'));
+		parent::add_champs('expert,nb_result_max',array('type'=>'int'));
 		
         parent::_init_vars('title,type,xaxis');
         parent::start();    
@@ -81,9 +81,12 @@ class TQuery extends TObjetStd {
 	}
 	
 	function run(&$PDOdb, $show_details = true, $height=0, $table_element='', $objectid=0, $preview = false) {
+		global $conf;
 		
 		$this->show_details = $show_details;
 		$this->preview = $preview;
+		
+		if(empty($this->nb_result_max)) $this->nb_result_max =empty($conf->global->ABRICOT_NB_MAX_RESULT_SQL) ? 2000 : $conf->global->ABRICOT_NB_MAX_RESULT_SQL;
 		
 		if(!empty($height)) $this->height = $height;
 		
@@ -522,6 +525,7 @@ class TQuery extends TObjetStd {
 				,'liste'=>array(
 					'titre'=>''
 				)
+				,'limit'=>array('global'=> $this->nb_result_max)
 				,'type'=>$TType
 				,'orderBy'=>$this->TOrder
 				,'translate'=>$TTranslate

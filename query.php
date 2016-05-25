@@ -120,7 +120,6 @@ function run(&$PDOdb, &$query, $preview = false) {
 		$query->preview = true;
 		
 	}
-	
 	$tab_object = GETPOST('tab_object');
 	$table_element = GETPOST('table_element');
 	$fk_object = GETPOST('fk_object');

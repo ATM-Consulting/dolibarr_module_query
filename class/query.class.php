@@ -80,16 +80,15 @@ class TQuery extends TObjetStd {
 		
 	}
 	
-	function run(&$PDOdb, $show_details = true, $height=0, $table_element='', $objectid=0, $preview = false) {
+	function run(&$PDOdb, $show_details = true, $height=0, $table_element='', $objectid=0, $preview = -1) {
 		global $conf;
 		
 		$this->show_details = $show_details;
-		$this->preview = $preview;
+		if($preview!==-1) $this->preview = $preview;
 		
 		if(empty($this->nb_result_max)) $this->nb_result_max =empty($conf->global->ABRICOT_NB_MAX_RESULT_SQL) ? 2000 : $conf->global->ABRICOT_NB_MAX_RESULT_SQL;
 		
 		if($this->preview)$this->nb_result_max = 10;
-		
 		if(!empty($height)) $this->height = $height;
 		
 		if($this->type == 'CHART') {

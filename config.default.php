@@ -28,7 +28,7 @@
 	}
 
 	
-	if(ABRICOT_VERSION<1.5) {
+	if(ABRICOT_VERSION<1.8) {
 		print $langs->trans('AbricotMustBeUpdate'). ' : <a href="http://wiki.atm-consulting.fr/index.php/Nos_modules_Dolibarr#Abricot" target="_blank">Abricot</a>';
 		exit;
 	}

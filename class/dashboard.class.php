@@ -75,7 +75,7 @@ class TQDashBoardQuery extends TObjetStd {
 		$this->width=$this->height=$this->posx=$this->posy = 1; 
     }
 	
-	function load(&$PDOdb, $id) {
+	function load(&$PDOdb, $id, $loadChild = true) {
 		
 		parent::load($PDOdb, $id);
 		

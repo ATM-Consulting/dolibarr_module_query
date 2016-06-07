@@ -75,9 +75,9 @@ class ActionsQuery
         			
         			$select.change(function() {
         				
-        				var uid = $(this).val();
+        				var uid = $(this).find(":selected").val();
         				$('#queryDashboardview').empty();
-        				
+        				console.log(uid);
         				if(uid!='') {
         					var url="<?php echo dol_buildpath('/query/dashboard.php',1) ?>?action=run&allow_gen=1&storechoice=1&fk_user=<?php echo $user->id ?>&uid="+uid;
         					$('#queryDashboardview').html('<iframe src="'+url+'" width="100%" frameborder="0" onload="this.height = this.contentWindow.document.body.scrollHeight + \'px\'"></iframe>');

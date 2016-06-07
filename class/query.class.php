@@ -287,7 +287,7 @@ class TQuery extends TObjetStd {
 			else if($classname == 'Propal') dol_include_once('/comm/propal/class/propal.class.php');
 			else if($classname == 'Commande') dol_include_once('/commande/class/commande.class.php');
 			else if($classname == 'Task') dol_include_once('/projet/class/task.class.php');
-			else if($classname == 'Projet') dol_include_once('/projet/class/project.class.php');
+			else if($classname == 'Projet' || $classname == 'Project') dol_include_once('/projet/class/project.class.php');
 			else if($classname == 'Product') dol_include_once('/product/class/product.class.php');
 			else if($classname == 'Societe') dol_include_once('/societe/class/societe.class.php');
 			else {

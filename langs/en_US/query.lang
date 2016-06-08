@@ -3,3 +3,5 @@ ModuleXXXXXXDesc = Descripion
 
 ConfirmDeleteMessage=Are you sure ?
 DeleteSuccess=Successfully Removed
+
+RefreshDashboard=Automatically refresh the dashboard (minutes)

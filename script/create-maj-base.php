@@ -33,10 +33,10 @@ $o=new TQueryMenu($db);
 $o->init_db_by_vars($PDOdb);
 
 
-$PDOdb->Execute("INSERT INTO `llx_qdashboard` (`rowid`, `date_cre`, `date_maj`, `fk_user`, `fk_user_author`, `fk_usergroup`, `uid`, `send_by_mail`, `hook`, `title`) VALUES
-(1, '2015-12-04 16:20:45', '2015-12-09 17:48:27', 1, 2, 4, '5239255d1f9cb26f08f8a52125178c38', '', 'projectcard', 'Projets'),
-(2, '2015-12-05 17:16:18', '2015-12-09 17:45:24', 1, 2, 2, '9100b0751204b7521c91febb15c1920d', '', 'usercard', 'Commercial'),
-(4, '2015-12-09 12:28:02', '2015-12-09 12:29:42', 2, 2, 4, '887f97707d73f89288eb9dc0a76530ee', 'WEEK', 'usercard', 'Développeur')");
+$PDOdb->Execute("INSERT INTO `llx_qdashboard` (`rowid`, `date_cre`, `date_maj`, `fk_user`, `fk_user_author`, `fk_usergroup`, `uid`, `send_by_mail`, `hook`, `title`, `refresh_dashboard`) VALUES
+(1, '2015-12-04 16:20:45', '2015-12-09 17:48:27', 1, 2, 4, '5239255d1f9cb26f08f8a52125178c38', '', 'projectcard', 'Projets', '0'),
+(2, '2015-12-05 17:16:18', '2015-12-09 17:45:24', 1, 2, 2, '9100b0751204b7521c91febb15c1920d', '', 'usercard', 'Commercial' '0'),
+(4, '2015-12-09 12:28:02', '2015-12-09 12:29:42', 2, 2, 4, '887f97707d73f89288eb9dc0a76530ee', 'WEEK', 'usercard', 'Développeur' '0')");
 
 $PDOdb->Execute("INSERT INTO `llx_qdashboard_query` (`rowid`, `date_cre`, `date_maj`, `fk_qdashboard`, `fk_query`, `width`, `height`, `posx`, `posy`, `title`) VALUES
 (1, '2015-12-04 16:21:25', '2015-12-09 17:48:27', 1, 1, 2, 1, 1, 3, ''),

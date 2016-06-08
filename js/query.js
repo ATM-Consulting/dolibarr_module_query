@@ -202,13 +202,7 @@ $(document).ready(function() {
 			
 		}
 
-		$.ajax({
-			url: MODQUERY_INTERFACE
-			,data:TData
-			,method:'post'
-			,dataType:'html'
-			
-		}).done(function (idQuery) {
+		$.post(MODQUERY_INTERFACE, TData, function (idQuery) {
 			if(idQuery>0) {
 				if(MODQUERY_QUERYID == 0) document.location.href = "?action=view&id="+idQuery;
 				else showQueryPreview(idQuery);

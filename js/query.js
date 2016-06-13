@@ -1,5 +1,6 @@
 var TTable = [];
 var TField = [];
+var TFieldForCombo = [];
 var TFieldInTable = [];
 var TJoin = {};
 var TFieldRank = [];
@@ -106,7 +107,14 @@ $(document).ready(function() {
 		var TTotal = {};
 		$('#fieldsview [sql-act="total"]').each(function(i,item) {
 			if($(item).val()) {
-				TTotal[$(item).attr('field')] = $(item).val();
+				var f = $(item).attr('field');
+				if($(item).val() == 'groupsum') {
+					TTotal[f] = [ 'groupsum' , $('#fieldsview [field="'+f+'"][sql-act="field-total-group"]').val()];
+				}
+				else{
+					TTotal[f] = $(item).val();	
+				}
+				
 			}
 		});
 		
@@ -360,6 +368,7 @@ function refresh_field_param(field, table) {
 	var $fields = $('#fields');
 	var $fieldsView = $('#fieldsview');
 	
+	
 			$('select[name=xaxis]').append('<option value="'+field+'" field="'+field+'" table="'+table+'">'+field+'</option>');
 			
 			var search = '<span table="'+table+'" field="'+field+'" class="selector"><div class="tagtd">'+select_equal+select_mode+select_filter+'</div><div class="tagtd">'+select_order+select_function+select_group+'</div></span>';
@@ -376,7 +385,7 @@ function refresh_field_param(field, table) {
 				
 			$liView = $('<div class="field" table="'+table+'" field="'+field+'" ><div class="fieldName">'+field+'</div> <input tytpe="text" placeholder="Title" sql-act="title" field='+field+' value="" /></div>');
 			$liView.append('<input type="text" placeholder="Translation (value:translation, ...)" sql-act="translate" field='+field+' value="" />');
-			$liView.append(select_type+select_hide+select_total+select_class);
+			$liView.append(select_type+select_hide+select_total+select_total_group_field+select_class);
 			$liView.find('input,select').attr('field', field);
 			
 			$fieldsView.append($liView);
@@ -409,6 +418,22 @@ function refresh_field_param(field, table) {
 				
 			}).change();
 			
+			$fieldsView.find('select[sql-act=total]').unbind().change(function() {
+				var field = $(this).attr('field');
+				
+				TFieldForCombo.push(field);
+				
+				var $input = $fieldsView.find('select[field="'+field+'"][sql-act="field-total-group"]');
+				
+				if($(this).val() == 'groupsum') {
+					$input.show();
+				}
+				else{
+					$input.hide();
+				}
+				
+			}).change();
+			
 			if(MODQUERY_EXPERT == 1) {
 				$fields.find('select[sql-act=operator],input[sql-act=value]').hide();
 			}
@@ -417,6 +442,7 @@ function refresh_field_param(field, table) {
 
 function refresh_field_array(table) {
 	TField[table] = [];
+	
 	//console.log('refresh_field_array:'+table);
 	var $fields = $('#fields');
 	var $fieldsView = $('#fieldsview');

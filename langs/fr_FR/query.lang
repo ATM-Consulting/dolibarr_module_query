@@ -46,3 +46,5 @@ DeleteQuery=Supprimer ?
 RefreshDashboard=Rafraichissement automatique du dashboard (minutes)
 
 set_ABRICOT_NB_MAX_RESULT_SQL=Nombre de résultats dans la requête (si mot-clef LIMIT absent de la requête)
+CountOf=Nombre de
+TotalGroup=Total groupé sur colonne

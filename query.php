@@ -373,7 +373,7 @@ function fiche(&$query) {
 		var select_total_group_field = '<select sql-act="field-total-group">'
 						<?php
 						foreach($query->TField as $field) {
-							echo ' + \'<option value="'.$field.'">'.$field.'</option>\' ';
+							echo ' + \'<option value="'._getFieldName($field).'">'._getFieldName($field).'</option>\' ';
 						}
 						?>
 						+'</select>';

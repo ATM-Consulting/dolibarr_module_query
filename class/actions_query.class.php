@@ -68,7 +68,7 @@ class ActionsQuery
         			$select = $('<div class="box"><table class="noborder boxtable" width="100%" summary="Query"><tr class="liste_titre"><th class="liste_titre"><?php echo $langs->trans('QueryDashBoard'); ?> <select name="qdashboardList"><option value=""> </option><?php
 						$res = $db->query($sql);
 						while($obj = $db->fetch_object($res)) {
-							echo '<option value="'.$obj->uid.'">'.$obj->title.'</option>';
+							echo '<option value="'.$obj->uid.'">'.strtr($obj->title,array("'"=>"\'")).'</option>';
 						}
         			?></select></th></tr><tr><td class="impair"><div id="queryDashboardview"></div></td></tr></table></div>');
         			

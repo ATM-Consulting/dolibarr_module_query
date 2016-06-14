@@ -7,7 +7,7 @@ class TQDashBoard extends TObjetStd {
          
         parent::set_table(MAIN_DB_PREFIX.'qdashboard');
         parent::add_champs('fk_user,fk_user_author,fk_usergroup',array('type'=>'integer','index'=>true));
-		parent::add_champs('uid,send_by_mail,hook',array('index'=>true));
+		parent::add_champs('uid,send_by_mail,hook,refresh_dashboard',array('index'=>true));
 		
         parent::_init_vars('title');
         parent::start();    
@@ -45,7 +45,7 @@ class TQDashBoard extends TObjetStd {
 	static function getDashboard(&$PDOdb, $hook='', $fk_user = 0, $withTitle=false) {
 		$Tab = array();
 		
-		$sql = "SELECT rowid, uid, title FROM ".MAIN_DB_PREFIX."qdashboard qd 
+		$sql = "SELECT rowid, uid, title, refresh_dashboard FROM ".MAIN_DB_PREFIX."qdashboard qd 
 		WHERE 1 ";
 		
 		if($hook) $sql.=" AND qd.hook='".$hook."'";

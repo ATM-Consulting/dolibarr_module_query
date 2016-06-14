@@ -13,7 +13,7 @@
 	
 	
 	$action = GETPOST('action');
-	
+
 	$dashboard=new TQDashBoard;
 	$PDOdb=new TPDOdb;
 
@@ -268,6 +268,7 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 						,fk_usergroup:$('select[name=fk_usergroup]').val()
 						,send_by_mail:$('select[name=send_by_mail]').val()
 						,hook:$('select[name=hook]').val()
+						,refresh_dashboard:$('input[name=refresh_dashboard]').val()
 					}
 					
 				}).done(function(data) {
@@ -330,6 +331,7 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 			
 			echo $form->combo(' - '.$langs->trans('SendByMailToThisGroup'),'send_by_mail', $dashboard->TSendByMail, $dashboard->send_by_mail);
 			echo $form->combo(' - '.$langs->trans('ShowThisInCard'),'hook', $dashboard->THook, $dashboard->hook);
+			echo $form->number('<br />'.$langs->trans('RefreshDashboard'),'refresh_dashboard', $dashboard->refresh_dashboard, 20, 1, 0);
 			
 			?>
 			<a href="#" class="butAction" id="saveDashboard"><?php echo $langs->trans('SaveDashboard'); ?></a>
@@ -388,6 +390,16 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 	</div>
 	
 	<div style="clear:both"></div>
+
+	<?php 
+		if(($dashboard->refresh_dashboard > 0) && !$withHeader) {
+			echo "<script type=\"text/javascript\">\n";
+			echo "   // Automatically refresh\n";
+			echo "   setInterval(\"window.location.reload()\",".
+				(60000 * $dashboard->refresh_dashboard).");\n";
+			echo "</script>\n";
+		}
+	?>
 	
 	<?php
 	

@@ -112,6 +112,7 @@ function explode_brackets($str, $separator=",", $leftbracket="(", $rightbracket=
 
 function _getFieldName($field){
 
+	$field = trim($field);
 	$pos = strrpos(strtolower($field),' as ');
 
 	if($pos!==false) {

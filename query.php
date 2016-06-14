@@ -357,6 +357,7 @@ function fiche(&$query) {
 		var select_type	= '<select sql-act="type"> '
 					+ '<option value=""> </option>'
 					+ '<option value="number">Nombre</option>'
+					+ '<option value="integer">Entier</option>'
 					+ '<option value="datetime">Date/Heure</option>'
 					+ '<option value="date">Date</option>'
 					+ '<option value="hour">Heure</option>'

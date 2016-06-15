@@ -1,6 +1,4 @@
-#!/usr/bin/php
 <?php
-
 	chdir(__DIR__);
 	require 'config.php';
 	dol_include_once('/query/class/query.class.php');
@@ -25,7 +23,4 @@
 	    } catch (Exception $e) {
 	        echo $e->getMessage();
 	    }
-		
 	}
-	
-		

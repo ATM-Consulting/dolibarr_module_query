@@ -735,11 +735,13 @@ class TQueryMenu extends TObjetStd {
 		
 		if($type == 'main') {
 			$Tab = TRequeteCore::_get_id_by_sql($PDOdb, "SELECT DISTINCT mainmenu FROM ".MAIN_DB_PREFIX."menu WHERE 1 ORDER BY mainmenu", 'mainmenu', 'mainmenu');
-			$Tab[] = 'companies';
+			$Tab['companies'] = 'companies';
 		}
 		else{
 			$Tab = TRequeteCore::_get_id_by_sql($PDOdb, "SELECT DISTINCT leftmenu FROM ".MAIN_DB_PREFIX."menu WHERE 1 ORDER BY leftmenu", 'leftmenu', 'leftmenu');
-			$Tab[] = 'thirdparties';
+			$Tab['thirdparties'] = 'thirdparties';
+			$Tab['query'] = 'query';
+			$Tab['projects'] = 'projects';
 		}
 		
 		

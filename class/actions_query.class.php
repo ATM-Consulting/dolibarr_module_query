@@ -39,8 +39,8 @@ class ActionsQuery
 			}			
 			
 		} 
-	}	     
-	  
+	}	
+     
     function addStatisticLine($parameters, &$object, &$action, $hookmanager) 
     {  
       	global $langs,$db, $user, $conf;
@@ -48,7 +48,7 @@ class ActionsQuery
 		if (in_array('index',explode(':',$parameters['context']))) 
         {
        
-			$sql="SELECT qd.uid as 'uid', qd.title 
+			$sql="SELECT qd.uid as 'uid', qd.title ,qd.use_as_landing_page,qd.rowid
 				FROM ".MAIN_DB_PREFIX."qdashboard qd
 				WHERE uid!='' ";
 			
@@ -61,13 +61,31 @@ class ActionsQuery
 			
 			$langs->load('query@query');
 			
-        	?>
+			$TDashboard=array();
+			$res = $db->query($sql);
+			while($obj = $db->fetch_object($res)) {
+				
+				if($obj->use_as_landing_page == 1) {
+					
+					?>
+					<script type="text/javascript">
+					document.location.href="<?php echo dol_buildpath('/query/dashboard.php?action=run&id='.$obj->rowid,1) ?>";
+					</script>
+					<?php
+					
+				}
+				
+				$TDashboard[] = $obj;
+			} 
+			
+			
+			
+			?>
         	<script type="text/javascript">
         		$(document).ready(function() {
         			
         			$select = $('<div class="box"><table class="noborder boxtable" width="100%" summary="Query"><tr class="liste_titre"><th class="liste_titre"><?php echo $langs->trans('QueryDashBoard'); ?> <select name="qdashboardList"><option value=""> </option><?php
-						$res = $db->query($sql);
-						while($obj = $db->fetch_object($res)) {
+						foreach($TDashboard as &$obj) {
 							echo '<option value="'.$obj->uid.'">'.strtr($obj->title,array("'"=>"\'")).'</option>';
 						}
         			?></select></th></tr><tr><td class="impair"><div id="queryDashboardview"></div></td></tr></table></div>');

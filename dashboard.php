@@ -268,6 +268,7 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 						,fk_usergroup:$('select[name=fk_usergroup]').val()
 						,send_by_mail:$('select[name=send_by_mail]').val()
 						,hook:$('select[name=hook]').val()
+						,use_as_landing_page:$('select[name=use_as_landing_page]').val()
 						,refresh_dashboard:$('input[name=refresh_dashboard]').val()
 					}
 					
@@ -327,7 +328,11 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 			echo $form->texte($langs->trans('Title'), 'title', $dashboard->title, 50,255);
 			
 			$formDoli=new Form($db);
-			echo ' - '.$langs->trans('LimitAccessToThisGroup').' : '.$formDoli->select_dolgroups($dashboard->fk_usergroup, 'fk_usergroup', 1);
+			echo ' - '.$langs->trans('LimitAccessToThisGroup').' : '
+					.$formDoli->select_dolgroups($dashboard->fk_usergroup, 'fk_usergroup', 1)
+					.'/'.$langs->trans('UseAsLandingPage')
+					.$formDoli->selectarray('use_as_landing_page', array($langs->trans('No'),$langs->trans('Yes')),$dashboard->use_as_landing_page);
+					
 			
 			echo $form->combo(' - '.$langs->trans('SendByMailToThisGroup'),'send_by_mail', $dashboard->TSendByMail, $dashboard->send_by_mail);
 			echo $form->combo(' - '.$langs->trans('ShowThisInCard'),'hook', $dashboard->THook, $dashboard->hook);

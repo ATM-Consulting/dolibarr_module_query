@@ -7,7 +7,9 @@ class TQDashBoard extends TObjetStd {
          
         parent::set_table(MAIN_DB_PREFIX.'qdashboard');
         parent::add_champs('fk_user,fk_user_author,fk_usergroup',array('type'=>'integer','index'=>true));
-		parent::add_champs('uid,send_by_mail,hook,refresh_dashboard',array('index'=>true));
+		parent::add_champs('uid,send_by_mail,hook',array('index'=>true));
+		
+		parent::add_champs('refresh_dashboard,use_as_landing_page',array('type'=>'integer'));
 		
         parent::_init_vars('title');
         parent::start();    

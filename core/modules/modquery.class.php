@@ -79,8 +79,8 @@ class modquery extends DolibarrModules
         // for specific path of parts (eg: /query/core/modules/barcode)
         // for specific css file (eg: /query/css/query.css.php)
         $this->module_parts = array(
-           
-			'hooks'=>array('index','projectcard','productcard','thirdpartycard','usercard')
+           	'triggers'=>1
+			,'hooks'=>array('index','projectcard','productcard','thirdpartycard','usercard')
             
         );
 

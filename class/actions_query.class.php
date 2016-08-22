@@ -43,11 +43,11 @@ class ActionsQuery
 
     function addStatisticLine($parameters, &$object, &$action, $hookmanager)
     {
-      	global $langs,$db, $user, $conf;
+      	global $langs,$db, $user, $conf,$query_just_after_login;
 
-		if (in_array('index',explode(':',$parameters['context'])))
+		if (in_array('index',explode(':',$parameters['context'])) && !empty($query_just_after_login))
         {
-
+			
 			$sql="SELECT qd.uid as 'uid', qd.title ,qd.use_as_landing_page,qd.rowid
 				FROM ".MAIN_DB_PREFIX."qdashboard qd
 				WHERE uid<>'' ";

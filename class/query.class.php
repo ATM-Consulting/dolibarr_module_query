@@ -5,6 +5,8 @@ class TQuery extends TObjetStd {
 	function __construct() {
         global $langs;
          
+		$langs->load("stocks");
+		 
         parent::set_table(MAIN_DB_PREFIX.'query');
         parent::add_champs('sql_fields,sql_from,sql_where,sql_afterwhere',array('type'=>'text'));
 		parent::add_champs('TField,TTable,TOrder,TTitle,TTotal,TLink,THide,TTranslate,TMode,TOperator,TGroup,TFunction,TValue,TJoin,TFilter,TType,TClass',array('type'=>'array'));
@@ -31,6 +33,7 @@ class TQuery extends TObjetStd {
 			,'Task'=>$langs->trans('Task')
 			,'Project'=>$langs->trans('Project')
 			,'Product'=>$langs->trans('Product')
+			,'Entrepot'=>$langs->trans('Warehouse')
 		);
 		
 		$this->show_details = true;
@@ -290,6 +293,7 @@ class TQuery extends TObjetStd {
 			else if($classname == 'Projet' || $classname == 'Project') dol_include_once('/projet/class/project.class.php');
 			else if($classname == 'Product') dol_include_once('/product/class/product.class.php');
 			else if($classname == 'Societe') dol_include_once('/societe/class/societe.class.php');
+			else if($classname == 'Entrepot') dol_include_once('/product/stock/class/entrepot.class.php');
 			else {
 				return $langs->trans('ImpossibleToIncludeClass').' : '.$classname;
 			}

@@ -79,8 +79,8 @@ class modquery extends DolibarrModules
         // for specific path of parts (eg: /query/core/modules/barcode)
         // for specific css file (eg: /query/css/query.css.php)
         $this->module_parts = array(
-           
-			'hooks'=>array('index','projectcard','productcard','thirdpartycard','usercard')
+           	'triggers'=>1
+			,'hooks'=>array('index','projectcard','productcard','thirdpartycard','usercard')
             
         );
 
@@ -100,7 +100,7 @@ class modquery extends DolibarrModules
         // Minimum version of PHP required by module
         $this->phpmin = array(5, 3);
         // Minimum version of Dolibarr required by module
-        $this->need_dolibarr_version = array(3, 5);
+        $this->need_dolibarr_version = array(3, 4);
         $this->langfiles = array("query@query"); // langfiles@query
         // Constants
         // List of particular constants to add when module is enabled

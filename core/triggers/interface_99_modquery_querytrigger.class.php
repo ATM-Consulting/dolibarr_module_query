@@ -117,6 +117,11 @@ class Interfacequerytrigger
         // Data and type of action are stored into $object and $action
         // Users
         if ($action == 'USER_LOGIN') {
+        	
+			global $query_just_after_login;
+			
+			$query_just_after_login = 1;
+			
             dol_syslog(
                 "Trigger '" . $this->name . "' for action '$action' launched by " . __FILE__ . ". id=" . $object->id
             );

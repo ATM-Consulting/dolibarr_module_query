@@ -45,7 +45,7 @@ class ActionsQuery
     {
       	global $langs,$db, $user, $conf,$query_just_after_login;
 
-		if (in_array('index',explode(':',$parameters['context'])) && !empty($query_just_after_login))
+		if (in_array('index',explode(':',$parameters['context'])))
         {
 			
 			$sql="SELECT qd.uid as 'uid', qd.title ,qd.use_as_landing_page,qd.rowid
@@ -68,7 +68,7 @@ class ActionsQuery
 			} else {
 				while($obj = $db->fetch_object($res)) {
 
-					if($obj->use_as_landing_page == 1) {
+					if($obj->use_as_landing_page == 1 && !empty($query_just_after_login)) {
 
 						?>
 						<script type="text/javascript">

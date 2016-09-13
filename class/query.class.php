@@ -185,9 +185,9 @@ class TQuery extends TObjetStd {
 	function getBind() {
 		$TBind = array();
 		if(!empty($this->TMode)) {
-			$this->getNonAliasField($this->TMode);
+			/*$this->getNonAliasField($this->TMode);
 			$this->getNonAliasField($this->TOperator);
-			$this->getNonAliasField($this->TValue);
+			$this->getNonAliasField($this->TValue);*/
 			
 			foreach($this->TMode as $f=>$m) {
 				
@@ -440,10 +440,6 @@ class TQuery extends TObjetStd {
 		if($this->preview) return array(); // mode preview, pas de recherche
 		
 		if(!empty($this->TMode)) {
-			$this->getNonAliasField($this->TMode);
-			$this->getNonAliasField($this->TOperator);
-			$this->getNonAliasField($this->TFilter);
-			
 			
 			foreach($this->TMode as $f=>$m) {
 				

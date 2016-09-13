@@ -413,20 +413,12 @@ class TQuery extends TObjetStd {
 		if($this->preview) return array(); // mode preview, pas de recherche
 		
 		if(!empty($this->TMode)) {
-			$TSQLFields = explode(',', $this->sql_fields);
-			$TFields = array_keys($this->TMode);
 			
-			$i=-1;
 			foreach($this->TMode as $f=>$m) {
 				$i++;
 				if(($this->expert==0 && empty($this->TOperator[$f])) || $m!='var') continue;
 				
-				if(strpos($TSQLFields[$i], '(') === false && strpos($TSQLFields[$i], ')') === false){ // Si ce n'est pas une subquery, on peut tenter de récupérer la table
-					$ff = trim($TSQLFields[$i]);
-					list($tbl, $field) = explode('.', $ff);
-				} else {
-					list($tbl, $field) = explode('.', $f);
-				}
+				list($tbl, $field) = explode('.', $f);
 				
 				if(empty($field)) {
 					$field = $tbl; $tbl = '';

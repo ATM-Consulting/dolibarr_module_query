@@ -110,21 +110,29 @@ function explode_brackets($str, $separator=",", $leftbracket="(", $rightbracket=
     return $stack;
 }
 
-function _getFieldName($field){
-
+function _getFieldAndTableName($field) {
+	
 	$field = trim($field);
 	$pos = strrpos(strtolower($field),' as ');
 
 	if($pos!==false) {
-		return trim(strtr(substr($field, $pos+3),array("'"=>'')));
+		return array(trim(strtr(substr($field, $pos+3),array("'"=>''))),'');
 	}
 	else {
 		
 		//$field = strtr($field,'.','_');
 		list($t,$f) = explode('.',$field);
 		$field = empty($f) ? $t : $f;
+		$table = empty($f) ? '' : $t;
 	}
-	
-	return $field;
+
+	return array($field,$table);	
+}
+
+function _getFieldName($field){
+
+	list($f,$t) = _getFieldAndTableName($field);
+
+	return $f;
 
 }

@@ -427,9 +427,15 @@ function fiche(&$query) {
 					echo 'showQueryPreview('.$query->getId().');';
 						
 					if(!empty($query->TField )) {
+						
 						foreach($query->TField as $field) {
+						
+							list($f,$t) = _getFieldAndTableName($field);
 							
-							echo ' refresh_field_param("'._getFieldName($field).'"); ';
+							if(!empty($t)) $field = $t.'.'.$f;
+							else $field = $f;
+							
+							echo ' refresh_field_param("'.$field.'","'.$t.'"); ';
 						
 						}
 					}

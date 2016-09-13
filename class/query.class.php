@@ -125,6 +125,16 @@ class TQuery extends TObjetStd {
 		return  $fname_concat;
 	}
 	
+	function load(&$PDOdb, $id) {
+		
+		parent::load($PDOdb, $id);
+		
+		 if($this->expert == 1) {
+		 	$this->sql_fields = $this->getSQLFieldsWithAlias();
+		 }
+		
+	}
+	
 	private function getSQLFieldsWithAlias () {
 		
 		$TField = explode_brackets($this->sql_fields);
@@ -486,13 +496,11 @@ class TQuery extends TObjetStd {
 					,'table'=>$tbl
 					,'field'=>$field
 				);
-					
-				
 				
 			}
 			
 		}
-		
+		//var_dump($TSearch);
 		return $TSearch;
 	}
 	function runChart(&$PDOdb, $type = 'LineChart',$table_element='',$objectid=0) {

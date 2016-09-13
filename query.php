@@ -153,10 +153,12 @@ function liste() {
 	llxHeader('', 'Query', '', '', 0, 0, array() , array('/query/css/query.css') );
 	dol_fiche_head();
 	
-	$sql="SELECT rowid as 'Id', title,expert,0 as 'delete' 
+	$sql="SELECT rowid as 'Id', type,nb_result_max, title,expert,0 as 'delete' 
 	FROM ".MAIN_DB_PREFIX."query
 	WHERE 1
 	 ";
+	 
+	$formCore=new TFormCore('auto','formQ','get');
 	
 	$r=new TListviewTBS('lQuery');
 	echo $r->render($PDOdb, $sql,array(
@@ -165,6 +167,7 @@ function liste() {
 			,'title'=>'<a href="?action=run&id=@Id@">'.img_picto('Run', 'object_cron.png').' @val@</a>'
 			,'delete'=>'<a href="?action=delete&id=@Id@" onclick="return(confirm(\''.$langs->trans('ConfirmDeleteMessage').'\'));">'.img_picto('Delete', 'delete.png').'</a>'
 		)
+		,'hide'=>array('type','nb_result_max')
 		,'title'=>array(
 			'title'=>$langs->trans('Title')
 			,'expert'=>$langs->trans('Expert')
@@ -174,8 +177,13 @@ function liste() {
 			'expert'=>array( 0=>$langs->trans('No'), 1=>$langs->trans('Yes'),2=>$langs->trans('Free') )
 			
 		)
+		,'search'=>array(
+			'title'=>true
+		)
 	
 	));
+	
+	$formCore->end();
 	
 	dol_fiche_end();
 	

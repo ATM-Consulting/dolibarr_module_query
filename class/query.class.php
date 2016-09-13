@@ -480,6 +480,7 @@ class TQuery extends TObjetStd {
 			,'liste'=>array(
 				'titre'=>$this->title
 			)
+			,'no-select'=>true
 			,'limit'=>array('global'=> $this->nb_result_max)
 			,'title'=>$TTitle
 			,'xaxis'=>$xaxis
@@ -534,6 +535,7 @@ class TQuery extends TObjetStd {
 //echo 3;
 			$html.=  $r->render($PDOdb, $sql,array(
 				'link'=>$this->TLink
+				,'no-select'=>true
 				,'hide'=>$THide
 				,'title'=>$TTitle
 				,'liste'=>array(

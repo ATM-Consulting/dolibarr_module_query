@@ -375,7 +375,7 @@ function refresh_field_param(field, table) {
 
 			$li = $('<div class="field table-border-row" table="'+table+'" field="'+field+'" ><div class="fieldName">'+field+'</div></div>');
 			
-			$li.append($(search).find('input,select').attr('field', field));
+			$li.append($(search).find('input,select').attr('field', field).attr('table', table));
 			$fields.append($li);
 			
 			$('select[field="'+field+'"][sql-act=function-select]').change(function() {
@@ -386,7 +386,7 @@ function refresh_field_param(field, table) {
 			$liView = $('<div class="field" table="'+table+'" field="'+field+'" ><div class="fieldName">'+field+'</div> <input tytpe="text" placeholder="Title" sql-act="title" field='+field+' value="" /></div>');
 			$liView.append('<input type="text" placeholder="Translation (value:translation, ...)" sql-act="translate" field='+field+' value="" />');
 			$liView.append(select_type+select_hide+select_total+select_total_group_field+select_class);
-			$liView.find('input,select').attr('field', field);
+			$liView.find('input,select').attr('field', field).attr('table', table);
 			
 			$fieldsView.append($liView);
 			

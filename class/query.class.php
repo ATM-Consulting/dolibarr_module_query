@@ -419,6 +419,7 @@ class TQuery extends TObjetStd {
 				if(($this->expert==0 && empty($this->TOperator[$f])) || $m!='var') continue;
 				
 				list($tbl, $field) = explode('.', $f);
+				
 				if(empty($field)) {
 					$field = $tbl; $tbl = '';
 				}

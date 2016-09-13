@@ -124,6 +124,23 @@ class TQuery extends TObjetStd {
 
 		return  $fname_concat;
 	}
+	
+	private function getSQLFieldsWithAlias () {
+		
+		$TField = explode_brackets($this->sql_fields);
+		
+		foreach($TField as &$field) {
+			
+			if(stripos($field, ' as ') === false) {
+				$field.= ' as '.$this->getField($field);
+			}
+			
+			
+		}
+		
+		return implode(',', $TField);
+		
+	}
 
 	function getSQL($table_element='',$objectid=0) {
 		if($this->expert == 2) {
@@ -138,7 +155,7 @@ class TQuery extends TObjetStd {
 					$this->sql_afterwhere=" GROUP BY ".implode(',', $this->TGroup);	
 			}
 			
-			return  "SELECT ".$this->sql_fields."
+			return  "SELECT ".$this->getSQLFieldsWithAlias() ."
 				FROM ".$this->sql_from."
 	                        WHERE (".($this->sql_where ? $this->sql_where : 1 ).")
         	                ".$this->sql_afterwhere;
@@ -285,6 +302,8 @@ class TQuery extends TObjetStd {
 	}
 	
 	private function getNonAliasField(&$Tab) {
+		
+		return false; // AA disabled
 		
 		if(empty($Tab) || $this->expert == 0) return false;
 		

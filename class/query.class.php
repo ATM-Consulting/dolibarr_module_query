@@ -415,7 +415,7 @@ class TQuery extends TObjetStd {
 		if(!empty($this->TMode)) {
 			
 			foreach($this->TMode as $f=>$m) {
-				$i++;
+				
 				if(($this->expert==0 && empty($this->TOperator[$f])) || $m!='var') continue;
 				
 				list($tbl, $field) = explode('.', $f);

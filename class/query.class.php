@@ -10,7 +10,7 @@ class TQuery extends TObjetStd {
 		 
         parent::set_table(MAIN_DB_PREFIX.'query');
         parent::add_champs('sql_fields,sql_from,sql_where,sql_afterwhere',array('type'=>'text'));
-		parent::add_champs('TField,TTable,TOrder,TTitle,TTotal,TLink,THide,TTranslate,TMode,TOperator,TGroup,TFunction,TValue,TJoin,TFilter,TType,TClass',array('type'=>'array'));
+		parent::add_champs('TField,TTable,TOrder,TTitle,TTotal,TLink,TAlias,THide,TTranslate,TMode,TOperator,TGroup,TFunction,TValue,TJoin,TFilter,TType,TClass',array('type'=>'array'));
 		parent::add_champs('expert,nb_result_max',array('type'=>'int'));
 		
         parent::_init_vars('title,type,xaxis');
@@ -135,13 +135,47 @@ class TQuery extends TObjetStd {
 		
 	}
 	
+	private function extractAliasFromSQL() {
+		
+		dol_include_once('/query/lib/query.lib.php');
+		
+		$this->TAlias = array();
+		$TField = explode_brackets($this->sql_fields);
+		foreach($TField as $field) {
+			$pos = strripos($field, ' as ') ;
+			if($pos !== false) {
+				
+				$alias = trim(substr($field, $pos + 4));
+				$field = trim(substr($field, 0, $pos));
+				
+				list($field,$table) = _getFieldAndTableName($field);
+				
+				$this->TAlias[$alias] = array($field,$table);
+			}
+
+		}
+	
+		//$this->TField = $TField;
+
+		
+	}
+	
+	function save(&$PDOdb) {
+		$this->extractAliasFromSQL();
+		
+		parent::save($PDOdb);
+		
+	}
+	
 	private function getSQLFieldsWithAlias () {
+		
+		dol_include_once('/query/lib/query.lib.php');
 		
 		$TField = explode_brackets($this->sql_fields);
 		
 		foreach($TField as &$field) {
 			
-			if(stripos($field, ' as ') === false) {
+			if(strripos($field, ' as ') === false) {
 				$field.= ' as '.$this->getField($field);
 			}
 			
@@ -469,15 +503,21 @@ class TQuery extends TObjetStd {
 		if($this->preview) return array(); // mode preview, pas de recherche
 		
 		if(!empty($this->TMode)) {
-			
+			//var_dump($this->TFilter);
 			foreach($this->TMode as $f=>$m) {
 				
 				if(($this->expert==0 && empty($this->TOperator[$f])) || $m!='var') continue;
 				
-				list($tbl, $field) = explode('.', $f);
-				
-				if(empty($field)) {
-					$field = $tbl; $tbl = '';
+				if(!empty($this->TAlias[$f])) {
+					list($field,$tbl) = $this->TAlias[$f];
+					
+				}
+				else{
+					list($tbl, $field) = explode('.', $f);
+					
+					if(empty($field)) {
+						$field = $tbl; $tbl = '';
+					}
 				}
 				$fSearch = strtr($f,'.','_');
 				
@@ -500,7 +540,7 @@ class TQuery extends TObjetStd {
 			}
 			
 		}
-		//var_dump($TSearch);
+		//var_dump('$TSearch',$TSearch);
 		return $TSearch;
 	}
 	function runChart(&$PDOdb, $type = 'LineChart',$table_element='',$objectid=0) {

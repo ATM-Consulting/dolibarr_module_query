@@ -151,6 +151,7 @@ class TQuery extends TObjetStd {
 				
 				$fname_concat = $this->getField($field);
 				
+				$this->getNonAliasField($this->TFunction);
 				if(!empty($this->TFunction[$field])) {
 					$this->sql_fields.=strtr($this->TFunction[$field], array('@field@'=> $field)).' as "'.$fname_concat.'"';
 				}
@@ -184,6 +185,9 @@ class TQuery extends TObjetStd {
 	function getBind() {
 		$TBind = array();
 		if(!empty($this->TMode)) {
+			$this->getNonAliasField($this->TMode);
+			$this->getNonAliasField($this->TOperator);
+			$this->getNonAliasField($this->TValue);
 			
 			foreach($this->TMode as $f=>$m) {
 				
@@ -230,7 +234,7 @@ class TQuery extends TObjetStd {
 	function getOperator() {
 		$Tab = array();
 		if(!empty($this->TOperator)) {
-			
+			$this->getNonAliasField($this->TOperator);
 			foreach($this->TOperator as $f=>$v) {
 				if($v) {
 					$fSearch = strtr($f,'.','_');
@@ -248,7 +252,7 @@ class TQuery extends TObjetStd {
 		
 		$Tab = array();
 		if(!empty($this->TTitle)) {
-			
+			$this->getNonAliasField($this->TTitle);
 			foreach($this->TTitle as $f=>$v) {
 				if($v) {
 					$fSearch = strtr($f,'.','_');
@@ -266,6 +270,8 @@ class TQuery extends TObjetStd {
 		$Tab=array();
 		if(!empty($this->TClass)) {
 			
+			$this->getNonAliasField($this->TClass);
+			
 			foreach($this->TClass as $f=>$v) {
 				if($v) {
 					$fSearch = strtr($f,'.','_');
@@ -276,6 +282,27 @@ class TQuery extends TObjetStd {
 			
 		}
 		return $Tab;
+	}
+	
+	private function getNonAliasField(&$Tab) {
+		
+		if(empty($Tab) || $this->expert == 0) return false;
+		
+		$Tmp = $Tab;
+		
+		foreach($Tmp as $f=>$v) {
+			
+			if(strpos($f, '.')!==false) {
+				
+				list($table, $field) = explode('.', $f);
+				$field = trim($field);
+				if(!empty($field) && empty($Tab[ $field ]))$Tab[ $field ] = $v;
+				
+			}
+			
+		}
+		
+		return true;
 	}
 	
 	static function getNomUrl($type, $id) {
@@ -326,7 +353,7 @@ class TQuery extends TObjetStd {
 		
 		$Tab = array();
 		if(!empty($this->TType)) {
-			
+			$this->getNonAliasField($this->TType);
 			foreach($this->TType as $f=>$v) {
 				if($v) {
 					$fSearch = strtr($f,'.','_');
@@ -342,7 +369,7 @@ class TQuery extends TObjetStd {
 		
 		$THide = array();
 		if(!empty($this->THide)) {
-
+			$this->getNonAliasField($this->THide);
 			foreach($this->THide as $f=>$v) {
 				if($v) {
 					$fSearch = strtr($f,'.','_');
@@ -358,7 +385,7 @@ class TQuery extends TObjetStd {
 		
 		$Tab = array();
 		if(!empty($this->TTranslate)) {
-			
+			$this->getNonAliasField($this->TTranslate);
 			foreach($this->TTranslate as $f=>$v) {
 				$fSearch = strtr($f,'.','_');
 				$Tab[$fSearch]=array();
@@ -389,7 +416,7 @@ class TQuery extends TObjetStd {
 		
 		$Tab = array();
 		if(!empty($this->TTotal)) {
-			
+			$this->getNonAliasField($this->TTotal);
 			foreach($this->TTotal as $f=>$v) {
 				
 				if(is_array($v)) {
@@ -413,6 +440,10 @@ class TQuery extends TObjetStd {
 		if($this->preview) return array(); // mode preview, pas de recherche
 		
 		if(!empty($this->TMode)) {
+			$this->getNonAliasField($this->TMode);
+			$this->getNonAliasField($this->TOperator);
+			$this->getNonAliasField($this->TFilter);
+			
 			
 			foreach($this->TMode as $f=>$m) {
 				

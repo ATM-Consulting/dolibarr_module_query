@@ -41,7 +41,7 @@ class TQuery extends TObjetStd {
 		$this->TMethodName = array(
 			'getNomUrl'=>$langs->trans('getNomUrl')
 			,'getLibStatut'=>$langs->trans('getLibStatut')		
-			,'getNomUrlAndLibStatut'=>$langs->trans('getNomUrlAndLibStatus')		
+			,'getNomUrl,getLibStatut'=>$langs->trans('getNomUrlAndLibStatus')		
 			
 		);
 		
@@ -348,7 +348,7 @@ class TQuery extends TObjetStd {
 					
 					$method = empty($this->TMethod[$fSearch]) ? 'getNomUrl' : $this->TMethod[$fSearch];
 					
-					$Tab[$fSearch]= 'TQuery::'.$method.'("'.$v.'", (int)@val@)';
+					$Tab[$fSearch]= 'TQuery::getCustomMethodForObject("'.$v.'", (int)@val@, "'.$method.'")';
 				}
 				
 			}
@@ -392,8 +392,14 @@ class TQuery extends TObjetStd {
 	}
 	
 	static function getNomUrl($type, $id) {
+			self::getCustomMethodForObject($type,$id,'getNomUrl');
+	}
+	
+	static function getCustomMethodForObject($type, $id, $methods) {
 		
 		global $langs, $db, $conf;
+		
+		if(empty($methods)) return '';
 		
 		list($classname, $include) = explode(',', $type);
 		
@@ -425,55 +431,30 @@ class TQuery extends TObjetStd {
 		$o=new $classname($db);
 		$o->fetch($id);
 		
-		if(method_exists($o, 'getNomUrl')) {
-			return $o->getNomUrl(1);
-		}
-		else {
-			return $langs->trans('MethodgetNomUrlNotExist');
+		$TMethod = explode(',', $methods);
+		$TResult = array();
+		foreach($TMethod as $method) {
+			if(method_exists($o, $method)) {
+				
+				$param1 = null;
+				if($method == 'getNomUrl')$param1 = 1;
+				else if($method == 'getLibStatut')$param1 = 3;
+				
+				if(!is_null($param1))$TResult[] = $o->$method($param1);
+				else $TResult[] = $o->$method();
+			}
+			else {
+				$TResult[] = $langs->trans('Method').' '.$methods.' '. $langs->trans('NotExist');
+			}
+			
 		}
 		
+		return implode(' ',$TResult);
 	}
 	
 	static function getLibStatut($type, $id) {
 		
-		global $langs, $db, $conf;
-		
-		list($classname, $include) = explode(',', $type);
-		
-		dol_include_once('/core/class/html.form.class.php');
-
-		if(empty($include)) {
-			if($classname == 'User') dol_include_once('/user/class/user.class.php');
-			else if($classname == 'Facture') dol_include_once('/compta/facture/class/facture.class.php');
-			else if($classname == 'Propal') dol_include_once('/comm/propal/class/propal.class.php');
-			else if($classname == 'Commande') dol_include_once('/commande/class/commande.class.php');
-			else if($classname == 'Task') dol_include_once('/projet/class/task.class.php');
-			else if($classname == 'Projet' || $classname == 'Project') dol_include_once('/projet/class/project.class.php');
-			else if($classname == 'Product') dol_include_once('/product/class/product.class.php');
-			else if($classname == 'Societe') dol_include_once('/societe/class/societe.class.php');
-			else if($classname == 'Entrepot') dol_include_once('/product/stock/class/entrepot.class.php');
-			else if($classname == 'CommandeFournisseur') dol_include_once('/fourn/class/fournisseur.commande.class.php');
-			else {
-				return $langs->trans('ImpossibleToIncludeClass').' : '.$classname;
-			}
-		}
-		else{
-			if(!dol_include_once($include)) {
-				return $langs->trans('ImpossibleToIncludeClass').' : '.$include;
-			}
-		}
-		
-		if(!class_exists($classname))return $langs->trans('ClassNotIncluded');
-		
-		$o=new $classname($db);
-		$o->fetch($id);
-		
-		if(method_exists($o, 'getLibStatut')) {
-			return $o->getLibStatut(3);
-		}
-		else {
-			return $langs->trans('MethodgetLibStatutNotExist');
-		}
+		self::getCustomMethodForObject($type,$id,'getLibStatut');
 		
 	}
 	

@@ -51,3 +51,6 @@ TotalGroup=Total groupé sur colonne
 UseAsLandingPage=Et utiliser comme page d'accueil
 Round2dec=Arrondit 2 déc.
 YearMonth=Année/Mois
+getNomUrl=Lien vers la fiche
+getLibStatut=Statut de l'objet
+getNomUrlAndLibStatus=Lien et statut

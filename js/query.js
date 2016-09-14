@@ -187,6 +187,13 @@ $(document).ready(function() {
 			}
 		});
 		
+		var TLibStatus = {};
+		$('#fieldsview [sql-act="class-libstatus"]').each(function(i,item) {
+			if($(item).val()) {
+				TLibStatus[$(item).attr('field')] = $(item).val();
+			}
+		});
+		
 		if(MODQUERY_QUERYID == 0) {
 			var TData= {
 				'put':'query'
@@ -222,6 +229,7 @@ $(document).ready(function() {
 				,'TFilter' : TFilter
 				,'TType' : TType
 				,'TClass' : TClass
+				,'TLibStatus' : TLibStatus
 				,'sql_fields' :  btoa( $('textarea[name=sql_fields]').val() )
 				,'sql_from' : btoa( $('textarea[name=sql_from]').val() )
 				,'sql_where' : btoa( $('textarea[name=sql_where]').val())
@@ -411,7 +419,7 @@ function refresh_field_param(field, table) {
 				
 			$liView = $('<div class="field" table="'+table+'" field="'+field+'" ><div class="fieldName">'+field+'</div> <input tytpe="text" placeholder="Title" sql-act="title" field='+field+' value="" /></div>');
 			$liView.append('<input type="text" placeholder="Translation (value:translation, ...)" sql-act="translate" field='+field+' value="" />');
-			$liView.append(select_type+select_hide+select_total+select_total_group_field+select_class);
+			$liView.append(select_type+select_hide+select_total+select_total_group_field+select_class+select_libstatus);
 			$liView.find('input,select').attr('field', field).attr('table', table);
 			
 			$fieldsView.append($liView);
@@ -419,6 +427,14 @@ function refresh_field_param(field, table) {
 			$fieldsView.find('select[sql-act="class-select"]').unbind().change( function () {
 				var field = $(this).attr('field');
 				var $input = $fieldsView.find('input[field="'+field+'"][sql-act="class"]');
+				var value = $(this).val();
+				
+				$input.val(value);
+			});
+			
+			$fieldsView.find('select[sql-act="class-libstatus-select"]').unbind().change( function () {
+				var field = $(this).attr('field');
+				var $input = $fieldsView.find('input[field="'+field+'"][sql-act="class-libstatus"]');
 				var value = $(this).val();
 				
 				$input.val(value);

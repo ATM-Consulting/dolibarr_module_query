@@ -303,6 +303,14 @@ function init_js(&$query) {
 		}
 	}
 	
+	if(!empty($query->TLibStatus)) {
+		foreach($query->TLibStatus as $f=>$v) {
+			
+			echo ' $("[sql-act=\'class-libstatus\'][field=\''.$f.'\'],[sql-act=\'class-libstatus-select\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+			
+		}
+	}
+	
 }
 
 function fiche(&$query) {
@@ -412,6 +420,17 @@ function fiche(&$query) {
 		
 		var select_class = '<input type="text" size="10" sql-act="class" value="" placeholder="<?php echo $langs->trans('Classname'); ?>" /><select sql-act="class-select"> '
 						+ '<option value=""> </option>'
+
+			<?php
+				foreach($query->TClassName as $class=>$label) {
+					echo ' +\'<option value="'.$class.'">'.$label.'</option>\'';
+				}
+			?>
+			+ '</select>';
+
+		var select_libstatus = '<input type="text" size="10" sql-act="class-libstatus" value="" placeholder="<?php echo $langs->trans('Classname'); ?>" /><select sql-act="class-libstatus-select"> '
+						+ '<option value=""> </option>'
+
 			<?php
 				foreach($query->TClassName as $class=>$label) {
 					echo ' +\'<option value="'.$class.'">'.$label.'</option>\'';

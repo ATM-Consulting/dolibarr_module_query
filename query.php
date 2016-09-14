@@ -504,7 +504,7 @@ function fiche(&$query) {
 	<div>
 		<?php
 			if($query->getId()>0 && !empty($user->rights->query->all->expert) ) {
-				?><div style="float:right;"><?php 
+				?><div style="float:right;z-index:999;"><?php 
 					
 				if($query->expert == 0) {
 					
@@ -526,7 +526,7 @@ function fiche(&$query) {
 				
 			}
 		?>
-		<div>
+		<div id="query_header" style="padding: 0 20px 20px 0; background-color: #fff;z-index:1;">
 			<?php echo $langs->trans('Title') ?> : 
 			<input type="text" name="title" size="80" value="<?php echo $query->title; ?>" />
 			<?php

@@ -342,6 +342,8 @@ class TQuery extends TObjetStd {
 	function getEval() {
 		
 		$Tab=array();
+		$TabTMP=array();
+		
 		if(!empty($this->TClass)) {
 			
 			$this->getNonAliasField($this->TClass);
@@ -349,12 +351,32 @@ class TQuery extends TObjetStd {
 			foreach($this->TClass as $f=>$v) {
 				if($v) {
 					$fSearch = strtr($f,'.','_');
-					$Tab[$fSearch]= 'TQuery::getNomUrl("'.$v.'", (int)@val@)';
+					$TabTMP[$fSearch]['getNomUrl'] = $v;
 				}
 				
 			}
 			
 		}
+		
+		if(!empty($this->TLibStatus)) {
+			
+			$this->getNonAliasField($this->TLibStatus);
+			
+			foreach($this->TLibStatus as $f=>$v) {
+				if($v) {
+					$fSearch = strtr($f,'.','_');
+					$TabTMP[$fSearch]['getLibStatus'] = $v;
+				}
+				
+			}
+			
+		}
+		
+		foreach($TabTMP as $fSearch=>$TOptions){
+			if(empty($TOptions['getNomUrl']) && empty($TOptions['getLibStatus'])) continue;
+			$Tab[$fSearch]= 'TQuery::getNomUrlAndLibStatus("'.(empty($TOptions['getNomUrl']) ? $TOptions['getLibStatus'] : $TOptions['getNomUrl']).'", (int)@val@, '.(int)!empty($TOptions['getNomUrl']).', '.(int)!empty($TOptions['getLibStatus']).')';
+		}
+
 		return $Tab;
 	}
 	
@@ -379,6 +401,16 @@ class TQuery extends TObjetStd {
 		}
 		
 		return true;
+	}
+	
+	static function getNomUrlAndLibStatus($type, $id, $get_nom_url=true, $get_lib_status=true) {
+		
+		$TRes = '';
+		
+		if($get_nom_url) $TRes[] = self::getNomUrl($type, $id);
+		if($get_lib_status) $TRes[] = self::getLibStatut($type, $id);
+		
+		return implode(' ', $TRes);
 	}
 	
 	static function getNomUrl($type, $id) {

@@ -303,8 +303,8 @@ function init_js(&$query) {
 		}
 	}
 	
-	if(!empty($query->TClass)) {
-		foreach($query->TClass as $f=>$v) {
+	if(!empty($query->TLibStatus)) {
+		foreach($query->TLibStatus as $f=>$v) {
 			
 			echo ' $("[sql-act=\'class-libstatus\'][field=\''.$f.'\'],[sql-act=\'class-libstatus-select\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
 			

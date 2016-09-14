@@ -229,6 +229,7 @@ $(document).ready(function() {
 				,'TFilter' : TFilter
 				,'TType' : TType
 				,'TClass' : TClass
+				,'TLibStatus' : TLibStatus
 				,'sql_fields' :  btoa( $('textarea[name=sql_fields]').val() )
 				,'sql_from' : btoa( $('textarea[name=sql_from]').val() )
 				,'sql_where' : btoa( $('textarea[name=sql_where]').val())

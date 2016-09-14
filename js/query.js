@@ -211,11 +211,13 @@ $(document).ready(function() {
 		}
 
 		$.post(MODQUERY_INTERFACE, TData, function (idQuery) {
+			console.log(MODQUERY_EXPERT, idQuery);
 			if(idQuery>0) {
-				if(MODQUERY_QUERYID == 0) document.location.href = "?action=view&id="+idQuery;
+				$.jnotify('Saved');
+				
+				if((MODQUERY_QUERYID == 0) || (MODQUERY_EXPERT > 0)) document.location.href = "?action=view&id="+idQuery;
 				else showQueryPreview(idQuery);
 				
-				$.jnotify('Saved');
 			}
 			else{
 				null;

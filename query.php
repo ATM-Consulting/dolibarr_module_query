@@ -609,7 +609,7 @@ function fiche(&$query) {
 		}
 	?>
 	<div id="previewRequete" style="display: none;">
-		<iframe src="#" width="100%" frameborder="0" onload="this.height = this.contentWindow.document.body.scrollHeight + 'px'"></iframe>
+		<iframe src="#" width="100%" bgcolor="#fff" frameborder="0" onload="this.height = this.contentWindow.document.body.scrollHeight + 'px'"></iframe>
 	</div>
 	
 	<?php

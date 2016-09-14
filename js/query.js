@@ -5,10 +5,30 @@ var TFieldInTable = [];
 var TJoin = {};
 var TFieldRank = [];
 var tables = '';
+var docked = false;
 
 $(document).ready(function() {
 	
 	_init_query();
+	
+	$(window).scroll(function() {
+		var $menu = $("#query_header");
+		
+		menu_offset = $menu.offset();
+		
+		console.log(menu_offset.top, $(window).scrollTop());
+    	if (!docked && (menu_offset.top - $(window).scrollTop() < 0)) {
+    		init_menu_top = menu_offset.top;
+	        $menu.css({top : 0, position:"fixed"});
+	        $menu.addClass( 'docked' ); 
+	        docked = true;
+	    } else if (docked && $(window).scrollTop() <= init_menu_top) { 
+	        $menu.css({top : 0, position:"relative"});
+	        
+	        $menu.removeClass( 'docked' ); 
+	        docked = false;  
+	    }
+	});
 	
 	/* for test ----
 		TTable.push( 'llx_user' );
@@ -218,11 +238,13 @@ $(document).ready(function() {
 		}
 
 		$.post(MODQUERY_INTERFACE, TData, function (idQuery) {
+			console.log(MODQUERY_EXPERT, idQuery);
 			if(idQuery>0) {
-				if(MODQUERY_QUERYID == 0) document.location.href = "?action=view&id="+idQuery;
+				$.jnotify('Saved');
+				
+				if((MODQUERY_QUERYID == 0) || (MODQUERY_EXPERT > 0)) document.location.href = "?action=view&id="+idQuery;
 				else showQueryPreview(idQuery);
 				
-				$.jnotify('Saved');
 			}
 			else{
 				null;
@@ -299,7 +321,10 @@ function drawFieldTables( table ){
 		$ul.find('input[type=checkbox]').click( function () {
 			refresh_field_array($(this).attr('table'));
 		});
-		
+			
+	
+	
+
 		
 		$('#selected_tables').append($fields);
 		
@@ -368,6 +393,7 @@ function addJointure($obj, table) {
 	$obj.before($join);
 	
 	refresh_sql();
+	
 }
 
 function refresh_field_param(field, table) {
@@ -480,7 +506,10 @@ function refresh_field_array(table) {
 	if(MODQUERY_EXPERT == 1) {
 		null;
 	}
-	else {
+	else {	
+	
+	
+
 		
 			
 		if($fields.find('select[sql-act=mode]').val() == 'var') { $input.hide(); }
@@ -536,7 +565,10 @@ function refresh_sql() {
 	$('#sql_query_from').val(tables);
 	
 	where='';
-	order='';
+	order='';	
+	
+	
+
 	
 	$('#fields div.field').each(function(i, item) {
 		

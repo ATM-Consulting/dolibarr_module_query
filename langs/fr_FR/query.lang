@@ -49,3 +49,5 @@ set_ABRICOT_NB_MAX_RESULT_SQL=Nombre de résultats dans la requête (si mot-clef
 CountOf=Nombre de
 TotalGroup=Total groupé sur colonne
 UseAsLandingPage=Et utiliser comme page d'accueil
+Round2dec=Arrondit 2 déc.
+YearMonth=Année/Mois

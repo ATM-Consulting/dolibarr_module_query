@@ -16,7 +16,7 @@ $(document).ready(function() {
 		
 		menu_offset = $menu.offset();
 		
-		console.log(menu_offset.top, $(window).scrollTop());
+	//	console.log(menu_offset.top, $(window).scrollTop());
     	if (!docked && (menu_offset.top - $(window).scrollTop() < 0)) {
     		init_menu_top = menu_offset.top;
 	        $menu.css({top : 0, position:"fixed"});
@@ -187,10 +187,10 @@ $(document).ready(function() {
 			}
 		});
 		
-		var TLibStatus = {};
-		$('#fieldsview [sql-act="class-libstatus"]').each(function(i,item) {
+		var TMethod = {};
+		$('#fieldsview [sql-act="class-method"]').each(function(i,item) {
 			if($(item).val()) {
-				TLibStatus[$(item).attr('field')] = $(item).val();
+				TMethod[$(item).attr('field')] = $(item).val();
 			}
 		});
 		
@@ -229,7 +229,7 @@ $(document).ready(function() {
 				,'TFilter' : TFilter
 				,'TType' : TType
 				,'TClass' : TClass
-				,'TLibStatus' : TLibStatus
+				,'TMethod' : TMethod
 				,'sql_fields' :  btoa( $('textarea[name=sql_fields]').val() )
 				,'sql_from' : btoa( $('textarea[name=sql_from]').val() )
 				,'sql_where' : btoa( $('textarea[name=sql_where]').val())
@@ -419,7 +419,7 @@ function refresh_field_param(field, table) {
 				
 			$liView = $('<div class="field" table="'+table+'" field="'+field+'" ><div class="fieldName">'+field+'</div> <input tytpe="text" placeholder="Title" sql-act="title" field='+field+' value="" /></div>');
 			$liView.append('<input type="text" placeholder="Translation (value:translation, ...)" sql-act="translate" field='+field+' value="" />');
-			$liView.append(select_type+select_hide+select_total+select_total_group_field+select_class+select_libstatus);
+			$liView.append(select_type+select_hide+select_total+select_total_group_field+select_class+select_method);
 			$liView.find('input,select').attr('field', field).attr('table', table);
 			
 			$fieldsView.append($liView);
@@ -432,9 +432,9 @@ function refresh_field_param(field, table) {
 				$input.val(value);
 			});
 			
-			$fieldsView.find('select[sql-act="class-libstatus-select"]').unbind().change( function () {
+			$fieldsView.find('select[sql-act="class-method-select"]').unbind().change( function () {
 				var field = $(this).attr('field');
-				var $input = $fieldsView.find('input[field="'+field+'"][sql-act="class-libstatus"]');
+				var $input = $fieldsView.find('input[field="'+field+'"][sql-act="class-method"]');
 				var value = $(this).val();
 				
 				$input.val(value);

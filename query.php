@@ -303,10 +303,10 @@ function init_js(&$query) {
 		}
 	}
 	
-	if(!empty($query->TLibStatus)) {
-		foreach($query->TLibStatus as $f=>$v) {
+	if(!empty($query->TMethod)) {
+		foreach($query->TMethod as $f=>$v) {
 			
-			echo ' $("[sql-act=\'class-libstatus\'][field=\''.$f.'\'],[sql-act=\'class-libstatus-select\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
+			echo ' $("[sql-act=\'class-method\'][field=\''.$f.'\'],[sql-act=\'class-method-select\'][field=\''.$f.'\']").val("'. addslashes($v) .'"); ';
 			
 		}
 	}
@@ -428,13 +428,19 @@ function fiche(&$query) {
 			?>
 			+ '</select>';
 
-		var select_libstatus = '<input type="text" size="10" sql-act="class-libstatus" value="" placeholder="<?php echo $langs->trans('Classname'); ?>" /><select sql-act="class-libstatus-select"> '
+		var select_method = '<input type="text" size="10" sql-act="class-method" value="" placeholder="<?php echo $langs->trans('Method'); ?>" /><select sql-act="class-method-select"> '
 						+ '<option value=""> </option>'
 
 			<?php
-				foreach($query->TClassName as $class=>$label) {
-					echo ' +\'<option value="'.$class.'">'.$label.'</option>\'';
+			
+			if(!empty($query->TMethodName)) {
+				
+				foreach($query->TMethodName as $method=>$label) {
+					echo ' +\'<option value="'.$method.'">'.$label.'</option>\'';
 				}
+				
+			}
+			
 			?>
 			+ '</select>';
 		

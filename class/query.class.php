@@ -10,7 +10,7 @@ class TQuery extends TObjetStd {
 		 
         parent::set_table(MAIN_DB_PREFIX.'query');
         parent::add_champs('sql_fields,sql_from,sql_where,sql_afterwhere',array('type'=>'text'));
-		parent::add_champs('TField,TTable,TOrder,TTitle,TTotal,TLink,TAlias,THide,TTranslate,TMode,TOperator,TGroup,TFunction,TValue,TJoin,TFilter,TType,TClass,TLibStatus',array('type'=>'array'));
+		parent::add_champs('TField,TTable,TOrder,TTitle,TTotal,TLink,TAlias,THide,TTranslate,TMode,TOperator,TGroup,TFunction,TValue,TJoin,TFilter,TType,TClass,TMethod',array('type'=>'array'));
 		parent::add_champs('expert,nb_result_max',array('type'=>'int'));
 		
         parent::_init_vars('title,type,xaxis');
@@ -38,17 +38,11 @@ class TQuery extends TObjetStd {
 			,'CommandeFournisseur'=>$langs->trans('SupplierOrder')
 		);
 		
-		$this->TLibStatus = array(
-			'User'=>$langs->trans('User')
-			,'Societe'=>$langs->trans('Company')		
-			,'Facture'=>$langs->trans('Invoice')		
-			,'Propal'=>$langs->trans('Propal')
-			,'Commande'=>$langs->trans('Order')
-			,'Task'=>$langs->trans('Task')
-			,'Project'=>$langs->trans('Project')
-			,'Product'=>$langs->trans('Product')
-			,'Entrepot'=>$langs->trans('Warehouse')
-			,'CommandeFournisseur'=>$langs->trans('SupplierOrder')
+		$this->TMethodName = array(
+			'getNomUrl'=>$langs->trans('getNomUrl')
+			,'getLibStatut'=>$langs->trans('getLibStatut')		
+			,'getNomUrlAndLibStatut'=>$langs->trans('getNomUrlAndLibStatus')		
+			
 		);
 		
 		$this->show_details = true;
@@ -351,32 +345,16 @@ class TQuery extends TObjetStd {
 			foreach($this->TClass as $f=>$v) {
 				if($v) {
 					$fSearch = strtr($f,'.','_');
-					$TabTMP[$fSearch]['getNomUrl'] = $v;
+					
+					$method = empty($this->TMethod[$fSearch]) ? 'getNomUrl' : $this->TMethod[$fSearch];
+					
+					$Tab[$fSearch]= 'TQuery::'.$method.'("'.$v.'", (int)@val@)';
 				}
 				
 			}
 			
 		}
 		
-		if(!empty($this->TLibStatus)) {
-			
-			$this->getNonAliasField($this->TLibStatus);
-			
-			foreach($this->TLibStatus as $f=>$v) {
-				if($v) {
-					$fSearch = strtr($f,'.','_');
-					$TabTMP[$fSearch]['getLibStatus'] = $v;
-				}
-				
-			}
-			
-		}
-		
-		foreach($TabTMP as $fSearch=>$TOptions){
-			if(empty($TOptions['getNomUrl']) && empty($TOptions['getLibStatus'])) continue;
-			$Tab[$fSearch]= 'TQuery::getNomUrlAndLibStatus("'.(empty($TOptions['getNomUrl']) ? $TOptions['getLibStatus'] : $TOptions['getNomUrl']).'", (int)@val@, '.(int)!empty($TOptions['getNomUrl']).', '.(int)!empty($TOptions['getLibStatus']).')';
-		}
-
 		return $Tab;
 	}
 	
@@ -403,7 +381,7 @@ class TQuery extends TObjetStd {
 		return true;
 	}
 	
-	static function getNomUrlAndLibStatus($type, $id, $get_nom_url=true, $get_lib_status=true) {
+	static function getNomUrlAndLibStatut($type, $id, $get_nom_url=true, $get_lib_status=true) {
 		
 		$TRes = '';
 		

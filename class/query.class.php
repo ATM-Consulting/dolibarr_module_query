@@ -10,7 +10,7 @@ class TQuery extends TObjetStd {
 		 
         parent::set_table(MAIN_DB_PREFIX.'query');
         parent::add_champs('sql_fields,sql_from,sql_where,sql_afterwhere',array('type'=>'text'));
-		parent::add_champs('TField,TTable,TOrder,TTitle,TTotal,TLink,TAlias,THide,TTranslate,TMode,TOperator,TGroup,TFunction,TValue,TJoin,TFilter,TType,TClass',array('type'=>'array'));
+		parent::add_champs('TField,TTable,TOrder,TTitle,TTotal,TLink,TAlias,THide,TTranslate,TMode,TOperator,TGroup,TFunction,TValue,TJoin,TFilter,TType,TClass,TLibStatus',array('type'=>'array'));
 		parent::add_champs('expert,nb_result_max',array('type'=>'int'));
 		
         parent::_init_vars('title,type,xaxis');
@@ -26,6 +26,19 @@ class TQuery extends TObjetStd {
 		);
 		
 		$this->TClassName = array(
+			'User'=>$langs->trans('User')
+			,'Societe'=>$langs->trans('Company')		
+			,'Facture'=>$langs->trans('Invoice')		
+			,'Propal'=>$langs->trans('Propal')
+			,'Commande'=>$langs->trans('Order')
+			,'Task'=>$langs->trans('Task')
+			,'Project'=>$langs->trans('Project')
+			,'Product'=>$langs->trans('Product')
+			,'Entrepot'=>$langs->trans('Warehouse')
+			,'CommandeFournisseur'=>$langs->trans('SupplierOrder')
+		);
+		
+		$this->TLibStatus = array(
 			'User'=>$langs->trans('User')
 			,'Societe'=>$langs->trans('Company')		
 			,'Facture'=>$langs->trans('Invoice')		
@@ -407,6 +420,49 @@ class TQuery extends TObjetStd {
 		}
 		else {
 			return $langs->trans('MethodgetNomUrlNotExist');
+		}
+		
+	}
+	
+	static function getLibStatut($type, $id) {
+		
+		global $langs, $db, $conf;
+		
+		list($classname, $include) = explode(',', $type);
+		
+		dol_include_once('/core/class/html.form.class.php');
+
+		if(empty($include)) {
+			if($classname == 'User') dol_include_once('/user/class/user.class.php');
+			else if($classname == 'Facture') dol_include_once('/compta/facture/class/facture.class.php');
+			else if($classname == 'Propal') dol_include_once('/comm/propal/class/propal.class.php');
+			else if($classname == 'Commande') dol_include_once('/commande/class/commande.class.php');
+			else if($classname == 'Task') dol_include_once('/projet/class/task.class.php');
+			else if($classname == 'Projet' || $classname == 'Project') dol_include_once('/projet/class/project.class.php');
+			else if($classname == 'Product') dol_include_once('/product/class/product.class.php');
+			else if($classname == 'Societe') dol_include_once('/societe/class/societe.class.php');
+			else if($classname == 'Entrepot') dol_include_once('/product/stock/class/entrepot.class.php');
+			else if($classname == 'CommandeFournisseur') dol_include_once('/fourn/class/fournisseur.commande.class.php');
+			else {
+				return $langs->trans('ImpossibleToIncludeClass').' : '.$classname;
+			}
+		}
+		else{
+			if(!dol_include_once($include)) {
+				return $langs->trans('ImpossibleToIncludeClass').' : '.$include;
+			}
+		}
+		
+		if(!class_exists($classname))return $langs->trans('ClassNotIncluded');
+		
+		$o=new $classname($db);
+		$o->fetch($id);
+		
+		if(method_exists($o, 'getLibStatut')) {
+			return $o->getLibStatut(3);
+		}
+		else {
+			return $langs->trans('MethodgetLibStatutNotExist');
 		}
 		
 	}

@@ -395,18 +395,18 @@ function fiche(&$query) {
 					+ '<option value="hour">Heure</option>'
 					+ '</select>';
 					
-		var select_function	= '<input type="text" size="10" sql-act="function" value="" /><select sql-act="function-select"> '
+		var select_function	= '<input type="text" size="10" sql-act="function" value="" placeholder="<?php echo $langs->trans('FunctionToApply') ?>" /><select sql-act="function-select"> '
 					+ '<option value=""> </option>'
-					+ '<option value="SUM(@field@)">Somme</option>'
-					+ '<option value="ROUND(@field@,2)">Arrondi 2 décimal</option>'
-					+ '<option value="COUNT(@field@)">Nombre de</option>'
-					+ '<option value="MIN(@field@)">Minimum</option>'
-					+ '<option value="MAX(@field@)">Maximum</option>'
-					+ '<option value="MONTH(@field@)">Mois</option>'
-					+ '<option value="YEAR">Année</option>'
-					+ '<option value="DATE_FORMAT(@field@, \'%m/%Y\')">Année/Mois</option>'
+					+ '<option value="SUM(@field@)"><?php echo $langs->trans('Sum') ?></option>'
+					+ '<option value="ROUND(@field@,2)"><?php echo $langs->trans('Round2dec') ?></option>'
+					+ '<option value="COUNT(@field@)"><?php echo $langs->trans('CountOf') ?></option>'
+					+ '<option value="MIN(@field@)"><?php echo $langs->trans('Minimum') ?></option>'
+					+ '<option value="MAX(@field@)"><?php echo $langs->trans('Maximum') ?></option>'
+					+ '<option value="MONTH(@field@)"><?php echo $langs->trans('Month') ?></option>'
+					+ '<option value="YEAR"><?php echo $langs->trans('Year') ?></option>'
+					+ '<option value="DATE_FORMAT(@field@, \'%m/%Y\')"><?php echo $langs->trans('YearMonth') ?></option>'
 					//+ '<option value="FROM_UNIXTIME(@field@,\'%H:%i\')">Timestamp</option>'
-					+ '<option value="SEC_TO_TIME(@field@)">Timestamp</option>'
+					+ '<option value="SEC_TO_TIME(@field@)"><?php echo $langs->trans('Timestamp') ?></option>'
 					//+ '<option value="(@field@ / 3600)">/ 3600</option>'
 					+ '</select>';
 		

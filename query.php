@@ -201,6 +201,15 @@ function init_js(&$query) {
 		
 	}
 	
+	if(!empty($query->TNull)) {
+		foreach($query->TNull as $f=>$v) {
+			
+			echo ' $(\'#fields [sql-act="null"][field="'.addslashes($f).'"]\').val("'. addslashes($v) .'").change(); ';
+			
+		}
+		
+	}
+	
 	if(!empty($query->TOrder)) {
 		foreach($query->TOrder as $f=>$v) {
 		
@@ -353,6 +362,11 @@ function fiche(&$query) {
 					+ '<option value="var">variable</option>'
 					+ '<option value="function">fonction</option>'
 					+ '</select> <input type="text" value="" sql-act="value" />';
+			
+		var select_null	= '<select sql-act="null"> '
+					+ '<option value=""></option>'
+					+ '<option value="1"><?php echo $langs->transnoentities('YesAllowTestOnNull') ?></option>'
+					+ '</select>';
 			
 		var select_order	= '<select sql-act="order"> '
 					+ '<option value=""> </option>'

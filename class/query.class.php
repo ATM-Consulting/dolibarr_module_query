@@ -429,7 +429,16 @@ class TQuery extends TObjetStd {
 		if(!class_exists($classname))return $langs->trans('ClassNotIncluded');
 		
 		$o=new $classname($db);
-		$o->fetch($id);
+		if(method_exists($o, 'fetch')) {
+			$o->fetch($id);
+		}
+		else if(method_exists($o, 'load')) {
+			$PDOdb=new TPDOdb;
+			$o->load($PDOdb,$id);	
+		}
+		else{
+			return $langs->trans('ImpossibleToLoadObject').' : '.$classname;
+		}
 		
 		$TMethod = explode(',', $methods);
 		$TResult = array();

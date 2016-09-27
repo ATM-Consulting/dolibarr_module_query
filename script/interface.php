@@ -40,6 +40,7 @@
 			$query->TGroup = GETPOST('TGroup');
 			$query->TFunction = GETPOST('TFunction');
 			$query->TValue = GETPOST('TValue');
+			$query->TNull = GETPOST('TNull');
 			$query->TOrder = GETPOST('TOrder');
 			$query->TTranslate = GETPOST('TTranslate');
 			$query->TFilter = GETPOST('TFilter');

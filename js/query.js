@@ -94,6 +94,15 @@ $(document).ready(function() {
 			}
 		});
 		
+		var TNull = {};
+		$('#fields [sql-act="null"]').each(function(i,item) {
+			if($(item).val()) {
+				
+				TNull[$(item).attr('field')] = $(item).val();
+				
+			}
+		});
+		
 		var TOrder = {};
 		$('#fields [sql-act="order"]').each(function(i,item) {
 			if($(item).val()) {
@@ -219,6 +228,7 @@ $(document).ready(function() {
 				,'TTable': TTable
 				,'TOrder' : TOrder
 				,'TMode' : TMode
+				,'TNull' : TNull
 				,'THide' : THide
 				,'TTitle' : TTitle
 				,'TField' : TSelectedField
@@ -405,7 +415,7 @@ function refresh_field_param(field, table) {
 	
 			$('select[name=xaxis]').append('<option value="'+field+'" field="'+field+'" table="'+table+'">'+field+'</option>');
 			
-			var search = '<span table="'+table+'" field="'+field+'" class="selector"><div class="tagtd">'+select_equal+select_mode+select_filter+'</div><div class="tagtd">'+select_order+select_function+select_group+'</div></span>';
+			var search = '<span table="'+table+'" field="'+field+'" class="selector"><div class="tagtd">'+select_equal+select_mode+select_null+select_filter+'</div><div class="tagtd">'+select_order+select_function+select_group+'</div></span>';
 
 			$li = $('<div class="field table-border-row" table="'+table+'" field="'+field+'" ><div class="fieldName">'+field+'</div></div>');
 			
@@ -446,14 +456,18 @@ function refresh_field_param(field, table) {
 				
 				var $input = $fields.find('input[field="'+field+'"][sql-act="value"]');
 				var $filter= $fields.find('select[field="'+field+'"][sql-act="filter"]');
+				var $nullfilter= $fields.find('select[field="'+field+'"][sql-act="null"]');
+				
 				//console.log($input, field, $(this).val());
 				if($(this).val() == 'var') {
 					if(MODQUERY_EXPERT != 1) { $input.hide(); }
 					$filter.show();
+					$nullfilter.show();
 				}
 				else{
 					if(MODQUERY_EXPERT != 1) { $input.show();}
 					$filter.hide();
+					$nullfilter.hide();
 				}
 				
 				refresh_sql();
@@ -477,7 +491,7 @@ function refresh_field_param(field, table) {
 			}).change();
 			
 			if(MODQUERY_EXPERT == 1) {
-				$fields.find('select[sql-act=operator],input[sql-act=value]').hide();
+				$fields.find('select[sql-act=operator],select[sql-act=null],input[sql-act=value]').hide();
 			}
 			
 }

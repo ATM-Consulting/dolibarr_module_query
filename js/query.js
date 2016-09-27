@@ -592,10 +592,13 @@ function refresh_sql() {
 		sens = $(this).find('select[sql-act=order]').val();
 		value = $(this).find('input[sql-act=value]').val();
 		mode = $(this).find('select[sql-act=mode]').val();
+		nullValue = $(this).find('select[sql-act=null]').val();
 		
 		if(operator!='') {
 			
 			if(where!='') where+=' AND ';
+			
+			where+=' ( ';
 			
 			if(mode == 'function') {
 				where+= field+' '+operator+' ('+value+')';
@@ -604,10 +607,15 @@ function refresh_sql() {
 				null;
 			}
 			else{
-				where+= field+' '+operator+' ( :'+field.replace(".", "_")+' ) '; 	
+				where+= field+' '+operator+' ( :'+field.replace(".", "_")+' ) ';
+				
+				if(nullValue == 1 ) {
+					where+= ' OR (:'+field.replace(".", "_")+'_null) ';
+				}
+				 	
 			}
 			
-			
+			where+=' ) ';
 		}
 
 	});

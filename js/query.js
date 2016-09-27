@@ -474,6 +474,10 @@ function refresh_field_param(field, table) {
 				
 			}).change();
 			
+			$fields.find('select[sql-act=null]').unbind().change( function () {
+				refresh_sql();
+			}).change();
+			
 			$fieldsView.find('select[sql-act=total]').unbind().change(function() {
 				var field = $(this).attr('field');
 				

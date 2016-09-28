@@ -543,7 +543,7 @@ function fiche(&$query) {
 	<div>
 		<?php
 			if($query->getId()>0 && !empty($user->rights->query->all->expert) ) {
-				?><div style="float:right;z-index:999;"><?php 
+				?><div style="float:right;z-index:999; position:relative; top:40px;"><?php 
 					
 				if($query->expert == 0) {
 					

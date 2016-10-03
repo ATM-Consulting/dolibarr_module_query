@@ -230,13 +230,13 @@ class TQuery extends TObjetStd {
 
 			}
 
-			$sql_where = $this->getSQLWhere();
-
 			$sql="SELECT ".($this->sql_fields ? $this->sql_fields : '*') ."
-				FROM ".$this->sql_from."
-				WHERE (".$sql_where.")
-				".$this->sql_afterwhere;
-
+				FROM ".$this->sql_from;
+				
+			if(empty($this->TFunction))	{
+				$sql.= " WHERE (".($this->sql_where ? $this->sql_where : 1 ).") ";	
+			}
+				
 			if(!empty($table_element) && strpos($sql, $table_element)!==false) {
 				$sql.=' AND '.MAIN_DB_PREFIX.$table_element.'.rowid='.$objectid;
 			}
@@ -245,7 +245,10 @@ class TQuery extends TObjetStd {
 				$sql.=" GROUP BY ".implode(',', $this->TGroup);
 			}
 
-
+			if(!empty($this->TFunction) && !empty($this->sql_where)) {
+				$sql.=' HAVING '. $this->getSQLHavingBindFunction($this->sql_where);
+			}
+				
 			if($this->preview && stripos($sql,'LIMIT ') === false) $sql.=" LIMIT 5";
 
 			return $sql;
@@ -253,17 +256,11 @@ class TQuery extends TObjetStd {
 
 	}
 
-	private function getSQLWhere() {
-		if(empty($this->sql_where)) return 1 ;
-		
-		if($this->expert>0) return $this->sql_where;
-		
-		/*
-		A ne pas faire parce que ce sont pour la plupart des group function à mettre en having 
+	private function getSQLHavingBindFunction($sql) {
 		
 		$TFunction = & $this->TFunction;
 		
-		$sql_where = preg_replace_callback('/([a-z_]+\.{1}[a-z])\w+/i',function($matches) use($TFunction) {
+		$sql = preg_replace_callback('/([a-z_]+\.{1}[a-z])\w+/i',function($matches) use($TFunction) {
 			$field = $matches[0];
 			
 			 if(isset($TFunction[$field])) {
@@ -275,9 +272,9 @@ class TQuery extends TObjetStd {
 				return $field;	
 			}
 			  
-		}, $this->sql_where);
-		*/
-		return $sql_where;
+		}, $sql);
+		
+		return $sql;
 	}
 
 	function getBind() {

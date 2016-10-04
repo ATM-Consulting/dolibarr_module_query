@@ -93,7 +93,7 @@ class TQuery extends TObjetStd {
 
 	}
 
-	function run(&$PDOdb, $show_details = true, $height=0, $table_element='', $objectid=0, $preview = -1) {
+	function run(&$PDOdb, $show_details = true, $height=0, $table_element='', $objectid=0, $preview = -1, $force_list_mode = false) {
 		global $conf;
 
 		$this->show_details = $show_details;
@@ -104,7 +104,10 @@ class TQuery extends TObjetStd {
 		if($this->preview)$this->nb_result_max = 10;
 		if(!empty($height)) $this->height = $height;
 
-		if($this->type == 'CHART') {
+		if($force_list_mode) {
+			return load_fiche_titre($this->title).$this->runList($PDOdb,'',$table_element,$objectid);
+		}
+		else if($this->type == 'CHART') {
 			return $this->runChart($PDOdb,'ColumnChart',$table_element,$objectid);
 		}
 		else if($this->type == 'LINE') {
@@ -629,7 +632,7 @@ class TQuery extends TObjetStd {
 		return $TSearch;
 	}
 	function runChart(&$PDOdb, $type = 'LineChart',$table_element='',$objectid=0) {
-		global $conf;
+		global $conf,$langs;
 
 		$sql=$this->getSQL($table_element,$objectid);
 		$TBind = $this->getBind();
@@ -683,12 +686,14 @@ class TQuery extends TObjetStd {
 
 		}
 
+		$html.='<div class="tabsAction"> <input type="submit" class="butAction" name="show_as_list" value="'.$langs->trans('ShowGraphAsList').'" /> </div>';
+
 		$html.=$form->end_form();
 
 		return $html;
 	}
 	function runList(&$PDOdb, $template = '',$table_element='',$objectid=0) {
-
+			global $conf,$langs;
 		$html = '';
 
 			$sql=$this->getSQL($table_element,$objectid);
@@ -746,6 +751,9 @@ class TQuery extends TObjetStd {
 
 			}
 
+			if($this->type=='CHART' || $this->type=='LINE' || $this->type=='PIE' || $this->type=='AREA') {
+				$html.='<div class="tabsAction"> <input type="submit" class="butAction" name="show_as_graph" value="'.$langs->trans('ShowGraphNormal').'" /> </div>';
+			}
 
 			$html.= $form->end_form();
 //			var_dump(htmlentities($html));

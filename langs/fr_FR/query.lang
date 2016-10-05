@@ -55,3 +55,7 @@ getNomUrl=Lien vers la fiche
 getLibStatut=Statut de l'objet
 getNomUrlAndLibStatus=Lien et statut
 YesAllowTestOnNull=Autoriser test sur null
+ShowGraphAsList=Voir en liste
+ShowGraphNormal=Voir le graphique
+ExportCSV=Export CSV
+ExportTXT=Export Texte

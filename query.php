@@ -131,7 +131,7 @@ function run(&$PDOdb, &$query, $preview = false) {
 	}
 	
 	
-	echo $query->run($PDOdb, $show_details,0,$table_element, $fk_object);
+	echo $query->run($PDOdb, $show_details,0,$table_element, $fk_object,-1, GETPOST('show_as_list'));
 	
 	if(!$preview) {
 		dol_fiche_end();

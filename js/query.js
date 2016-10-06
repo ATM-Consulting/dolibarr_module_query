@@ -317,10 +317,11 @@ function drawFieldTables( table ){
 		for (x in data) {
 			
 			f =  data[x].Field;
+			sample =  data[x].sample;
 			
 			TFieldInTable[table].push(table+'.'+f);
 			
-			$ul.append('<tr table="'+table+'" field="'+f+'"><td><input table="'+table+'" id="'+table+'-'+f+'" type="checkbox" name="'+table+'.'+f+'" value="'+table+'.'+f+'" rel="selected-field" /><label for="'+table+'-'+f+'"> '+f+' </label></td></tr>');	
+			$ul.append('<tr table="'+table+'" field="'+f+'"><td><input table="'+table+'" id="'+table+'-'+f+'" type="checkbox" name="'+table+'.'+f+'" value="'+table+'.'+f+'" rel="selected-field" /><label for="'+table+'-'+f+'" title="'+sample+'"> '+f+'</label></td></tr>');	
 
 
 
@@ -338,7 +339,8 @@ function drawFieldTables( table ){
 
 		
 		$('#selected_tables').append($fields);
-		
+		console.log($("#fields label"));
+		$("div.fields label").tipTip({maxWidth: "400px", edgeOffset: 10, delay: 50, fadeIn: 50, fadeOut: 50});
 	});
 	
 }

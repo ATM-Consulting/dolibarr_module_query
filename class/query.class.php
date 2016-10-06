@@ -87,6 +87,22 @@ class TQuery extends TObjetStd {
 			$Tab[] = $obj;
 
 		}
+		
+		foreach($Tab as &$obj) {
+			
+			$TValue = $PDOdb->ExecuteAsArray("SELECT DISTINCT ".$obj->Field." as 'val' FROM ".$table." 
+				WHERE ".$obj->Field." IS NOT NULL AND ".$obj->Field."!='' LIMIT 6");
+			$sample = '';
+			foreach($TValue as $k=>$v) {
+				if($k>4){ $sample.=', ...';  break;}
+				
+				if(!empty($sample))$sample.=', ';
+				$sample.=$v->val;
+			}
+			
+			$obj->sample = $sample;
+			
+		}
 
 		return $Tab;
 

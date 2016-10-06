@@ -78,7 +78,8 @@ class TQuery extends TObjetStd {
 	}
 
 	static function getFields(&$PDOdb, $table) {
-
+		global $langs;
+		
 		$PDOdb->Execute("DESCRIBE ".$table);
 
 		$Tab = array();
@@ -89,6 +90,8 @@ class TQuery extends TObjetStd {
 		}
 		
 		foreach($Tab as &$obj) {
+			
+			$obj->label = $langs->trans(ucfirst($obj->Field));
 			
 			$TValue = $PDOdb->ExecuteAsArray("SELECT DISTINCT ".$obj->Field." as 'val' FROM ".$table." 
 				WHERE ".$obj->Field." IS NOT NULL AND ".$obj->Field."!='' LIMIT 6");

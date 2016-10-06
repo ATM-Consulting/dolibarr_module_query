@@ -249,7 +249,7 @@ $(document).ready(function() {
 		}
 
 		$.post(MODQUERY_INTERFACE, TData, function (idQuery) {
-			console.log(MODQUERY_EXPERT, idQuery);
+		//	console.log(MODQUERY_EXPERT, idQuery);
 			if(idQuery>0) {
 				$.jnotify('Saved');
 				
@@ -317,11 +317,13 @@ function drawFieldTables( table ){
 		for (x in data) {
 			
 			f =  data[x].Field;
-			sample =  data[x].sample;
+			sample = f;
+			if(data[x].sample) sample += ' : '+ data[x].sample;
+			label =  data[x].label;
 			
 			TFieldInTable[table].push(table+'.'+f);
 			
-			$ul.append('<tr table="'+table+'" field="'+f+'"><td><input table="'+table+'" id="'+table+'-'+f+'" type="checkbox" name="'+table+'.'+f+'" value="'+table+'.'+f+'" rel="selected-field" /><label for="'+table+'-'+f+'" title="'+sample+'"> '+f+'</label></td></tr>');	
+			$ul.append('<tr table="'+table+'" field="'+f+'"><td><input table="'+table+'" id="'+table+'-'+f+'" type="checkbox" name="'+table+'.'+f+'" value="'+table+'.'+f+'" rel="selected-field" default-label="'+label+'" /><label for="'+table+'-'+f+'" title="'+sample+'"> '+label+'</label></td></tr>');	
 
 
 
@@ -335,11 +337,8 @@ function drawFieldTables( table ){
 		});
 			
 	
-	
-
-		
+			
 		$('#selected_tables').append($fields);
-		console.log($("#fields label"));
 		$("div.fields label").tipTip({maxWidth: "400px", edgeOffset: 10, delay: 50, fadeIn: 50, fadeOut: 50});
 	});
 	
@@ -429,7 +428,9 @@ function refresh_field_param(field, table) {
 				
 			});
 				
-			$liView = $('<div class="field" table="'+table+'" field="'+field+'" ><div class="fieldName">'+field+'</div> <input tytpe="text" placeholder="Title" sql-act="title" field='+field+' value="" /></div>');
+			var defaultLabel = $("input[rel=selected-field][table="+table+"][value='"+field+"']").attr("default-label");	
+				
+			$liView = $('<div class="field" table="'+table+'" field="'+field+'" ><div class="fieldName">'+field+'</div> <input tytpe="text" placeholder="Title" sql-act="title" field='+field+' value="'+defaultLabel+'" /></div>');
 			$liView.append('<input type="text" placeholder="Translation (value:translation, ...)" sql-act="translate" field='+field+' value="" />');
 			$liView.append(select_type+select_hide+select_total+select_total_group_field+select_class+select_method);
 			$liView.find('input,select').attr('field', field).attr('table', table);

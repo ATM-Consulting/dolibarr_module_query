@@ -702,7 +702,7 @@ class TQuery extends TObjetStd {
 
 		}
 
-		$html.='<div class="tabsAction"> <input type="submit" class="butAction" name="show_as_list" value="'.$langs->trans('ShowGraphAsList').'" /> </div>';
+		if($this->preview<=0) $html.='<div class="tabsAction"> <input type="submit" class="butAction" name="show_as_list" value="'.$langs->trans('ShowGraphAsList').'" /> </div>';
 
 		$html.=$form->end_form();
 

@@ -263,7 +263,7 @@ class TQuery extends TObjetStd {
 		
 		$TFunction = & $this->TFunction;
 		
-		$sql = preg_replace_callback('/([a-z_]+\.{1}[a-z])\w+/i',function($matches) use($TFunction) {
+		$sql = preg_replace_callback('/([a-z_]+\.{1}[a-z_]+)/i',function($matches) use($TFunction) {
 			$field = $matches[0];
 			
 			 if(isset($TFunction[$field])) {

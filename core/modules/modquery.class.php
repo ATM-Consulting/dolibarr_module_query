@@ -258,6 +258,13 @@ class modquery extends DolibarrModules
 		$this->rights[$r][5] = 'expert';			// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$r++;
 
+		$this->rights[$r][0] = $this->numero+$r; 				// Permission id (must not be already used)
+		$this->rights[$r][1] = 'ViewDashboard';	// Permission label
+		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
+		$this->rights[$r][4] = 'dashboard';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][5] = 'read';			// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$r++;
+		
 
 
         // Add here list of permission defined by
@@ -291,6 +298,7 @@ class modquery extends DolibarrModules
         	'leftmenu'=>'query',
         	'url'=>'/query/query.php',
         	'position'=>100,
+        	'perms'=>'$user->rights->query->all->read',
         	'target'=>'',
         	'user'=>2
         );
@@ -321,6 +329,7 @@ class modquery extends DolibarrModules
         	'url'=>'/query/query.php',
         	'langs'=>'query.lang',
         	'position'=>101,
+        	'perms'=>'$user->rights->query->all->read',
         	'target'=>'',
         	'user'=>2
         );
@@ -335,6 +344,7 @@ class modquery extends DolibarrModules
         	'leftmenu'=>'dash_list',
         	'url'=>'/query/dashboard.php',
         	'position'=>201,
+        	'perms'=>'$user->rights->query->dashboard->read',
         	'target'=>'',
         	'user'=>2
         );

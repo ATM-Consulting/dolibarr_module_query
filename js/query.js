@@ -428,7 +428,8 @@ function refresh_field_param(field, table) {
 				
 			});
 				
-			var defaultLabel = $("input[rel=selected-field][table="+table+"][value='"+field+"']").attr("default-label");	
+			var defaultLabel;
+			if(table != '') defaultLabel = $("input[rel=selected-field][table="+table+"][value='"+field+"']").attr("default-label");	
 				
 			$liView = $('<div class="field" table="'+table+'" field="'+field+'" ><div class="fieldName">'+field+'</div> <input tytpe="text" placeholder="Title" sql-act="title" field='+field+' value="'+defaultLabel+'" /></div>');
 			$liView.append('<input type="text" placeholder="Translation (value:translation, ...)" sql-act="translate" field='+field+' value="" />');

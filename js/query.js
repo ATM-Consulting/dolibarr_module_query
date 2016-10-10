@@ -600,8 +600,12 @@ function refresh_sql() {
 		value = $(this).find('input[sql-act=value]').val();
 		mode = $(this).find('select[sql-act=mode]').val();
 		nullValue = $(this).find('select[sql-act=null]').val();
+		filter= $(this).find('select[sql-act=filter]').val();
 		
-		if(operator!='') {
+		if(filter =='calendars') {
+			null; // on ne fait rien sera complété par le système
+		}
+		else if(operator!='') {
 			
 			if(where!='') where+=' AND ';
 			

@@ -300,6 +300,9 @@ class TQuery extends TObjetStd {
 	}
 
 	function getBind() {
+		
+		return array(); // desactivation du mode bind qui présente trop de problème avec l'interprétation des requêtes
+		
 		$TBind = array();
 		if(!empty($this->TMode)) {
 			/*$this->getNonAliasField($this->TMode);
@@ -397,7 +400,7 @@ class TQuery extends TObjetStd {
 
 					$method = empty($this->TMethod[$fSearch]) ? 'getNomUrl' : $this->TMethod[$fSearch];
 
-					$Tab[$fSearch]= 'TQuery::getCustomMethodForObject("'.$v.'", (int)@val@, "'.$method.'")';
+					$Tab[$fSearch]= 'TQuery::getCustomMethodForObject("'.$v.'", (int)"@val@", "'.$method.'")';
 				}
 
 			}
@@ -448,7 +451,7 @@ class TQuery extends TObjetStd {
 
 		global $langs, $db, $conf;
 
-		if(empty($methods)) return '';
+		if(empty($methods) || empty($id)) return '';
 
 		list($classname, $include) = explode(',', $type);
 

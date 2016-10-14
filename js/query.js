@@ -610,28 +610,25 @@ function refresh_sql() {
 			
 			if(where!='') where+=' AND ';
 			
-			where+=' ( ';
 			
-			if(mode == 'function') {
-				where+= field+' '+operator+' ('+value+')';
+			more_where  ='';
+			if(mode == 'function' || mode == 'value') {
+				more_where+= ' ( '+field+' '+operator+' ('+value+') )';
 			}
-			else if(operator=='=') {
+			else {
 				null;
 			}
-			else{
-				where+= field+' '+operator+' ( :'+field.replace(".", "_")+' ) ';
-				
-				if(nullValue == 1 ) {
-					where+= ' OR (:'+field.replace(".", "_")+'_null) ';
-				}
-				 	
+			
+			if(more_where) {
+				where+=' ( ' +more_where +' ) ';	
 			}
 			
-			where+=' ) ';
+			
+			
 		}
 
 	});
-	
+	console.log(where);
 	$('#sql_query_where').val(where);
 
 }

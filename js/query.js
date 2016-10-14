@@ -628,7 +628,7 @@ function refresh_sql() {
 		}
 
 	});
-	console.log(where);
+	
 	$('#sql_query_where').val(where);
 
 }

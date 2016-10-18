@@ -16,12 +16,52 @@ $PDOdb=new TPDOdb;
 
 switch ($action) {
 	
+	case 'up_query':
+		
+		
+		if(empty($_FILES['query_to_upload']['error']) && !empty($_FILES['query_to_upload']['name'])) {
+			
+			$query = unserialize( gzuncompress( file_get_contents($_FILES['query_to_upload']['tmp_name']) ));
+			if($query!==false) {
+				
+				$query->save($PDOdb);
+				
+				setEventMessage($langs->trans('QueryUploadSuccess', $query->title));
+				
+			}
+			
+			
+		}
+		
+		liste();
+		
+		break;
+	
+	case 'export':
+		$query->load($PDOdb, GETPOST('id'));
+		$query->rowid = 0;
+		
+		$gz = gzcompress( serialize($query) );
+		
+		header('Content-Type: application/octet-stream');
+	    header('Content-disposition: attachment; filename=query-'. Tools::url_format($query->title) .'.query');
+	    header('Pragma: no-cache');
+	    header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
+	    header('Expires: 0');
+		
+		echo $gz;
+		exit;
+		
+		break;
+	
 	case 'clone':
 		$query->load($PDOdb, GETPOST('id'));
 		$query->rowid = 0;
 		$query->title.=' ('.$langs->trans('Copy').')';
 		$query->save($PDOdb);
-		fiche($query);
+		
+		header('location:'.dol_buildpath('/query/query.php?action=view&id='.$query->getId(),1));
+		exit;
 		
 		break;
 	case 'delete':
@@ -167,6 +207,7 @@ function liste() {
 			,'title'=>'<a href="?action=run&id=@Id@">'.img_picto('Run', 'object_cron.png').' @val@</a>'
 			,'delete'=>'<a href="?action=delete&id=@Id@" onclick="return(confirm(\''.$langs->trans('ConfirmDeleteMessage').'\'));">'.img_picto('Delete', 'delete.png').'</a>'
 		)
+		,'orderBy'=>array('title'=>'ASC')
 		,'hide'=>array('type','nb_result_max')
 		,'title'=>array(
 			'title'=>$langs->trans('Title')
@@ -183,6 +224,12 @@ function liste() {
 	
 	));
 	
+	
+	$formCore->end();
+	
+	$formCore=new TFormCore('auto','formUPQ','post',true);
+	echo $formCore->hidden('action','up_query');
+	echo $formCore->fichier($langs->trans('QueryToUpload'), 'query_to_upload', '', 10).' '.$formCore->btsubmit($langs->trans('UploadQuery'),'bt_upquery');
 	$formCore->end();
 	
 	dol_fiche_end();
@@ -560,6 +607,7 @@ function fiche(&$query) {
 				}
 				
 				?><br /><br /><a class="butAction" href="?action=clone&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('cloneQuery') ?></a><?php
+				?><br /><br /><a class="butAction" href="?action=export&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('ExportQuery') ?></a><?php
 				
 				?></div><?php
 				

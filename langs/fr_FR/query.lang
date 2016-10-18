@@ -60,3 +60,8 @@ ShowGraphNormal=Voir le graphique
 ExportCSV=Export CSV
 ExportTXT=Export Texte
 ViewDashboard=Consulter les panneaux
+
+ExportQuery=Exporter la requête
+QueryToUpload=Sélectionner le fichier query à charger
+UploadQuery=Charger
+QueryUploadSuccess=Requête " %s " chargée avec succès

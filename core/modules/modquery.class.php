@@ -265,6 +265,13 @@ class modquery extends DolibarrModules
 		$this->rights[$r][5] = 'read';			// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$r++;
 		
+		$this->rights[$r][0] = $this->numero+$r; 				// Permission id (must not be already used)
+		$this->rights[$r][1] = 'UseOtherDB';	// Permission label
+		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
+		$this->rights[$r][4] = 'bdd';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][5] = 'use_other_db';			// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$r++;
+		
 
 
         // Add here list of permission defined by
@@ -327,7 +334,7 @@ class modquery extends DolibarrModules
         	'mainmenu'=>'tools',
         	'leftmenu'=>'query_list',
         	'url'=>'/query/query.php',
-        	'langs'=>'query.lang',
+        	'langs'=>'query@query',
         	'position'=>101,
         	'perms'=>'$user->rights->query->all->read',
         	'target'=>'',
@@ -357,7 +364,7 @@ class modquery extends DolibarrModules
         	'mainmenu'=>'tools',
         	'leftmenu'=>'dash_add',
         	'url'=>'/query/dashboard.php?action=add',
-        	'langs'=>'query.lang',
+        	'langs'=>'query@query',
         	'position'=>202,
         	'perms'=>'$user->rights->query->dashboard->create',
         	'target'=>'',
@@ -388,7 +395,7 @@ class modquery extends DolibarrModules
         	'mainmenu'=>'tools',
         	'leftmenu'=>'menu_query_add',
         	'url'=>'/query/menu.php?action=add',
-        	'langs'=>'query.lang',
+        	'langs'=>'query@query',
         	'position'=>312,
         	'perms'=>'$user->rights->query->all->create',
         	'target'=>'',
@@ -401,13 +408,13 @@ class modquery extends DolibarrModules
         $this->menu[$r]=array(
         	'fk_menu'=>'fk_mainmenu=tools,fk_leftmenu=query',
         	'type'=>'left',
-        	'titre'=>'Accès base de données',
+        	'titre'=>'DatabaseAccessAdminer',
         	'mainmenu'=>'tools',
         	'leftmenu'=>'bdd_access',
         	'url'=>'/query/bdd.php',
-        	'langs'=>'query.lang',
         	'position'=>301,
         	'enabled'=>'',
+        	'langs'=>'query@query',
         	'perms'=>'$user->rights->query->bdd->write',
         	'target'=>'',
         	'user'=>2
@@ -415,7 +422,24 @@ class modquery extends DolibarrModules
 		
         $r++;
 		
+        $this->menu[$r]=array(
+        	'fk_menu'=>'fk_mainmenu=tools,fk_leftmenu=query',
+        	'type'=>'left',
+        	'titre'=>'AddDataBaseAccess',
+        	'mainmenu'=>'tools',
+        	'leftmenu'=>'bdd_access',
+        	'url'=>'/query/bdd.php?action=new',
+        	'position'=>302,
+        	'enabled'=>'',
+        	'langs'=>'query@query',
+        	'perms'=>'$user->rights->query->bdd->use_other_db',
+        	'target'=>'',
+        	'user'=>2
+        );
 		
+        $r++;
+		
+				
         //$this->menu[$r]=array(
         //	// Use r=value where r is index key used for the parent menu entry
         //	// (higher parent must be a top menu entry)

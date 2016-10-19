@@ -66,3 +66,13 @@ QueryToUpload=Sélectionner le fichier query à charger
 UploadQuery=Charger
 QueryUploadSuccess=Requête " %s " chargée avec succès
 QueryAsJSON=Résultat de la requête en JSON (interrogeable)
+UseOtherDB=Utiliser des bases de données externes
+
+DatabaseAccessAdminer=Accès base de données
+AddDataBaseAccess=Ajouter un accès
+
+Host=Hôte
+DBName=Base de données
+Charset=Encodage
+DBType=Type
+

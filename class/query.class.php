@@ -11,8 +11,8 @@ class TQuery extends TObjetStd {
         parent::set_table(MAIN_DB_PREFIX.'query');
         parent::add_champs('sql_fields,sql_from,sql_where,sql_afterwhere',array('type'=>'text'));
 		parent::add_champs('TField,TTable,TOrder,TTitle,TTotal,TLink,TAlias,THide,TTranslate,TNull,TMode,TOperator,TGroup,TFunction,TValue,TJoin,TFilter,TType,TClass,TMethod',array('type'=>'array'));
-		parent::add_champs('expert,nb_result_max',array('type'=>'int'));
-
+		parent::add_champs('expert,nb_result_max,fk_bdd',array('type'=>'integer'));
+		
 		parent::add_champs('uid',array('index'=>true, 'length'=>32));
 
         parent::_init_vars('title,type,xaxis');

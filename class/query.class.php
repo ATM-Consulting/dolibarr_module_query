@@ -13,6 +13,8 @@ class TQuery extends TObjetStd {
 		parent::add_champs('TField,TTable,TOrder,TTitle,TTotal,TLink,TAlias,THide,TTranslate,TNull,TMode,TOperator,TGroup,TFunction,TValue,TJoin,TFilter,TType,TClass,TMethod',array('type'=>'array'));
 		parent::add_champs('expert,nb_result_max',array('type'=>'int'));
 
+		parent::add_champs('uid',array('index'=>true, 'length'=>32));
+
         parent::_init_vars('title,type,xaxis');
         parent::start();
 
@@ -137,6 +139,9 @@ class TQuery extends TObjetStd {
 		else if($this->type == 'AREA') {
 			return $this->runChart($PDOdb,'AreaChart',$table_element,$objectid);
 		}
+		else if($this->type == 'RAW' ) {
+			return $this->runRAW($PDOdb,$table_element,$objectid);
+		}
 		else if($this->type == 'SIMPLELIST' || $this->preview) {
 			return load_fiche_titre($this->title).$this->runList($PDOdb,dol_buildpath('/query/tpl/html.simplelist.tbs.html'),$table_element,$objectid);
 		}
@@ -157,12 +162,12 @@ class TQuery extends TObjetStd {
 
 	function load(&$PDOdb, $id) {
 
-		parent::load($PDOdb, $id);
+		$res = parent::load($PDOdb, $id);
 
-		 if($this->expert == 1) {
+		if($this->expert == 1) {
 		 	$this->sql_fields = $this->getSQLFieldsWithAlias();
-		 }
-
+		}
+		return $res;
 	}
 
 	private function extractAliasFromSQL() {
@@ -191,6 +196,9 @@ class TQuery extends TObjetStd {
 	}
 
 	function save(&$PDOdb) {
+		
+		if(empty($this->uid))$this->uid = md5( time().$this->title.rand(1000,999999) );
+		
 		$this->extractAliasFromSQL();
 
 		parent::save($PDOdb);
@@ -679,7 +687,7 @@ class TQuery extends TObjetStd {
 
 		$r=new TListviewTBS('chart'.$this->getId());
 		$html .= $r->render($PDOdb, $sql,array(
-			'type'=>'chart'
+			'view_type'=>'chart'
 			,'chartType'=>$type
 			,'translate'=>$TTranslate
 			,'liste'=>array(
@@ -714,9 +722,48 @@ class TQuery extends TObjetStd {
 
 		return $html;
 	}
+	
+	function runRAW(&$PDOdb, $table_element='',$objectid=0) {
+		global $conf,$langs;
+		$sql=$this->getSQL($table_element,$objectid);
+		$TBind = $this->getBind();
+		$TSearch = $this->getSearch();
+		$THide = $this->getHide();
+		$TTranslate = $this->getTranslate();
+		$TTotal = $this->getTotal();
+		$TOperator = $this->getOperator();
+		$TType = $this->getType();
+		$TEval = $this->getEval();
+		$TTitle=$this->getTitle();
+		
+		$r=new TListviewTBS('lRunQuery'. $this->getId());
+		
+		return $r->render($PDOdb, $sql,array(
+				'link'=>$this->TLink
+				,'view_type'=>'raw'
+				,'no-select'=>true
+				,'hide'=>$THide
+				,'title'=>$TTitle
+				,'liste'=>array(
+					'titre'=>''
+				)
+				,'limit'=>array('global'=> $this->nb_result_max)
+				,'type'=>$TType
+				,'orderBy'=>$this->TOrder
+				,'translate'=>$TTranslate
+				,'search'=>$TSearch
+				,'export'=>array(
+					'CSV','TXT'
+				)
+				,'operator'=>$TOperator
+				,'math'=>$TTotal
+				,'eval'=>$TEval
+			)
+			,$TBind);
+	}
 	function runList(&$PDOdb, $template = '',$table_element='',$objectid=0) {
 			global $conf,$langs;
-		$html = '';
+			$html = '';
 
 			$sql=$this->getSQL($table_element,$objectid);
 			$TBind = $this->getBind();

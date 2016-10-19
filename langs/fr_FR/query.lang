@@ -65,3 +65,4 @@ ExportQuery=Exporter la requête
 QueryToUpload=Sélectionner le fichier query à charger
 UploadQuery=Charger
 QueryUploadSuccess=Requête " %s " chargée avec succès
+QueryAsJSON=Résultat de la requête en JSON (interrogeable)

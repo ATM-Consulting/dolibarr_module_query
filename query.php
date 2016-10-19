@@ -131,7 +131,7 @@ switch ($action) {
 
 
 function run(&$PDOdb, &$query, $preview = false) {
-	global $conf;
+	global $conf,$langs;
 	
 	if(!$preview) {
 		llxHeader('', 'Query', '', '', 0, 0, array() , array('/query/css/query.css') );
@@ -174,6 +174,9 @@ function run(&$PDOdb, &$query, $preview = false) {
 	echo $query->run($PDOdb, $show_details,0,$table_element, $fk_object,-1, GETPOST('show_as_list'));
 	
 	if(!$preview) {
+		
+		echo '<p><a href="'.dol_buildpath('/query/get-json.php',1).'?'.http_build_query(array('TListTBS'=>$_REQUEST['TListTBS'])).'&uid='.$query->uid.'" target="_blank">'.$langs->trans('QueryAsJSON').'</a></p>';
+		
 		dol_fiche_end();
 		llxFooter();
 		

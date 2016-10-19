@@ -16,7 +16,7 @@
 		
 		
 		$query->type='RAW';
-		$Tab =  $query->run($PDOdb);
+		$Tab =  $query->run();
 
 		__out($Tab['champs'],'json');
 	

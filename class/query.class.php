@@ -114,8 +114,10 @@ class TQuery extends TObjetStd {
 
 	}
 
-	function run(&$PDOdb, $show_details = true, $height=0, $table_element='', $objectid=0, $preview = -1, $force_list_mode = false) {
+	function run($show_details = true, $height=0, $table_element='', $objectid=0, $preview = -1, $force_list_mode = false) {
 		global $conf;
+
+		$PDOdb = &$this->pdodb;
 
 		$this->show_details = $show_details;
 		if($preview!==-1) $this->preview = $preview;
@@ -167,7 +169,24 @@ class TQuery extends TObjetStd {
 		if($this->expert == 1) {
 		 	$this->sql_fields = $this->getSQLFieldsWithAlias();
 		}
+		
+		$this->connect($PDOdb);
+		
 		return $res;
+	}
+	
+	function connect(&$PDOdb) {
+		
+		dol_include_once('/query/class/bddconnector.class.php');
+		
+		$this->bdd=new TBDDConnector;
+		if($this->fk_bdd>0) {
+			$this->bdd->load($PDOdb, $this->fk_bdd);
+			$this->bdd->connect();	
+			
+			$this->pdodb = &$this->bdd->pdodb;
+		}
+		
 	}
 
 	private function extractAliasFromSQL() {

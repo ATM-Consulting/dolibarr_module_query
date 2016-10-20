@@ -11,13 +11,15 @@
 	
 	switch ($get) {
 		case 'tables':
-			
-			__out( TQuery::getTables($PDOdb) , 'json' );
+			$query=new TQuery;
+			$query->load($PDOdb, GETPOST('id'));
+			__out( TQuery::getTables($query->pdodb) , 'json' );
 			
 			break;
 		case 'fields':
-			
-			__out( TQuery::getFields($PDOdb, GETPOST('table')) , 'json' );
+			$query=new TQuery;
+			$query->load($PDOdb, GETPOST('id'));
+			__out( TQuery::getFields($query->pdodb, GETPOST('table')) , 'json' );
 			
 			break;
 		

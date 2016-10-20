@@ -209,7 +209,8 @@ $(document).ready(function() {
 				,'id' : $('form#formQuery input[name=id]').val()
 				,'title' : $('form#formQuery input[name=title]').val()
 				,'type' : $('form#formQuery select[name=type]').val()
-	
+				,'fk_bdd' : $('form#formQuery select[name=fk_bdd]').val()
+				
 	
 				,'xaxis' : $('form#formQuery select[name=xaxis]').val()
 			};
@@ -301,6 +302,7 @@ function drawFieldTables( table ){
 		,data:{
 			get:'fields'
 			,table : table
+			,id:MODQUERY_QUERYID
 		}
 		,async:false
 		,dataType:'json'
@@ -639,6 +641,7 @@ function getTables() {
 		url:MODQUERY_INTERFACE
 		,data:{
 			get:'tables'
+			,id:MODQUERY_QUERYID
 		}
 		,dataType:'json'
 		,async:false
@@ -653,7 +656,11 @@ function getTables() {
 		for (x in data) {
 			//console.log(data[x], jQuery.inArray(data[x], TTable));
 			if(jQuery.inArray(data[x], TTable) == -1 ) {
-				$tables.append('<option value="'+data[x]+'">'+data[x].substring(l)+'</option>');	
+				
+				label = data[x];
+				if(label.indexOf(MODQUERY_PREFIX)>=0) label = label.substring(l);
+				
+				$tables.append('<option value="'+data[x]+'">'+label+'</option>');	
 			}
 			
 			

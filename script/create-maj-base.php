@@ -19,6 +19,7 @@ else{
 
 dol_include_once('/query/class/query.class.php');
 dol_include_once('/query/class/dashboard.class.php');
+dol_include_once('/query/class/bddconnector.class.php');
 
 $o=new TQuery($db);
 $o->init_db_by_vars($PDOdb);
@@ -30,6 +31,9 @@ $o=new TQDashBoardQuery($db);
 $o->init_db_by_vars($PDOdb);
 
 $o=new TQueryMenu($db);
+$o->init_db_by_vars($PDOdb);
+
+$o=new TBDDConnector($db);
 $o->init_db_by_vars($PDOdb);
 
 

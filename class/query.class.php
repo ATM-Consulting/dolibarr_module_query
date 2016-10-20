@@ -11,8 +11,8 @@ class TQuery extends TObjetStd {
         parent::set_table(MAIN_DB_PREFIX.'query');
         parent::add_champs('sql_fields,sql_from,sql_where,sql_afterwhere',array('type'=>'text'));
 		parent::add_champs('TField,TTable,TOrder,TTitle,TTotal,TLink,TAlias,THide,TTranslate,TNull,TMode,TOperator,TGroup,TFunction,TValue,TJoin,TFilter,TType,TClass,TMethod',array('type'=>'array'));
-		parent::add_champs('expert,nb_result_max',array('type'=>'int'));
-
+		parent::add_champs('expert,nb_result_max,fk_bdd',array('type'=>'integer'));
+		
 		parent::add_champs('uid',array('index'=>true, 'length'=>32));
 
         parent::_init_vars('title,type,xaxis');
@@ -114,8 +114,10 @@ class TQuery extends TObjetStd {
 
 	}
 
-	function run(&$PDOdb, $show_details = true, $height=0, $table_element='', $objectid=0, $preview = -1, $force_list_mode = false) {
+	function run($show_details = true, $height=0, $table_element='', $objectid=0, $preview = -1, $force_list_mode = false) {
 		global $conf;
+
+		$PDOdb = &$this->pdodb;
 
 		$this->show_details = $show_details;
 		if($preview!==-1) $this->preview = $preview;
@@ -167,7 +169,24 @@ class TQuery extends TObjetStd {
 		if($this->expert == 1) {
 		 	$this->sql_fields = $this->getSQLFieldsWithAlias();
 		}
+		
+		$this->connect($PDOdb);
+		
 		return $res;
+	}
+	
+	function connect(&$PDOdb) {
+		
+		dol_include_once('/query/class/bddconnector.class.php');
+		
+		$this->bdd=new TBDDConnector;
+		if($this->fk_bdd>0) $this->bdd->load($PDOdb, $this->fk_bdd);
+			
+		$this->bdd->connect();	
+		
+		$this->pdodb = &$this->bdd->pdodb;
+	
+		
 	}
 
 	private function extractAliasFromSQL() {

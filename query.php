@@ -171,7 +171,7 @@ function run(&$PDOdb, &$query, $preview = false) {
 	}
 	
 	
-	echo $query->run($PDOdb, $show_details,0,$table_element, $fk_object,-1, GETPOST('show_as_list'));
+	echo $query->run($show_details,0,$table_element, $fk_object,-1, GETPOST('show_as_list'));
 	
 	if(!$preview) {
 		
@@ -621,6 +621,18 @@ function fiche(&$query) {
 			<input type="text" name="title" size="80" value="<?php echo $query->title; ?>" />
 			<?php
 				$form=new TFormCore;
+				
+				if(!empty($user->rights->query->bdd->use_other_db)) {
+					dol_include_once('/query/class/bddconnector.class.php');
+					$PDOdb=new TPDOdb;
+					
+					$formCoreBDD = new TFormCore;
+					
+					if($query->getId()>0)$formCoreBDD->Set_typeaff('view');
+					
+					echo $formCoreBDD->combo(' - '.$langs->trans('BDD'),'fk_bdd',  TBDDConnector::getCombo($PDOdb, true), $query->fk_bdd);
+				}
+				
 				echo $form->combo('- '.$langs->trans('Type').' : ', 'type', $query->TGraphiqueType, $query->type);
 				echo '- '.$langs->trans('XAxis').' : <select name="xaxis" initValue="'.$query->xaxis.'"></select>';
 			?>

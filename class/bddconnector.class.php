@@ -17,7 +17,7 @@ class TBDDConnector extends TObjetStd {
 			'mysql'=>'MySQL'
 		);
 		
-		$this->pdodb = & $PDOdb;
+		$this->pdodb = null;
 	
 		$this->is_connected = false;
 	
@@ -33,12 +33,17 @@ class TBDDConnector extends TObjetStd {
 	}
 	function connect() {
 		
-		$cs = $this->db_type.':dbname='.$this->db_name.';host='.$this->host; 
-		if(!empty($port)) 			$cs.= ';port='.$port;
-		if(!empty($this->charset) ) $cs.=';charset='.$this->charset;
+		if(empty($this->db_name)) $this->pdodb = new TPDOdb;
+		else{
+
+			$cs = $this->db_type.':dbname='.$this->db_name.';host='.$this->host; 
+			if(!empty($port)) 			$cs.= ';port='.$port;
+			if(!empty($this->charset) ) $cs.=';charset='.$this->charset;
+			
+			$this->pdodb=new TPDOdb('', $cs, $this->login, $this->password); 
+			
+		}
 		
-		$this->pdodb=new TPDOdb('', $cs, $this->login, $this->password); 
-	
 		if(empty($this->pdodb->error)) $this->is_connected = true;
 		
 		return $this->is_connected;

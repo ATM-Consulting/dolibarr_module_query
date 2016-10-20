@@ -180,12 +180,12 @@ class TQuery extends TObjetStd {
 		dol_include_once('/query/class/bddconnector.class.php');
 		
 		$this->bdd=new TBDDConnector;
-		if($this->fk_bdd>0) {
-			$this->bdd->load($PDOdb, $this->fk_bdd);
-			$this->bdd->connect();	
+		if($this->fk_bdd>0) $this->bdd->load($PDOdb, $this->fk_bdd);
 			
-			$this->pdodb = &$this->bdd->pdodb;
-		}
+		$this->bdd->connect();	
+		
+		$this->pdodb = &$this->bdd->pdodb;
+	
 		
 	}
 

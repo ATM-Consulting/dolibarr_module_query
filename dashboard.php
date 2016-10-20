@@ -372,10 +372,10 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 					
 					if(!empty($cell->query)) {
 						if(!$withHeader) {
-							echo $cell->query->run($PDOdb, false, $cell->height * $cell_height, $table_element, $fk_object);
+							echo $cell->query->run(false, $cell->height * $cell_height, $table_element, $fk_object);
 						}
 						else{
-							echo $cell->query->run($PDOdb, false, $cell->height * $cell_height, $table_element, $fk_object);	
+							echo $cell->query->run(false, $cell->height * $cell_height, $table_element, $fk_object);	
 						}
 						
 					}

@@ -114,6 +114,12 @@ switch ($action) {
 		
 		break;		
 
+	case 'run-in':
+		$query->load($PDOdb, GETPOST('id'));
+		run($PDOdb, $query,2);
+		
+				
+		break;
 	case 'preview':
 		$query->load($PDOdb, GETPOST('id'));
 		run($PDOdb, $query, true);
@@ -156,7 +162,7 @@ function run(&$PDOdb, &$query, $preview = false) {
 	
 	$show_details = GETPOST('_a') == '' ? true : false;
 	
-	if($preview) {
+	if($preview === true) {
 		$query->preview = true;
 		
 	}

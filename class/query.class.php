@@ -127,31 +127,43 @@ class TQuery extends TObjetStd {
 		if($this->preview)$this->nb_result_max = 10;
 		if(!empty($height)) $this->height = $height;
 
+
 		if($force_list_mode) {
-			return load_fiche_titre($this->title).$this->runList($PDOdb,'',$table_element,$objectid);
+			$list= load_fiche_titre($this->title).$this->runList($PDOdb,'',$table_element,$objectid);
 		}
 		else if($this->type == 'CHART') {
-			return $this->runChart($PDOdb,'ColumnChart',$table_element,$objectid);
+			$list= $this->runChart($PDOdb,'ColumnChart',$table_element,$objectid);
 		}
 		else if($this->type == 'LINE') {
-			return $this->runChart($PDOdb,'LineChart',$table_element,$objectid);
+			$list= $this->runChart($PDOdb,'LineChart',$table_element,$objectid);
 		}else if($this->type == 'PIE') {
-			return $this->runChart($PDOdb,'PieChart',$table_element,$objectid);
+			$list= $this->runChart($PDOdb,'PieChart',$table_element,$objectid);
 		}
 		else if($this->type == 'AREA') {
-			return $this->runChart($PDOdb,'AreaChart',$table_element,$objectid);
+			$list= $this->runChart($PDOdb,'AreaChart',$table_element,$objectid);
 		}
 		else if($this->type == 'RAW' ) {
 			return $this->runRAW($PDOdb,$table_element,$objectid);
 		}
 		else if($this->type == 'SIMPLELIST' || $this->preview) {
-			return load_fiche_titre($this->title).$this->runList($PDOdb,dol_buildpath('/query/tpl/html.simplelist.tbs.html'),$table_element,$objectid);
+			$list= load_fiche_titre($this->title).$this->runList($PDOdb,dol_buildpath('/query/tpl/html.simplelist.tbs.html'),$table_element,$objectid);
 		}
 		else {
-			return load_fiche_titre($this->title).$this->runList($PDOdb,'',$table_element,$objectid);
+			$list= load_fiche_titre($this->title).$this->runList($PDOdb,'',$table_element,$objectid);
 		}
 
 
+		$form=new TFormCore();
+		$html.= $form->begin_form('auto','formQuery'. $this->getId(),'get');
+		$action=GETPOST('action')!='' ? GETPOST('action') : 'run';
+		$html.=  $form->hidden('action', $action);
+		$html.=  $form->hidden('id', GETPOST('id') ? GETPOST('id') : $this->getId());
+
+		$html.=$list;
+		
+		$html.=$form->end();
+		
+		return $html;
 	}
 
 	private function getField($field) {
@@ -696,12 +708,6 @@ class TQuery extends TObjetStd {
 
 		$html = '';
 
-		$form=new TFormCore();
-		$html.= $form->begin_form('auto','formQuery'. $this->getId(),'get');
-
-		$html.=  $form->hidden('action', 'run');
-		$html.=  $form->hidden('id', GETPOST('id') ? GETPOST('id') : $this->getId());
-
 		if($this->show_details) $html.= '<div class="query">'.$sql.'</div>';
 
 		$r=new TListviewTBS('chart'.$this->getId());
@@ -736,8 +742,6 @@ class TQuery extends TObjetStd {
 		}
 
 		if($this->preview<=0) $html.='<div class="tabsAction"> <input type="submit" class="butAction" name="show_as_list" value="'.$langs->trans('ShowGraphAsList').'" /> </div>';
-
-		$html.=$form->end_form();
 
 		return $html;
 	}
@@ -794,12 +798,7 @@ class TQuery extends TObjetStd {
 			$TType = $this->getType();
 			$TEval = $this->getEval();
 
-			$form=new TFormCore();
-			$html.= $form->begin_form('auto','formQuery'. $this->getId(),'get');
-
-			$html.=  $form->hidden('action', 'run');
-			$html.=  $form->hidden('id', GETPOST('id') ? GETPOST('id') : $this->getId());
-
+			
 			if($this->show_details) $html.= '<div class="query">'.$sql.'</div>';
 
 			$TTitle=$this->getTitle();
@@ -843,8 +842,7 @@ class TQuery extends TObjetStd {
 				$html.='<div class="tabsAction"> <input type="submit" class="butAction" name="show_as_graph" value="'.$langs->trans('ShowGraphNormal').'" /> </div>';
 			}
 
-			$html.= $form->end_form();
-//			var_dump(htmlentities($html));
+			
 			return $html;
 	}
 

@@ -370,7 +370,7 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 		    			echo '<a style="position:absolute; top:3px; right:3px; z-index:999;" href="javascript:delTile('.$cell->getId().')">'.img_delete('DeleteThisTile').'</a>';	
 		    		}
 					else {
-						echo '<a style="position:absolute; top:3px; right:3px; z-index:999;" href="'.dol_buildpath('/query/query.php?action=run&id='.$cell->query->getId(),1).'">'.img_picto($langs->trans('Run'),'object_cron.png').'</a>';
+						echo '<a style="position:absolute; top:3px; right:3px; z-index:999;" href="'.dol_buildpath('/query/query.php?action=run-in&id='.$cell->query->getId(),1).'">'.img_picto($langs->trans('Run'),'object_cron.png').'</a>';
 					}
 					
 					if($cell->query->type=='LIST')$cell->query->type='SIMPLELIST';

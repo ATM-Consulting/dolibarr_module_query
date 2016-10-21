@@ -369,10 +369,15 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 		    		if($action == 'edit') {
 		    			echo '<a style="position:absolute; top:3px; right:3px; z-index:999;" href="javascript:delTile('.$cell->getId().')">'.img_delete('DeleteThisTile').'</a>';	
 		    		}
+					else {
+						echo '<a style="position:absolute; top:3px; right:3px; z-index:999;" href="'.dol_buildpath('/query/query.php?action=run&id='.$cell->query->getId(),1).'">'.img_picto($langs->trans('Run'),'object_cron.png').'</a>';
+					}
+					
+					if($cell->query->type=='LIST')$cell->query->type='SIMPLELIST';
 					
 					if(!empty($cell->query)) {
 						if(!$withHeader) {
-							echo $cell->query->run(false, $cell->height * $cell_height, $table_element, $fk_object);
+							echo $cell->query->run(false, $cell->height * $cell_height, $table_element, $fk_object,0);
 						}
 						else{
 							echo $cell->query->run(false, $cell->height * $cell_height, $table_element, $fk_object);	

@@ -40,7 +40,7 @@ switch ($action) {
 	case 'export':
 		$query->load($PDOdb, GETPOST('id'));
 		$query->rowid = 0;
-		
+		unset($query->pdodb,$query->bdd);
 		$gz = gzcompress( serialize($query) );
 		
 		header('Content-Type: application/octet-stream');

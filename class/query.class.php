@@ -255,12 +255,36 @@ class TQuery extends TObjetStd {
 
 	}
 
+	private function getRequestParam($sql) {
+		
+		$sql = preg_replace_callback('/(@REQUEST_[a-zA-z0-9]+@)/i',function($matches) use($TFunction) {
+			
+			$field = substr($matches[0] , 9, -1);
+			
+			
+			if(!empty($field) ) {
+				
+				$val = GETPOST($field);
+				
+				return $val;
+				
+			}			
+			
+			  
+		}, $sql);
+		
+		return $sql;
+	}
+
 	function getSQL($table_element='',$objectid=0) {
 		if($this->expert == 2) {
-			return  "SELECT ".$this->sql_fields."
+			$sql = $this->getRequestParam("SELECT ".$this->sql_fields."
 				FROM ".$this->sql_from."
 	                        WHERE (".($this->sql_where ? $this->sql_where : 1 ).")
-        	                ".$this->sql_afterwhere;
+        	                ".$this->sql_afterwhere);
+							
+		    return $sql;					
+							
 		}
 		else if($this->expert == 1) {
 

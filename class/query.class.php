@@ -257,7 +257,7 @@ class TQuery extends TObjetStd {
 
 	private function getRequestParam($sql) {
 		
-		$sql = preg_replace_callback('/(@REQUEST_[a-zA-z0-9]+@)/i',function($matches) {
+		$sql = preg_replace_callback('/(@REQUEST_[a-zA-z0-9_-]+@)/i',function($matches) {
 			
 			$field = substr($matches[0] , 9, -1);
 			

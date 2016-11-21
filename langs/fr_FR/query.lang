@@ -27,6 +27,7 @@ AbricotNotFound=Merci de télécharger le module complémentaire Abricot
 set_QUERY_SHOW_PDF_TRANSFORM=Voir les boutons pour transformer en PDF (attention nécessite la configuration ci-après)
 QueryDashBoard=Sélectionnez le panneau (module Query)
 cloneQuery=Dupliquer cette requête
+QueryCloned=Requête dupliquée
 AfterWhere=Après la condition (Groupement, etc)
 Free=Libre
 setExpertFreeMode=Mode expert libre

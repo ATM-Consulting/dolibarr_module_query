@@ -232,7 +232,7 @@ class TQuery extends TObjetStd {
 		
 		$this->extractAliasFromSQL();
 
-		parent::save($PDOdb);
+		return parent::save($PDOdb);
 
 	}
 

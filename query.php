@@ -58,9 +58,11 @@ switch ($action) {
 		$query->load($PDOdb, GETPOST('id'));
 		$query->rowid = 0;
 		$query->title.=' ('.$langs->trans('Copy').')';
-		$query->save($PDOdb);
+		$newId = $query->save($PDOdb);
 		
-		header('location:'.dol_buildpath('/query/query.php?action=view&id='.$query->getId(),1));
+		setEventMessage($langs->trans('QueryCloned'));
+		
+		header('location:'.dol_buildpath('/query/query.php?action=view&id='.$newId,1));
 		exit;
 		
 		break;

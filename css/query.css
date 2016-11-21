@@ -13,10 +13,22 @@
 .fieldName {
 	margin-top:10px;
 	font-weight: bold;
-	font-size:20px;
+	padding:5px 20px;
+	font-size:14px;
+	color : white;
+	background-color: #66b2ff;
+	border-radius: 10px;
+	
 }
+
+.fieldName label {
+	width:30%;
+	display:inline-block;
+}
+
 div.selected_fields{
 	width:800px;	
+	/*display:none;*/
 }
 #selected_tables div.fields {
 	max-height:300px;

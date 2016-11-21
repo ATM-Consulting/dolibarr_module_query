@@ -433,9 +433,10 @@ function refresh_field_param(field, table) {
 			var defaultLabel;
 			if(table != '') defaultLabel = $("input[rel=selected-field][table="+table+"][value='"+field+"']").attr("default-label");	
 				
-			$liView = $('<div class="field" table="'+table+'" field="'+field+'" ><div class="fieldName">'+field+'</div> <input tytpe="text" placeholder="Title" sql-act="title" field='+field+' value="'+defaultLabel+'" /></div>');
-			$liView.append('<input type="text" placeholder="Translation (value:translation, ...)" sql-act="translate" field='+field+' value="" />');
-			$liView.append(select_type+select_hide+select_total+select_total_group_field+select_class+select_method);
+			$liView = $('<div class="field" table="'+table+'" field="'+field+'" ><div class="fieldName"><label>'+field+' [<a href="javascript:showDetailsForField(\''+field+'\',\''+table+'\')">details</a>]</label> <input tytpe="text" placeholder="Title" sql-act="title" field='+field+' value="'+defaultLabel+'" /></div> <div class="details"></div></div>');
+			$liViewDetail = $liView.find('div.details');
+			$liViewDetail.append('<input type="text" placeholder="Translation (value:translation, ...)" sql-act="translate" field='+field+' value="" />');
+			$liViewDetail.append(select_type+select_hide+select_total+select_total_group_field+select_class+select_method);
 			$liView.find('input,select').attr('field', field).attr('table', table);
 			
 			$fieldsView.append($liView);
@@ -504,6 +505,14 @@ function refresh_field_param(field, table) {
 				$fields.find('select[sql-act=operator],select[sql-act=null],input[sql-act=value]').hide();
 			}
 			
+			$('#fieldsview div.details').hide();
+			
+}
+
+function showDetailsForField(field,table) {
+	
+	$('#fieldsview div[field="'+field+'"][table="'+table+'"] div.details').toggle();
+	
 }
 
 function refresh_field_array(table) {

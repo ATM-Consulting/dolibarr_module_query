@@ -1049,6 +1049,7 @@ class TQueryMenu extends TObjetStd {
 			$Tab['thirdparties'] = 'thirdparties';
 			$Tab['query'] = 'query';
 			$Tab['projects'] = 'projects';
+			$Tab['customers_bills'] = 'customers_bills';
 		}
 
 

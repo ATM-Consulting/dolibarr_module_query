@@ -507,11 +507,10 @@ class TQuery extends TObjetStd {
 	}
 
 	static function getNomUrl($type, $id) {
-			self::getCustomMethodForObject($type,$id,'getNomUrl');
+			return self::getCustomMethodForObject($type,$id,'getNomUrl');
 	}
 
 	static function getCustomMethodForObject($type, $id, $methods) {
-
 		global $langs, $db, $conf;
 
 		if(empty($methods) || empty($id)) return '';
@@ -574,6 +573,7 @@ class TQuery extends TObjetStd {
 
 		}
 
+//var_dump('getCustomMethodForObject',$type, $id, $methods,$TResult); exit();
 		return implode(' ',$TResult);
 	}
 

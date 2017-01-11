@@ -18,6 +18,7 @@ FieldsOrder=Paramètres des champs
 FieldsView=Affichage des champs
 set_QUERY_GRAPH_PIEHOLE=Largeur du trou dans les camemberts
 set_QUERY_GRAPH_LINESTYLE=Style de ligne pour les graphiques
+set_QUERY_SET_TIME_LIMIT=Modifier le temps maximum d'exécution de la page (à exprimer en secondes, indiquer 0 pour temps illimité)
 PleaseFindYourReportHasAttachement=Bonjour, veuillez trouver ci-joint le rapport
 Download=Télécharger
 set_ABRICOT_WKHTMLTOPDF_CMD=Commande pour la génération PDF des panneaux (WkHTMLtoPDF doit être installé sur le serveur http://wkhtmltopdf.org/)

@@ -2,6 +2,8 @@
 
 require('config.php');
 
+if (isset($conf->global->QUERY_SET_TIME_LIMIT)) set_time_limit((int) $conf->global->QUERY_SET_TIME_LIMIT);
+
 dol_include_once('/query/class/query.class.php');
 dol_include_once('/query/lib/query.lib.php');
 

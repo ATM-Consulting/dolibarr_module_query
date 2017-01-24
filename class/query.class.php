@@ -39,6 +39,7 @@ class TQuery extends TObjetStd {
 			,'Product'=>$langs->trans('Product')
 			,'Entrepot'=>$langs->trans('Warehouse')
 			,'CommandeFournisseur'=>$langs->trans('SupplierOrder')
+			,'ActionComm'=>$langs->trans('Event')
 		);
 
 		$this->TMethodName = array(
@@ -531,6 +532,7 @@ class TQuery extends TObjetStd {
 			else if($classname == 'Contact') dol_include_once('/contact/class/contact.class.php');
 			else if($classname == 'Entrepot') dol_include_once('/product/stock/class/entrepot.class.php');
 			else if($classname == 'CommandeFournisseur') dol_include_once('/fourn/class/fournisseur.commande.class.php');
+			else if($classname == 'ActionComm') dol_include_once('/comm/action/class/actioncomm.class.php');
 			else {
 				return $langs->trans('ImpossibleToIncludeClass').' : '.$classname;
 			}

@@ -600,9 +600,7 @@ function refresh_sql() {
 	
 	where='';
 	order='';	
-	
-	
-
+	TWhere = [];
 	
 	$('#fields div.field').each(function(i, item) {
 		
@@ -617,28 +615,23 @@ function refresh_sql() {
 		if(filter =='calendars') {
 			null; // on ne fait rien sera complété par le système
 		}
-		else if(operator!='') {
-			
-			if(where!='') where+=' AND ';
-			
+		else if(operator!='') {	
 			
 			more_where  ='';
-			if(mode == 'function' || mode == 'value') {
-				more_where+= ' ( '+field+' '+operator+' ('+value+') )';
+			if(field && operator && ( mode == 'function' || mode == 'value' )) {
+				TWhere.push(' ( '+field+' '+operator+' ('+value+') )');
 			}
 			else {
 				null;
 			}
 			
-			if(more_where) {
-				where+=' ( ' +more_where +' ) ';	
-			}
-			
-			
-			
 		}
 
 	});
+
+	if(TWhere.length>0) where = TWhere.join(' AND ', TWhere);
+
+console.log(TWhere, where);
 	
 	$('#sql_query_where').val(where);
 

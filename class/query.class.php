@@ -278,6 +278,9 @@ class TQuery extends TObjetStd {
 	}
 
 	function getSQL($table_element='',$objectid=0) {
+
+		global $conf;
+
 		if($this->expert == 2) {
 			$sql = $this->getRequestParam("SELECT ".$this->sql_fields."
 				FROM ".$this->sql_from."
@@ -319,7 +322,7 @@ class TQuery extends TObjetStd {
 			$sql="SELECT ".($this->sql_fields ? $this->sql_fields : '*') ."
 				FROM ".$this->sql_from;
 				
-			if(empty($this->TFunction))	{
+			if(empty($this->TFunction) || !empty($conf->global->QUERY_DO_NOT_USE_HAVING))	{
 				$sql.= " WHERE (".($this->sql_where ? $this->sql_where : 1 ).") ";	
 			}
 				
@@ -331,7 +334,7 @@ class TQuery extends TObjetStd {
 				$sql.=" GROUP BY ".implode(',', $this->TGroup);
 			}
 
-			if(!empty($this->TFunction) && !empty($this->sql_where)) {
+			if(!empty($this->TFunction) && !empty($this->sql_where) && empty($conf->global->QUERY_DO_NOT_USE_HAVING)) {
 				$sql.=' HAVING '. $this->getSQLHavingBindFunction($this->sql_where);
 			}
 				

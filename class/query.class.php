@@ -175,9 +175,9 @@ class TQuery extends TObjetStd {
 		return  $fname_concat;
 	}
 
-	function load(&$PDOdb, $id) {
+	function load(&$PDOdb, $id, $loadChild=true) {
 
-		$res = parent::load($PDOdb, $id);
+		$res = parent::load($PDOdb, $id, $loadChild);
 
 		if($this->expert == 1) {
 		 	$this->sql_fields = $this->getSQLFieldsWithAlias();

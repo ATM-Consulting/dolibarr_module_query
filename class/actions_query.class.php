@@ -45,7 +45,7 @@ class ActionsQuery
     {
       	global $langs,$db, $user, $conf,$query_just_after_login;
 
-		if (in_array('index',explode(':',$parameters['context'])))
+      	if (in_array('index',explode(':',$parameters['context'])) && !empty($conf->global->QUERY_HOME_SELECTOR))
         {
 			
 			$sql="SELECT qd.uid as 'uid', qd.title ,qd.use_as_landing_page,qd.rowid

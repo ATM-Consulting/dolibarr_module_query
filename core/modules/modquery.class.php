@@ -107,13 +107,13 @@ class modquery extends DolibarrModules
         // (key, 'chaine', value, desc, visible, 'current' or 'allentities', deleteonunactive)
         // Example:
         $this->const = array(
-            //	0=>array(
-            //		'MYMODULE_MYNEWCONST1',
-            //		'chaine',
-            //		'myvalue',
-            //		'This is a constant to add',
-            //		1
-            //	),
+            	0=>array(
+            		'QUERY_HOME_SELECTOR',
+            		'chaine',
+            		'1',
+            		'add box on home page',
+            		1
+            	),
             //	1=>array(
             //		'MYMODULE_MYNEWCONST2',
             //		'chaine',

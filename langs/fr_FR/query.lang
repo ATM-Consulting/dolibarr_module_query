@@ -79,3 +79,4 @@ DBName=Base de données
 Charset=Encodage
 DBType=Type
 
+set_QUERY_HOME_SELECTOR = Afficher le selecteur de panneaux sur la page d'acceuil de Dolibarr

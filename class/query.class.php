@@ -324,6 +324,8 @@ class TQuery extends TObjetStd {
 				
 			if(empty($this->TFunction) || !empty($conf->global->QUERY_DO_NOT_USE_HAVING))	{
 				$sql.= " WHERE (".($this->sql_where ? $this->sql_where : 1 ).") ";	
+			} else {
+				$sql.= " WHERE 1"; // on évite que le contenu du prochain if() se retrouve dans le FROM
 			}
 				
 			if(!empty($table_element) && strpos($sql, $table_element)!==false) {

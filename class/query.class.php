@@ -7,6 +7,7 @@ class TQuery extends TObjetStd {
 
 		$langs->load("stocks");
 		$langs->load("orders");
+		$langs->load("bills");
 
         parent::set_table(MAIN_DB_PREFIX.'query');
         parent::add_champs('sql_fields,sql_from,sql_where,sql_afterwhere',array('type'=>'text'));

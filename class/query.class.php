@@ -7,6 +7,7 @@ class TQuery extends TObjetStd {
 
 		$langs->load("stocks");
 		$langs->load("orders");
+		$langs->load("bills");
 
         parent::set_table(MAIN_DB_PREFIX.'query');
         parent::add_champs('sql_fields,sql_from,sql_where,sql_afterwhere',array('type'=>'text'));
@@ -39,6 +40,7 @@ class TQuery extends TObjetStd {
 			,'Product'=>$langs->trans('Product')
 			,'Entrepot'=>$langs->trans('Warehouse')
 			,'CommandeFournisseur'=>$langs->trans('SupplierOrder')
+			,'FactureFournisseur'=>$langs->trans('SupplierInvoice')
 			,'ActionComm'=>$langs->trans('Event')
 		);
 
@@ -537,6 +539,7 @@ class TQuery extends TObjetStd {
 			else if($classname == 'Contact') dol_include_once('/contact/class/contact.class.php');
 			else if($classname == 'Entrepot') dol_include_once('/product/stock/class/entrepot.class.php');
 			else if($classname == 'CommandeFournisseur') dol_include_once('/fourn/class/fournisseur.commande.class.php');
+			else if($classname == 'FactureFournisseur') dol_include_once('/fourn/class/fournisseur.facture.class.php');
 			else if($classname == 'ActionComm') dol_include_once('/comm/action/class/actioncomm.class.php');
 			else {
 				return $langs->trans('ImpossibleToIncludeClass').' : '.$classname;

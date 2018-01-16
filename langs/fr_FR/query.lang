@@ -35,9 +35,9 @@ setExpertFreeMode=Mode expert libre
 Query=Requête
 MainMenu=Menu principal
 LeftMenu=Sous menu
-ConfirmDeleteMessage=Êtes vous sûre de vouloir supprimer cette entrée ?
+ConfirmDeleteMessage=Êtes-vous sûr de vouloir supprimer cette entrée ?
 DeleteSuccess=Requête ou panneau supprimé avec succès
-ShowThisInCard=Voir ce panneau dans un fiche
+ShowThisInCard=Voir ce panneau dans une fiche
 TabsObject=Onglet
 TypeMenu=Type de menu
 Tab=Onglet
@@ -79,4 +79,4 @@ DBName=Base de données
 Charset=Encodage
 DBType=Type
 
-set_QUERY_HOME_SELECTOR = Afficher le selecteur de panneaux sur la page d'acceuil de Dolibarr
+set_QUERY_HOME_SELECTOR = Afficher le selecteur de panneaux sur la page d'accueil de Dolibarr

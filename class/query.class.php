@@ -281,16 +281,15 @@ class TQuery extends TObjetStd {
 
 	function getSQL($table_element='',$objectid=0) {
 
-		global $conf;
+		global $conf, $user;
+		
+		$sql = '';
 
 		if($this->expert == 2) {
 			$sql = $this->getRequestParam("SELECT ".$this->sql_fields."
 				FROM ".$this->sql_from."
 	                        WHERE (".($this->sql_where ? $this->sql_where : 1 ).")
         	                ".$this->sql_afterwhere);
-							
-		    return $sql;					
-							
 		}
 		else if($this->expert == 1) {
 
@@ -298,7 +297,7 @@ class TQuery extends TObjetStd {
 					$this->sql_afterwhere=" GROUP BY ".implode(',', $this->TGroup);
 			}
 
-			return  "SELECT ".$this->getSQLFieldsWithAlias() ."
+			$sql = "SELECT ".$this->getSQLFieldsWithAlias() ."
 				FROM ".$this->sql_from."
 	                        WHERE (".($this->sql_where ? $this->sql_where : 1 ).")
         	                ".$this->sql_afterwhere;
@@ -344,9 +343,16 @@ class TQuery extends TObjetStd {
 				
 			if($this->preview && stripos($sql,'LIMIT ') === false) $sql.=" LIMIT 5";
 
-			return $sql;
 		}
 
+		// Merge some generic fields from Dolibarr
+		$TDoliData = array(
+			'{entity}' => $conf->entity
+			,'{userid}' => $user->id
+		);
+		$sql = strtr($sql, $TDoliData);
+
+		return $sql;
 	}
 
 	private function getSQLHavingBindFunction($sql) {

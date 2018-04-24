@@ -23,6 +23,29 @@
  *				Put some comments here
  */
 
+function queryPrepareHead($object)
+{
+    global $langs, $conf;
+
+    $langs->load("query@query");
+
+    $h = 0;
+    $head = array();
+
+    $head[$h][0] = dol_buildpath("/query/query.php?action=view&id=".$object->getID(), 1);
+    $head[$h][1] = $langs->trans("QueryCreation");
+    $head[$h][2] = 'query';
+    $h++;
+    $head[$h][0] = dol_buildpath("/query/query_rights.php?id=".$object->getID(), 1);
+    $head[$h][1] = $langs->trans("Rights");
+    $head[$h][2] = 'rights';
+    $h++;
+
+    complete_head_from_modules($conf, $langs, $object, $head, $h, 'query');
+
+    return $head;
+}
+
 function queryAdminPrepareHead()
 {
     global $langs, $conf;

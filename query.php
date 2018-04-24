@@ -385,9 +385,10 @@ function init_js(&$query) {
 function fiche(&$query) {
 	global $langs, $conf,$user;
 	
-	llxHeader('', 'Query', '', '', 0, 0, array('/query/js/query.js'/*,'/query/js/jquery.base64.min.js'*/) , array('/query/css/query.css') );
+	llxHeader('', 'Query - '.$query->title, '', '', 0, 0, array('/query/js/query.js'/*,'/query/js/jquery.base64.min.js'*/) , array('/query/css/query.css') );
 	
-	dol_fiche_head($query->title);
+	$head = queryPrepareHead($query);
+	dol_fiche_head($head, 'query', $langs->trans("Query"));
 	
 	if($query->expert == 1) {
 		if(!empty($query->sql_fields)) {

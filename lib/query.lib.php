@@ -33,7 +33,7 @@ function queryPrepareHead($object)
     $head = array();
 
     $head[$h][0] = dol_buildpath("/query/query.php?action=view&id=".$object->getID(), 1);
-    $head[$h][1] = $langs->trans("QueryCreation");
+    $head[$h][1] = $langs->trans("Card");
     $head[$h][2] = 'query';
     $h++;
     $head[$h][0] = dol_buildpath("/query/query_rights.php?id=".$object->getID(), 1);

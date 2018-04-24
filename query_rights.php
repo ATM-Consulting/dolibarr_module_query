@@ -68,6 +68,7 @@ function _list(&$PDOdb, &$query) {
 			,'fk_element'=>$langs->trans('LinkedElement')
 			,'element'=>$langs->trans('Element')
 			,'action'=>$langs->trans('Delete')
+			,'label'=>$langs->trans('Name')
 		)
 		,'translate'=>array(
 			'element'=> array('user'=>$langs->trans('User'), 'group'=>$langs->trans('Group'))

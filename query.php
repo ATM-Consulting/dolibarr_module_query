@@ -206,11 +206,15 @@ function liste() {
 	llxHeader('', 'Query', '', '', 0, 0, array() , array('/query/css/query.css') );
 	dol_fiche_head();
 	
-	$sql="SELECT rowid as 'Id', type,nb_result_max, title,expert,0 as 'delete' 
-	FROM ".MAIN_DB_PREFIX."query
-	WHERE 1
+	$sql="SELECT q.rowid as 'Id', q.type, q.nb_result_max, q.title, q.expert, 0 as 'delete' 
+	FROM ".MAIN_DB_PREFIX."query q
+	LEFT JOIN ".MAIN_DB_PREFIX."query_rights qr ON (qr.fk_query = q.rowid)
+	LEFT JOIN ".MAIN_DB_PREFIX."usergroup_user uu ON (uu.fk_usergroup = qr.fk_element)
+	WHERE (qr.element = 'user' AND qr.fk_element = ".$user->id.")
+	OR (qr.element = 'group' AND uu.fk_user = ".$user->id.")
+	OR qr.rowid IS NULL
 	 ";
-	 
+	
 	$formCore=new TFormCore('auto','formQ','get');
 	
 	$r=new TListviewTBS('lQuery');
@@ -385,9 +389,10 @@ function init_js(&$query) {
 function fiche(&$query) {
 	global $langs, $conf,$user;
 	
-	llxHeader('', 'Query', '', '', 0, 0, array('/query/js/query.js'/*,'/query/js/jquery.base64.min.js'*/) , array('/query/css/query.css') );
+	llxHeader('', 'Query - '.$query->title, '', '', 0, 0, array('/query/js/query.js'/*,'/query/js/jquery.base64.min.js'*/) , array('/query/css/query.css') );
 	
-	dol_fiche_head($query->title);
+	$head = queryPrepareHead($query);
+	dol_fiche_head($head, 'query', $langs->trans("Query"));
 	
 	if($query->expert == 1) {
 		if(!empty($query->sql_fields)) {

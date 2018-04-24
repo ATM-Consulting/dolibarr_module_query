@@ -1133,3 +1133,14 @@ class TQueryMenu extends TObjetStd {
 	}
 
 }
+
+class TQueryRights extends TObjetStd {
+	function __construct() {
+        global $langs;
+
+		parent::set_table(MAIN_DB_PREFIX.'query_rights');
+		parent::add_champs('entity,fk_query,fk_element',array('type'=>'int','index'=>true));
+		parent::_init_vars('element');
+		parent::start();
+	}
+}

@@ -141,7 +141,11 @@ switch ($action) {
 
 
 function run(&$PDOdb, &$query, $preview = false) {
-	global $conf,$langs;
+	global $conf,$langs,$user;
+	
+	if(!$query->userHasRights($PDOdb, $user)) {
+		accessforbidden();
+	}
 	
 	if(!$preview) {
 		llxHeader('', 'Query', '', '', 0, 0, array() , array('/query/css/query.css') );
@@ -206,14 +210,21 @@ function liste() {
 	llxHeader('', 'Query', '', '', 0, 0, array() , array('/query/css/query.css') );
 	dol_fiche_head();
 	
-	$sql="SELECT q.rowid as 'Id', q.type, q.nb_result_max, q.title, q.expert, 0 as 'delete' 
-	FROM ".MAIN_DB_PREFIX."query q
-	LEFT JOIN ".MAIN_DB_PREFIX."query_rights qr ON (qr.fk_query = q.rowid)
-	LEFT JOIN ".MAIN_DB_PREFIX."usergroup_user uu ON (uu.fk_usergroup = qr.fk_element)
-	WHERE (qr.element = 'user' AND qr.fk_element = ".$user->id.")
-	OR (qr.element = 'group' AND uu.fk_user = ".$user->id.")
-	OR qr.rowid IS NULL
-	 ";
+	if($user->admin == 1) {
+		$sql="SELECT rowid as 'Id', type,nb_result_max, title,expert,0 as 'delete' 
+			FROM ".MAIN_DB_PREFIX."query
+			WHERE 1
+		";
+	} else {
+		$sql="SELECT q.rowid as 'Id', q.type, q.nb_result_max, q.title, q.expert, 0 as 'delete' 
+			FROM ".MAIN_DB_PREFIX."query q
+			LEFT JOIN ".MAIN_DB_PREFIX."query_rights qr ON (qr.fk_query = q.rowid)
+			LEFT JOIN ".MAIN_DB_PREFIX."usergroup_user uu ON (uu.fk_usergroup = qr.fk_element)
+			WHERE (qr.element = 'user' AND qr.fk_element = ".$user->id.")
+			OR (qr.element = 'group' AND uu.fk_user = ".$user->id.")
+			OR qr.rowid IS NULL
+		 ";
+	 }
 	
 	$formCore=new TFormCore('auto','formQ','get');
 	

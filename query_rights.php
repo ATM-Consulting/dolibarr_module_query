@@ -45,9 +45,12 @@ function _list(&$PDOdb, &$query) {
 	
 	$formdoli = new Form($db);
 	
-	llxHeader();
+	llxHeader('', 'Query - '.$query->title);
 	$head = queryPrepareHead($query);
 	dol_fiche_head($head, 'rights', $langs->trans("Query"));
+	
+	echo $langs->trans('Title') . ' : ' . $query->title;
+	echo '<br><br>';
 	
 	// Utilisateurs associés
 	

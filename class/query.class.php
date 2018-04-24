@@ -893,7 +893,7 @@ class TQuery extends TObjetStd {
 	function userHasRights(&$PDOdb, &$user) {
 		
 		// On part du principe que les admin ont accès à toutes les requêtes
-		//if($user->admin) return true;
+		if($user->admin) return true;
 		
 		/**
 		 * Vérification que la requête est soit

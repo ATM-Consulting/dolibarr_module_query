@@ -223,8 +223,8 @@ function liste() {
 			WHERE (qr.element = 'user' AND qr.fk_element = ".$user->id.")
 			OR (qr.element = 'group' AND uu.fk_user = ".$user->id.")
 			OR qr.rowid IS NULL
-		 ";
-	 }
+		";
+	}
 	
 	$formCore=new TFormCore('auto','formQ','get');
 	
@@ -399,6 +399,8 @@ function init_js(&$query) {
 
 function fiche(&$query) {
 	global $langs, $conf,$user;
+	
+	if(!$user->rights->query->create) accessforbidden();
 	
 	llxHeader('', 'Query - '.$query->title, '', '', 0, 0, array('/query/js/query.js'/*,'/query/js/jquery.base64.min.js'*/) , array('/query/css/query.css') );
 	

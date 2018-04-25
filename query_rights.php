@@ -9,7 +9,7 @@ $PDOdb = new TPDOdb;
 
 $langs->load('query@query');
 
-if(!$user->rights->query->create) accessforbidden();
+if(!$user->rights->query->all->create) accessforbidden();
 
 $action = GETPOST('action');
 $query_id = GETPOST('id');

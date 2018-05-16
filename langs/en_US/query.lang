@@ -48,3 +48,6 @@ RefreshDashboard=Automatically refresh the dashboard (minutes)
 set_ABRICOT_NB_MAX_RESULT_SQL=Results count into query (if LIMIT not in)
 CountOf=Count of
 TotalGroup=Total Group by column
+
+AddUser=Add user
+AddGroup=Add group

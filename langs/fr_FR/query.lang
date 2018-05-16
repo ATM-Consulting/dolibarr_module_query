@@ -80,3 +80,6 @@ Charset=Encodage
 DBType=Type
 
 set_QUERY_HOME_SELECTOR = Afficher le selecteur de panneaux sur la page d'accueil de Dolibarr
+
+AddUser=Ajouter un utilisateur
+AddGroup=Ajouter un groupe

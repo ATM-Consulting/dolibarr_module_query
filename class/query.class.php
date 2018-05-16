@@ -886,6 +886,38 @@ class TQuery extends TObjetStd {
 			return $html;
 	}
 
+
+	/**
+	 * Permet de asvoir si l'utilisateur connecté est autorisé à accéder à la requête
+	 */
+	function userHasRights(&$PDOdb, &$user) {
+		
+		// On part du principe que les admin ont accès à toutes les requêtes
+		if($user->admin) return true;
+		
+		/**
+		 * Vérification que la requête est soit
+		 * - publique (aucun droit défini)
+		 * - autorisée à l'utilisateur
+		 * - autorisée à un de ses groupes
+		 */
+		$sql="SELECT q.rowid
+			FROM ".MAIN_DB_PREFIX."query q
+			LEFT JOIN ".MAIN_DB_PREFIX."query_rights qr ON (qr.fk_query = q.rowid)
+			LEFT JOIN ".MAIN_DB_PREFIX."usergroup_user uu ON (uu.fk_usergroup = qr.fk_element)
+			WHERE q.rowid = ".$this->getId()."
+			AND (
+				(qr.element = 'user' AND qr.fk_element = ".$user->id.")
+				OR (qr.element = 'group' AND uu.fk_user = ".$user->id.")
+				OR qr.rowid IS NULL
+			)
+		 ";
+		
+		$PDOdb->Execute($sql);
+		if($PDOdb->Get_Recordcount() > 0) return true;
+		
+		return false;
+	}
 }
 
 
@@ -1132,4 +1164,15 @@ class TQueryMenu extends TObjetStd {
 		return $head;
 	}
 
+}
+
+class TQueryRights extends TObjetStd {
+	function __construct() {
+        global $langs;
+
+		parent::set_table(MAIN_DB_PREFIX.'query_rights');
+		parent::add_champs('entity,fk_query,fk_element',array('type'=>'int','index'=>true));
+		parent::_init_vars('element');
+		parent::start();
+	}
 }

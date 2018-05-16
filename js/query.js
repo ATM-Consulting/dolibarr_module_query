@@ -341,7 +341,9 @@ function drawFieldTables( table ){
 	
 			
 		$('#selected_tables').append($fields);
-		$("div.fields label").tipTip({maxWidth: "400px", edgeOffset: 10, delay: 50, fadeIn: 50, fadeOut: 50});
+		
+		if(DOL_VERSION>=7)$("div.fields label").tooltip({maxWidth: "400px", edgeOffset: 10, delay: 50, fadeIn: 50, fadeOut: 50});
+		else $("div.fields label").tipTip({maxWidth: "400px", edgeOffset: 10, delay: 50, fadeIn: 50, fadeOut: 50});
 	});
 	
 }

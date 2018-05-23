@@ -477,7 +477,7 @@ class TQuery extends TObjetStd {
 
 					$method = empty($this->TMethod[$fSearch]) ? 'getNomUrl' : $this->TMethod[$fSearch];
 
-					$Tab[$fSearch]= 'TQuery::getCustomMethodForObject("'.$v.'", (int)"@val@", "'.$method.'")';
+					$Tab[$fSearch]= 'TQuery::getCustomMethodForObject("'.$v.'", "@val@", "'.$method.'")';
 				}
 
 			}
@@ -561,7 +561,8 @@ class TQuery extends TObjetStd {
 
 		$o=new $classname($db);
 		if(method_exists($o, 'fetch')) {
-			$o->fetch($id);
+			if(is_numeric($id)) $o->fetch($id);
+			else $o->fetch(0,$id);
 		}
 		else if(method_exists($o, 'load')) {
 			$PDOdb=new TPDOdb;

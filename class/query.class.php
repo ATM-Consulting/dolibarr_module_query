@@ -1010,7 +1010,7 @@ class TQueryMenu extends TObjetStd {
 		else{
 
 			$menu = new Menubase($db,'all');
-			if($menu->fetch($this->fk_menu)>0) {
+			if($menu->fetch($this->fk_menu)>0 && $menu->id > 0) { // fetch retourne 1 même si aucun menu ne correspond 
 
 				$menu->mainmenu=$menu->fk_mainmenu=$this->mainmenu;
 	        	$menu->fk_leftmenu=$this->leftmenu;
@@ -1023,7 +1023,12 @@ class TQueryMenu extends TObjetStd {
 				$menu->user=2;
 				$menu->update($user);
 
+			} else {
+				$this->fk_menu = null;
+				$this->setMenu();
 			}
+
+
 
 		}
 

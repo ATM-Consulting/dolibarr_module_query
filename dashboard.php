@@ -100,7 +100,7 @@ function liste() {
 	WHERE 1
 	";
 	
-	if($user->admin) {
+	if($user->admin || $user->rights->query->dashboard->readall) {
 		null;
 	}
 	else {

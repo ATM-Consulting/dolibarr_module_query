@@ -108,7 +108,7 @@ class TQuery extends TObjetStd {
 				$sample.=$v->val;
 			}
 			
-			$obj->sample = $sample;
+			$obj->sample = dol_escape_js($sample);
 			
 		}
 

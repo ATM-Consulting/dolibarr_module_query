@@ -84,3 +84,6 @@ set_QUERY_HOME_SELECTOR = Afficher le selecteur de panneaux sur la page d'accuei
 
 AddUser=Ajouter un utilisateur
 AddGroup=Ajouter un groupe
+
+query_warnings_set_expert_mode=Attention, le passage en mode expert peut rendre votre requête inopérante en fonction de sa complexité et/ou lors d'un retour en mode assisté
+query_warnings_set_expert_free_mode=Attention, le passage en mode expert libre peut rendre votre requête inopérante en fonction de sa complexité et/ou lors d'un retour en mode assisté

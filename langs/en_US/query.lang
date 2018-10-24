@@ -51,3 +51,6 @@ TotalGroup=Total Group by column
 
 AddUser=Add user
 AddGroup=Add group
+
+query_warnings_set_expert_mode=Becareful, switch to expert mode can make your request inoperative according to its complexity and / or during a return to assisted mode
+query_warnings_set_expert_free_mode=Becareful, switch to free expert mode can make your request inoperative according to its complexity and / or during a return to assisted mode en mode assisté

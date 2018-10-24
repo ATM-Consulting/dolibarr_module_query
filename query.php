@@ -628,7 +628,7 @@ function fiche(&$query) {
 
 				if($query->expert == 0) {
 
-					?><a class="butAction" href="?action=set-expert&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('setExpertMode') ?></a><?php
+					?><a onclick="if (!confirm('<?php echo dol_escape_js($langs->trans('query_warnings_set_expert_mode')); ?>')) return false;" class="butAction" href="?action=set-expert&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('setExpertMode') ?></a><?php
 
 				}
 				else if($query->expert == 2) {
@@ -636,7 +636,7 @@ function fiche(&$query) {
 					?><br /><br /><a class="butAction" href="?action=unset-expert&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('unsetExpertMode') ?></a><?php
 				}
 				else {
-					?><a class="butAction" href="?action=set-free&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('setExpertFreeMode') ?></a><?php
+					?><a onclick="if (!confirm('<?php echo dol_escape_js($langs->trans('query_warnings_set_expert_free_mode')); ?>')) return false;"  class="butAction" href="?action=set-free&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('setExpertFreeMode') ?></a><?php
 					?><br /><br /><a class="butAction" href="?action=unset-expert&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('unsetExpertMode') ?></a><?php
 				}
 

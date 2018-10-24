@@ -139,15 +139,14 @@ function _getFieldAndTableName($field) {
 	$pos = strrpos(strtolower($field),' as ');
 
 	if($pos!==false) {
-		return array(trim(strtr(substr($field, $pos+3),array("'"=>''))),'');
+		// Si un "as" est présent, on prend que ce qu'il y a avant
+		$field = substr($field, 0, $pos);
 	}
-	else {
-		
-		//$field = strtr($field,'.','_');
-		list($t,$f) = explode('.',$field);
-		$field = empty($f) ? $t : $f;
-		$table = empty($f) ? '' : $t;
-	}
+	
+	list($t,$f) = explode('.',$field);
+	$field = empty($f) ? $t : $f;
+	$table = empty($f) ? '' : $t;
+	
 
 	return array($field,$table);	
 }

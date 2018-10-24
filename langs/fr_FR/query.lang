@@ -62,7 +62,8 @@ ShowGraphAsList=Voir en liste
 ShowGraphNormal=Voir le graphique
 ExportCSV=Export CSV
 ExportTXT=Export Texte
-ViewDashboard=Consulter les panneaux
+ViewDashboard=Consulter les panneaux auxquels je suis affecté
+ViewAllDashboard=Consulter tous les panneaux
 
 ExportQuery=Exporter la requête
 QueryToUpload=Sélectionner le fichier query à charger

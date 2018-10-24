@@ -537,7 +537,8 @@ function refresh_field_array(table) {
 	
 		if($fields.find('div[table="'+table+'"][field="'+field+'"]').length == 0) {
 			refresh_field_param(field, table);
-		}	});
+		}
+	});
 	
 	if(MODQUERY_EXPERT == 1) {
 		null;
@@ -633,7 +634,7 @@ function refresh_sql() {
 
 	if(TWhere.length>0) where = TWhere.join(' AND ', TWhere);
 
-console.log(TWhere, where);
+//console.log(TWhere, where);
 	
 	$('#sql_query_where').val(where);
 

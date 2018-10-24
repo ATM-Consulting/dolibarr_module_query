@@ -211,7 +211,7 @@ function liste() {
 	dol_fiche_head();
 
 	if($user->admin == 1) {
-		$sql="SELECT rowid as 'Id', type,nb_result_max, title,expert,0 as 'delete'
+		$sql="SELECT rowid as 'Id', type,nb_result_max, title,expert,0 as 'action'
 			FROM ".MAIN_DB_PREFIX."query
 			WHERE 1
 		";
@@ -231,25 +231,27 @@ function liste() {
 	$r=new TListviewTBS('lQuery');
 	echo $r->render($PDOdb, $sql,array(
 		'link'=>array(
-			'Id'=>'<a href="?action=view&id=@val@">'.img_picto('Edit', 'edit.png').' @val@</a>'
-			,'title'=>'<a href="?action=run&id=@Id@">'.img_picto('Run', 'object_cron.png').' @val@</a>'
-			,'delete'=>'<a href="?action=delete&id=@Id@" onclick="return(confirm(\''.$langs->trans('ConfirmDeleteMessage').'\'));">'.img_picto('Delete', 'delete.png').'</a>'
+			//'Id'=>'<a href="?action=view&id=@val@">'.img_picto('Edit', 'edit.png').' @val@</a>'
+			'title'=>'<a href="?action=run&id=@Id@">'.img_picto('Run', 'object_cron.png').' @val@</a>'
+			,'action'=>'<a href="?action=view&id=@Id@">'.img_picto('Edit', 'edit.png').'</a> <a href="?action=delete&id=@Id@" onclick="return(confirm(\''.$langs->trans('ConfirmDeleteMessage').'\'));">'.img_picto('Delete', 'delete.png').'</a>'
 		)
 		,'orderBy'=>array('title'=>'ASC')
-		,'hide'=>array('type','nb_result_max')
+		,'hide'=>array('type','nb_result_max','Id')
 		,'title'=>array(
 			'title'=>$langs->trans('Title')
 			,'expert'=>$langs->trans('Expert')
-			,'delete'=>$langs->trans('Delete')
+			,'action'=>''
 		)
 		,'translate'=>array(
 			'expert'=>array( 0=>$langs->trans('No'), 1=>$langs->trans('Yes'),2=>$langs->trans('Free') )
 
 		)
 		,'search'=>array(
-			'title'=>true
+			'title'=>array('recherche'=>true)
 		)
-
+		,'orderby'=>array(
+			'noOrder'=>array('action')
+		)
 	));
 
 
@@ -512,7 +514,7 @@ function fiche(&$query) {
 					+ '</select>';
 
 		var select_class = '<input type="text" size="10" sql-act="class" value="" placeholder="<?php echo $langs->trans('Classname'); ?>" /><select sql-act="class-select"> '
-						+ '<option value=""> </option>'
+						+ '<option value=""> </option>';
 
 			<?php
 				foreach($query->TClassName as $class=>$label) {
@@ -522,7 +524,7 @@ function fiche(&$query) {
 			+ '</select>';
 
 		var select_method = '<input type="text" size="10" sql-act="class-method" value="" placeholder="<?php echo $langs->trans('Method'); ?>" /><select sql-act="class-method-select"> '
-						+ '<option value=""> </option>'
+						+ '<option value=""> </option>';
 
 			<?php
 

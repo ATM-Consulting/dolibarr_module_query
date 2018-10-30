@@ -514,7 +514,7 @@ function fiche(&$query) {
 					+ '</select>';
 
 		var select_class = '<input type="text" size="10" sql-act="class" value="" placeholder="<?php echo $langs->trans('Classname'); ?>" /><select sql-act="class-select"> '
-						+ '<option value=""> </option>';
+						+ '<option value=""> </option>'
 
 			<?php
 				foreach($query->TClassName as $class=>$label) {
@@ -524,7 +524,7 @@ function fiche(&$query) {
 			+ '</select>';
 
 		var select_method = '<input type="text" size="10" sql-act="class-method" value="" placeholder="<?php echo $langs->trans('Method'); ?>" /><select sql-act="class-method-select"> '
-						+ '<option value=""> </option>';
+						+ '<option value=""> </option>'
 
 			<?php
 

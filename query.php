@@ -216,7 +216,7 @@ function liste() {
 			WHERE 1
 		";
 	} else {
-		$sql="SELECT DISTINCT q.rowid as 'Id', q.type, q.nb_result_max, q.title, q.expert, 0 as 'delete'
+		$sql="SELECT DISTINCT q.rowid as 'Id', q.type, q.nb_result_max, q.title, q.expert, 0 as 'action'
 			FROM ".MAIN_DB_PREFIX."query q
 			LEFT JOIN ".MAIN_DB_PREFIX."query_rights qr ON (qr.fk_query = q.rowid)
 			LEFT JOIN ".MAIN_DB_PREFIX."usergroup_user uu ON (uu.fk_usergroup = qr.fk_element)

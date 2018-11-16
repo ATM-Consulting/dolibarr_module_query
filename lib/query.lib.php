@@ -142,10 +142,18 @@ function _getFieldAndTableName($field) {
 		// Si un "as" est présent, on prend que ce qu'il y a avant
 		$field = substr($field, 0, $pos);
 	}
-	
-	list($t,$f) = explode('.',$field);
-	$field = empty($f) ? $t : $f;
-	$table = empty($f) ? '' : $t;
+
+	// Si $field est en fait une sous-requête (Traduction : la query contient dans son SELECT un sous SELECT)
+	if (stripos($field, 'select') !== false)
+	{
+		$table = '';
+	}
+	else
+	{
+		list($t,$f) = explode('.',$field);
+		$field = empty($f) ? $t : $f;
+		$table = empty($f) ? '' : $t;
+	}
 	
 
 	return array($field,$table);	

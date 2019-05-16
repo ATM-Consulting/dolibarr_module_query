@@ -93,7 +93,7 @@ dol_fiche_head(
     $head,
     'settings',
     $langs->trans("Module104778Name"),
-    0,
+    -1,
     "query@query"
 );
 
@@ -233,6 +233,8 @@ if(! empty($conf->global->QUERY_HOME_SELECTOR))
 }
 
 print '</table>';
+
+dol_fiche_end(-1);
 
 llxFooter();
 

@@ -95,17 +95,18 @@ function _list(&$PDOdb) {
 	global $langs, $conf,$user,$db;
 	
 	llxHeader();
-	dol_fiche_head(array(),'menu','Menu');
+
+	dol_fiche_head(array(),'menu','Menu', -1);
 	
 	
-	$l=new TListviewTBS('lMenu');
+	$l=new Listview($db, 'lMenu');
 	$sql = "SELECT rowid,title, type_menu, tab_object, mainmenu,leftmenu,date_cre 
 	FROM ".MAIN_DB_PREFIX."query_menu 
 	WHERE entity IN (0,".$conf->entity.")";
 	
 	$menu_static = new TQueryMenu;
 	
-	echo $l->render($PDOdb, $sql,array(
+	echo $l->render($sql,array(
 	
 		'title'=>array(
 			'title'=>$langs->trans('Title')
@@ -136,7 +137,7 @@ function _list(&$PDOdb) {
 	$kiwi->save($PDOdb);
 	*/
 	// pied de page 
-	dol_fiche_end();
+	dol_fiche_end(-1);
 	llxFooter();
 	
 }

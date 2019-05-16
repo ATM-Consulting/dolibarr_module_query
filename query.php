@@ -203,16 +203,17 @@ function run(&$PDOdb, &$query, $preview = false) {
 
 function liste() {
 
-	global $langs, $conf,$user;
+	global $langs, $conf,$user,$db;
 
 	$PDOdb=new TPDOdb;
 
 	llxHeader('', 'Query', '', '', 0, 0, array() , array('/query/css/query.css') );
-	dol_fiche_head();
+	dol_fiche_head(array(), 0, '', -1);
+
 
 	if($user->admin == 1) {
-		$sql="SELECT rowid as 'Id', type,nb_result_max, title,expert,0 as 'action'
-			FROM ".MAIN_DB_PREFIX."query
+		$sql="SELECT q.rowid as 'Id', q.type, q.nb_result_max, q.title,expert, 0 as 'action'
+			FROM ".MAIN_DB_PREFIX."query q
 			WHERE 1
 		";
 	} else {
@@ -228,8 +229,8 @@ function liste() {
 
 	$formCore=new TFormCore('auto','formQ','get');
 
-	$r=new TListviewTBS('lQuery');
-	echo $r->render($PDOdb, $sql,array(
+	$r=new Listview($db, 'lQuery');
+	echo $r->render($sql,array(
 		'link'=>array(
 			//'Id'=>'<a href="?action=view&id=@val@">'.img_picto('Edit', 'edit.png').' @val@</a>'
 			'title'=>'<a href="?action=run&id=@Id@">'.img_picto('Run', 'object_cron.png').' @val@</a>'
@@ -246,8 +247,15 @@ function liste() {
 			'expert'=>array( 0=>$langs->trans('No'), 1=>$langs->trans('Yes'),2=>$langs->trans('Free') )
 
 		)
+//        ,'list'=>array(
+//            'param_url'=>''
+//        )
 		,'search'=>array(
-			'title'=>array('recherche'=>true)
+			'title'=>array(
+                'search_type' => true
+                ,'table' => 'q'
+                ,'field' => 'title'
+            ),
 		)
 		,'orderby'=>array(
 			'noOrder'=>array('action')
@@ -257,12 +265,13 @@ function liste() {
 
 	$formCore->end();
 
+    print '<br />';
 	$formCore=new TFormCore('auto','formUPQ','post',true);
 	echo $formCore->hidden('action','up_query');
 	echo $formCore->fichier($langs->trans('QueryToUpload'), 'query_to_upload', '', 10).' '.$formCore->btsubmit($langs->trans('UploadQuery'),'bt_upquery');
 	$formCore->end();
 
-	dol_fiche_end();
+	dol_fiche_end(-1);
 
 	llxFooter();
 }

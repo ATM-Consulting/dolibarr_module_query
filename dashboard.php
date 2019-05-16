@@ -87,15 +87,13 @@ function run(&$PDOdb, &$dashboard, $withHeader = true) {
 
 function liste() {
 	
-	global $langs, $conf,$user;
-	
-	$PDOdb=new TPDOdb;
-	
+	global $langs, $conf,$user,$db;
+
 	llxHeader('', 'Query DashBoard', '', '', 0, 0, array('/query/js/dashboard.js', '/query/js/jquery.gridster.min.js') , array('/query/css/dashboard.css','/query/css/jquery.gridster.min.css') );
 
-	dol_fiche_head();
+	dol_fiche_head(array(), 0, '', -1);
 	
-	$sql="SELECT qd.rowid as 'Id', qd.title , '' as 'delete'
+	$sql="SELECT qd.rowid as 'Id', qd.title,  '' as 'action'
 	FROM ".MAIN_DB_PREFIX."qdashboard qd
 	WHERE 1
 	";
@@ -108,22 +106,26 @@ function liste() {
 	}
 	
 	
-	$r=new TListviewTBS('lDash');
-	echo $r->render($PDOdb, $sql,array(
+	$r=new Listview($db, 'lDash');
+	echo $r->render($sql,array(
 		'link'=>array(
-			'Id'=>'<a href="?action=view&id=@val@">'.img_picto('Edit', 'edit.png').' @val@</a>'
-			,'title'=>'<a href="?action=run&id=@Id@">'.img_picto('Run', 'object_cron.png').' @val@</a>'
-			,'delete'=>'<a href="?action=delete&id=@Id@" onclick="return(confirm(\''.$langs->trans('ConfirmDeleteMessage').'\'));">'.img_picto('Delete', 'delete.png').'</a>'
+			'title'=>'<a href="?action=run&id=@Id@">'.img_picto('Run', 'object_cron.png').' @val@</a>'
+			,'action'=>'<a href="?action=view&id=@Id@">'.img_picto('Edit', 'edit.png').'</a> <a href="?action=delete&id=@Id@" onclick="return(confirm(\''.$langs->trans('ConfirmDeleteMessage').'\'));">'.img_picto('Delete', 'delete.png').'</a>'
 		
 		)
 		,'title'=>array(
 			'title'=>$langs->trans('Title')
-			,'delete'=>$langs->trans('DeleteQuery')
+			,'action'=>''
 		)
+        ,'position' => array(
+            'text-align' => array(
+                'action' => 'right'
+            )
+        )
 	
 	));
 	
-	dol_fiche_end();
+	dol_fiche_end(-1);
 	
 	llxFooter();
 }

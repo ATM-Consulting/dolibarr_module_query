@@ -150,7 +150,7 @@ function run(&$PDOdb, &$query, $preview = false) {
 	if(!$preview) {
 		llxHeader('', 'Query', '', '', 0, 0, array() , array('/query/css/query.css') );
 		$head = TQueryMenu::getHeadForObject(GETPOST('tab_object'),GETPOST('fk_object'));
-		dol_fiche_head($head, 'tabQuery'.GETPOST('menuId'), 'Query');
+		dol_fiche_head($head, 'tabQuery'.GETPOST('menuId'), 'Query', -1);
 
 	}
 	else{
@@ -191,7 +191,7 @@ function run(&$PDOdb, &$query, $preview = false) {
 
 		echo '<p><a href="'.dol_buildpath('/query/get-json.php',1).'?'.http_build_query(array('TListTBS'=>$_REQUEST['TListTBS'])).'&uid='.$query->uid.'" target="_blank">'.$langs->trans('QueryAsJSON').'</a></p>';
 
-		dol_fiche_end();
+		dol_fiche_end(-1);
 		llxFooter();
 
 	}

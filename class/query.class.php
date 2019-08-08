@@ -778,7 +778,7 @@ class TQuery extends TObjetStd {
 			,'operator'=>$TOperator
 		),$TBind);
 
-		if($this->show_details) {
+		if($this->show_details && ! empty($r->TBind)) {
 				$html.=  '<div class="query">';
 				$Tab=array();
 				foreach($r->TBind as $f=>$v) {
@@ -881,7 +881,8 @@ class TQuery extends TObjetStd {
 			)
 			,$TBind);
 //echo 4;
-			if($this->show_details) {
+			if($this->show_details && ! empty($r->TBind))
+			{
 				$html.=  '<div class="query">';
 				$Tab=array();
 				foreach($r->TBind as $f=>$v) {

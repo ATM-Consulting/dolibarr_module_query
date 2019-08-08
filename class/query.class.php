@@ -117,7 +117,7 @@ class TQuery extends TObjetStd {
 
 	}
 
-	function run($show_details = true, $height=0, $table_element='', $objectid=0, $preview = -1, $force_list_mode = false) {
+	function run($show_details = true, $height=0, $table_element='', $objectid=0, $preview = -1, $force_list_mode = false, $from_dashboard = false) {
 		global $conf;
 
 		$PDOdb = &$this->pdodb;
@@ -157,8 +157,9 @@ class TQuery extends TObjetStd {
 
 
 		$form=new TFormCore();
-		$html.= $form->begin_form('auto','formQuery'. $this->getId(),'get');
-		$action=GETPOST('action')!='' ? GETPOST('action') : 'run';
+		$html.= $form->begin_form(dol_buildpath('/query/query.php', 1),'formQuery'. $this->getId(),'get');
+		$action = ! empty($_REQUEST['action']) ? GETPOST('action') : 'run';
+		if($from_dashboard) $action = 'run-in';
 		$html.=  $form->hidden('action', $action);
 		$html.=  $form->hidden('id', GETPOST('id') ? GETPOST('id') : $this->getId());
 
@@ -749,6 +750,12 @@ class TQuery extends TObjetStd {
 
 		$html = '';
 
+
+		if($this->preview <= 0)
+		{
+			$this->height -= 66;
+		}
+
 		if($this->show_details) $html.= '<div class="query">'.$sql.'</div>';
 
 		$r=new TListviewTBS('chart'.$this->getId());
@@ -782,7 +789,13 @@ class TQuery extends TObjetStd {
 
 		}
 
-		if($this->preview<=0) $html.='<div class="tabsAction"> <input type="submit" class="butAction" name="show_as_list" value="'.$langs->trans('ShowGraphAsList').'" /> </div>';
+		if($this->preview <= 0)
+		{
+			$html.='
+				<div class="tabsAction" style="margin:0; padding: 15px 0">
+					<input type="submit" class="butAction" name="show_as_list" value="'.$langs->trans('ShowGraphAsList').'" />
+				</div>';
+		}
 
 		return $html;
 	}
@@ -880,7 +893,10 @@ class TQuery extends TObjetStd {
 			}
 
 			if($this->type=='CHART' || $this->type=='LINE' || $this->type=='PIE' || $this->type=='AREA') {
-				$html.='<div class="tabsAction"> <input type="submit" class="butAction" name="show_as_graph" value="'.$langs->trans('ShowGraphNormal').'" /> </div>';
+				$html.= '
+					<div class="tabsAction" style="margin:0; padding: 15px 0">
+						<input type="submit" class="butAction" name="show_as_graph" value="'.$langs->trans('ShowGraphNormal').'" />
+					</div>';
 			}
 
 			

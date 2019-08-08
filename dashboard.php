@@ -152,7 +152,7 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 	
 	if($withHeader) {
 	
-		llxHeader('', 'Query DashBoard', '', '', 0, 0, array('/query/js/dashboard.js', '/query/js/jquery.gridster.min.js') , array('/query/css/dashboard.css','/query/css/jquery.gridster.min.css') );
+		llxHeader('', 'Query DashBoard', '', '', 0, 0, array('/query/js/dashboard.js', '/query/js/jquery.gridster.min.js', '/query/js/query-resize.js') , array('/query/css/dashboard.css','/query/css/jquery.gridster.min.css') );
 	
 		$head = TQueryMenu::getHeadForObject($tab_object,$fk_object);
 		dol_fiche_head($head, 'tabQuery'.GETPOST('menuId'), 'Query');
@@ -165,11 +165,13 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 			<link rel="stylesheet" type="text/css" title="default" href="<?php echo dol_buildpath('/query/css/jquery.gridster.min.css',1); ?>">
 			<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/dashboard.js',1); ?>"></script>
 			<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/jquery.gridster.min.js',1); ?>"></script>
+			<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/query-resize.js',1); ?>"></script>
 
 		<?php
 	}
 	else {
-		?><html>
+		?><!doctype html>
+		<html>
 			<head>
 				<meta charset="UTF-8">
 				<link rel="stylesheet" type="text/css" href="<?php echo dol_buildpath('/theme/eldy/style.css.php?lang=fr_FR&theme=eldy',1); ?>">
@@ -179,6 +181,7 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 				<script type="text/javascript" src="<?php echo dol_buildpath('/includes/jquery/js/jquery.min.js',1); ?>"></script>
 				<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/dashboard.js',1); ?>"></script>
 				<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/jquery.gridster.min.js',1); ?>"></script>
+				<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/query-resize.js',1); ?>"></script>
 				<style type="text/css">
 					.pagination { display : none; }
 					<?php if((int)GETPOST('allow_gen')!=1) echo '.notInGeneration { display : none; }'; ?>
@@ -188,24 +191,35 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 					}
 				</style>
 			</head>
-		<body >
+		<body>
 		<?php	
 	}
 	
 	?>
 	<script type="text/javascript">
+        function calculateGridsterWidth()
+        {
+            // 4 => nombre de colonnes, 10 => CSS margin de chaque cellule, 8 => nombre de marges ( = nombre de colonnes * 2)
+            let gridster_width = Math.floor(($('.gridster').innerWidth() - 8 * 10) / 4);
+
+            // On ne va pas en dessous d'une certaine largeur
+            if(gridster_width < 100) gridster_width = 100;
+
+            return gridster_width;
+        }
+
 		var MODQUERY_INTERFACE = "<?php echo dol_buildpath('/query/script/interface.php',1); ?>";
-		
-		$(document).ready(function(){ //DOM Ready
-			
-			gridster_width = Math.round($('.gridster').innerWidth() / 5);
-			if(gridster_width<50) gridster_width = 240;
-			
-		    $(".gridster ul").gridster({
+		var cellHeight = <?= $cell_height ?>;
+
+		$(document).ready(function() //DOM Ready
+		{
+			// jQuery().gridster() retourne un objet jQuery, on chaîne un .data('gridster') pour récupérer l'instance de Gridster.js
+		    gridster = $(".gridster ul").gridster({
 		        widget_margins: [10, 10]
-		        ,widget_base_dimensions: [gridster_width, <?php echo $cell_height ?>]
-		        ,min_cols:3
-		        ,min_rows:5
+		        ,widget_base_dimensions: [calculateGridsterWidth(), cellHeight]
+		        ,min_cols:4
+                ,max_cols:4
+		        ,min_rows:1
 		        ,serialize_params: function($w, wgd) { 
 		        	return { posx: wgd.col, posy: wgd.row, width: wgd.size_x, height: wgd.size_y, k : $w.attr('data-k') } 
 		        }
@@ -216,23 +230,27 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 		            enabled: true
 		            ,max_size: [4, 4]
 		            ,min_size: [1, 1]
+				    ,stop: function()
+				    {
+                        handleResizing();
+                    }
 		        }
-		        
-		       
+
 		       <?php
 		       }
 		       ?>
-		    })<?php 
-				if($action == 'view') {
-					
-					echo '.data(\'gridster\').disable()';
-					
+
+		    }).data('gridster');
+
+			<?php
+				if($action == 'view')
+				{
+					echo 'gridster.disable();';
 				}
 			
-			?>;
-		
-			var gridster = $(".gridster ul").gridster().data('gridster');
-		
+			?>
+
+
 			$('#addQuery').click(function() {
 				
 				var fk_query = $('select[name=fk_query]').val();
@@ -252,7 +270,8 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 					
 					gridster.add_widget('<li data-k="'+data+'">'+title+'</li>',1,1,1,1);	
 				});
-				
+
+				return false;
 			});
 			
 			$('#saveDashboard').click(function() {
@@ -301,7 +320,9 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 				});
 				
 			});
-		
+
+            $(window).on('resize', handleResizing);
+            handleResizing();
 		});
 		
 		function delTile(idTile) {
@@ -367,7 +388,7 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 	    <ul>
 	    	<?php
 	    	foreach($dashboard->TQDashBoardQuery as $k=>&$cell) {
-	    		echo '<li tile-id="'.$cell->getId().'" data-k="'.$k.'" data-row="'.$cell->posy.'" data-col="'.$cell->posx.'" data-sizex="'.$cell->width.'" data-sizey="'.$cell->height.'" '.($withHeader ? '' : 'style="overflow:hidden;"').'>';
+	    		echo '<li tile-id="'.$cell->getId().'" data-k="'.$k.'" data-row="'.$cell->posy.'" data-col="'.$cell->posx.'" data-sizex="'.$cell->width.'" data-sizey="'.$cell->height.'">';
 		    		if($action == 'edit') {
 		    			echo '<a style="position:absolute; top:3px; right:3px; z-index:999;" href="javascript:delTile('.$cell->getId().')">'.img_delete('DeleteThisTile').'</a>';	
 		    		}
@@ -385,13 +406,20 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 					}
 					
 					if($cell->query->type=='LIST')$cell->query->type='SIMPLELIST';
-					
+
+					$trueHeight = $cell->height * $cell_height;
+
+					if($cell->height > 1)
+					{
+						$trueHeight += ($cell->height - 1) * 20;
+					}
+
 					if(!empty($cell->query)) {
 						if(!$withHeader) {
-							echo $cell->query->run(false, $cell->height * $cell_height, $table_element, $fk_object,0);
+							echo $cell->query->run(false, $trueHeight, $table_element, $fk_object, 0, false, true);
 						}
 						else{
-							echo $cell->query->run(false, $cell->height * $cell_height, $table_element, $fk_object);	
+							echo $cell->query->run(false, $trueHeight, $table_element, $fk_object, -1, false, true);
 						}
 						
 					}

@@ -750,8 +750,8 @@ class TQuery extends TObjetStd {
 
 		$html = '';
 
-
-		if($this->preview <= 0)
+		// 2 => depuis un dashboard, on laisse alors la place au bouton "Voir en liste"
+		if($this->preview == 2)
 		{
 			$this->height -= 66;
 		}

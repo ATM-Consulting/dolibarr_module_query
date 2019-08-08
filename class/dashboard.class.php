@@ -44,20 +44,42 @@ class TQDashBoard extends TObjetStd {
 		
 	}
 	
-	static function getDashboard(&$PDOdb, $hook='', $fk_user = 0, $withTitle=false) {
+	static function getDashboard(&$PDOdb, $hook = '', $fk_user = 0, $withTitle = false)
+	{
 		$Tab = array();
 		
-		$sql = "SELECT rowid, uid, title, refresh_dashboard FROM ".MAIN_DB_PREFIX."qdashboard qd 
-		WHERE 1 ";
-		
-		if($hook) $sql.=" AND qd.hook='".$hook."'";
-		if($fk_user>0) $sql.=" AND (qd.fk_user_author=".$fk_user." OR  qd.fk_usergroup IN (SELECT fk_usergroup FROM ".MAIN_DB_PREFIX."usergroup_user WHERE fk_user=".$fk_user." ) )";
-	
-		
-		$sql.=" ORDER BY title";
+		$sql = '
+				SELECT rowid, uid, title, refresh_dashboard
+				FROM ' . MAIN_DB_PREFIX . 'qdashboard qd 
+				WHERE TRUE';
+
+		if(! empty($hook))
+		{
+			$sql .= '
+				AND qd.hook = ' . $PDOdb->quote($hook);
+		}
+
+		if($fk_user > 0)
+		{
+			$sql.= '
+				AND (
+					qd.fk_user_author = ' . intval($fk_user) . '
+					OR
+					COALESCE(qd.fk_usergroup, 0) <= 0
+					OR
+					qd.fk_usergroup IN (
+						SELECT fk_usergroup
+						FROM ' . MAIN_DB_PREFIX . 'usergroup_user
+						WHERE fk_user = '  . intval($fk_user) .'
+					)
+				)';
+		}
+
+		$sql.= '
+				ORDER BY title';
 		
 		$Tab = TRequeteCore::_get_id_by_sql($PDOdb, $sql, ($withTitle ? 'title' : 'uid'), 'rowid');
-		
+
 		return $Tab;
 	}
 	
@@ -92,4 +114,3 @@ class TQDashBoardQuery extends TObjetStd {
 	
 	
 }
-	

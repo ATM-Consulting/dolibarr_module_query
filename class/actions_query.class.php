@@ -45,37 +45,46 @@ class ActionsQuery
 	{
 		global $langs,$db, $user, $conf,$query_just_after_login;
 
-		if (in_array('index',explode(':',$parameters['context'])) && !empty($conf->global->QUERY_HOME_SELECTOR))
+		if (in_array('index', explode(':',$parameters['context'])) && ! empty($conf->global->QUERY_HOME_SELECTOR))
 		{
-			
-			$sql="SELECT qd.uid as 'uid', qd.title ,qd.use_as_landing_page,qd.rowid
-				FROM ".MAIN_DB_PREFIX."qdashboard qd
-				WHERE uid<>'' ";
-
-			if($user->admin) {
-				null;
-			}
-			else {
-				$sql.=" AND (qd.fk_user_author=".$user->id." OR  qd.fk_usergroup IN (SELECT fk_usergroup FROM ".MAIN_DB_PREFIX."usergroup_user WHERE fk_user=".$user->id." ) )";
-			}
-
 			$langs->load('query@query');
+
+			$sql = '
+					SELECT qd.uid as uid, qd.title, qd.use_as_landing_page, qd.rowid
+					FROM ' . MAIN_DB_PREFIX . 'qdashboard qd
+					WHERE CHAR_LENGTH(uid) > 0';
+
+			if(empty($user->admin))
+			{
+				$sql.= '
+					AND (
+						qd.fk_user_author = ' . $user->id . '
+						OR
+						COALESCE(qd.fk_usergroup, 0) <= 0
+						OR
+						qd.fk_usergroup IN (
+							SELECT fk_usergroup
+							FROM ' . MAIN_DB_PREFIX . 'usergroup_user
+							WHERE fk_user = ' . $user->id . '
+						)
+					)';
+			}
 
 			$TDashboard=array();
 			$res = $db->query($sql);
 			if (!$res) {
-				setEventMessages(array($db->lasterror),'','errors');
+				setEventMessage($db->lasterror, 'errors');
 			} else {
-				while($obj = $db->fetch_object($res)) {
-
-					if($obj->use_as_landing_page == 1 && !empty($query_just_after_login)) {
-
+				while($obj = $db->fetch_object($res))
+				{
+					if($obj->use_as_landing_page == 1 && ! empty($query_just_after_login))
+					{
 						?>
 						<script type="text/javascript">
 						document.location.href="<?php echo dol_buildpath('/query/dashboard.php?action=run&id='.$obj->rowid,1) ?>";
 						</script>
 						<?php
-
+						exit;
 					}
 
 					$TDashboard[] = $obj;

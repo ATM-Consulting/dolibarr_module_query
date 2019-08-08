@@ -191,7 +191,7 @@ function run(&$PDOdb, &$query, $preview = false) {
 
 	echo '
 		<script>
-			$(document.ready(function()
+			$(document).ready(function()
 			{
 				$(window).on(\'resize\', handleResizing);
 				handleResizing();

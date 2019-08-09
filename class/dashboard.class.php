@@ -40,8 +40,7 @@ class TQDashBoard extends TObjetStd {
 		$this->fk_user = $user->id; //  last updater
 		if(empty($this->uid))$this->uid = md5( time().$this->title.rand(1000,999999) );
 		
-		parent::save($PDOdb);
-		
+		return parent::save($PDOdb);
 	}
 	
 	static function getDashboard(&$PDOdb, $hook = '', $user = null, $withTitle = false)

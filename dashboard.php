@@ -89,7 +89,7 @@ function liste()
 {
 	global $langs, $conf,$user, $db;
 
-	llxHeader('', 'Query DashBoard', '', '', 0, 0, array('/query/js/dashboard.js', '/query/js/jquery.gridster.min.js') , array('/query/css/dashboard.css','/query/css/jquery.gridster.min.css') );
+	llxHeader('', 'Query DashBoard', '', '', 0, 0, array('/query/js/dashboard.js', '/query/js/jquery.gridster.min.js'), array('/query/css/jquery.gridster.min.css', '/query/css/dashboard.css'));
 
 	dol_fiche_head(array(), 0, '', -1);
 	
@@ -145,10 +145,10 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 	}
 	
 	
-	if($withHeader) {
-	
-		llxHeader('', 'Query DashBoard', '', '', 0, 0, array('/query/js/dashboard.js', '/query/js/jquery.gridster.min.js', '/query/js/query-resize.js') , array('/query/css/dashboard.css','/query/css/jquery.gridster.min.css') );
-	
+	if($withHeader)
+	{
+		llxHeader('', 'Query DashBoard', '', '', 0, 0, array('/query/js/dashboard.js', '/query/js/jquery.gridster.min.js', '/query/js/query-resize.js') , array('/query/css/jquery.gridster.min.css', '/query/css/dashboard.css'));
+
 		$head = TQueryMenu::getHeadForObject($tab_object,$fk_object);
 		dol_fiche_head($head, 'tabQuery'.GETPOST('menuId'), 'Query');
 		print_fiche_titre($dashboard->title);
@@ -156,11 +156,11 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 	else if(GETPOST('for_incusion')>0) {
 		?>
 		<div class="querydashboard">
-			<link rel="stylesheet" type="text/css" title="default" href="<?php echo dol_buildpath('/query/css/dashboard.css',1); ?>">
-			<link rel="stylesheet" type="text/css" title="default" href="<?php echo dol_buildpath('/query/css/jquery.gridster.min.css',1); ?>">
-			<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/dashboard.js',1); ?>"></script>
-			<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/jquery.gridster.min.js',1); ?>"></script>
-			<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/query-resize.js',1); ?>"></script>
+			<link rel="stylesheet" type="text/css" title="default" href="<?php echo dol_buildpath('/query/css/jquery.gridster.min.css', 1); ?>" />
+			<link rel="stylesheet" type="text/css" title="default" href="<?php echo dol_buildpath('/query/css/dashboard.css', 1); ?>" />
+			<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/dashboard.js', 1); ?>"></script>
+			<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/jquery.gridster.min.js', 1); ?>"></script>
+			<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/query-resize.js', 1); ?>"></script>
 
 		<?php
 	}
@@ -169,14 +169,14 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 		<html>
 			<head>
 				<meta charset="UTF-8">
-				<link rel="stylesheet" type="text/css" href="<?php echo dol_buildpath('/theme/eldy/style.css.php?lang=fr_FR&theme=eldy',1); ?>">
-				<link rel="stylesheet" type="text/css" title="default" href="<?php echo dol_buildpath('/query/css/dashboard.css',1); ?>">
-				<link rel="stylesheet" type="text/css" title="default" href="<?php echo dol_buildpath('/query/css/jquery.gridster.min.css',1); ?>">
+				<link rel="stylesheet" type="text/css" href="<?php echo dol_buildpath('/theme/eldy/style.css.php?lang=fr_FR&theme=eldy', 1); ?>" />
+				<link rel="stylesheet" type="text/css" title="default" href="<?php echo dol_buildpath('/query/css/jquery.gridster.min.css', 1); ?>" />
+				<link rel="stylesheet" type="text/css" title="default" href="<?php echo dol_buildpath('/query/css/dashboard.css', 1); ?>" />
 
-				<script type="text/javascript" src="<?php echo dol_buildpath('/includes/jquery/js/jquery.min.js',1); ?>"></script>
-				<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/dashboard.js',1); ?>"></script>
-				<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/jquery.gridster.min.js',1); ?>"></script>
-				<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/query-resize.js',1); ?>"></script>
+				<script type="text/javascript" src="<?php echo dol_buildpath('/includes/jquery/js/jquery.min.js', 1); ?>"></script>
+				<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/dashboard.js', 1); ?>"></script>
+				<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/jquery.gridster.min.js', 1); ?>"></script>
+				<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/query-resize.js', 1); ?>"></script>
 				<style type="text/css">
 					.pagination { display : none; }
 					<?php if((int)GETPOST('allow_gen')!=1) echo '.notInGeneration { display : none; }'; ?>

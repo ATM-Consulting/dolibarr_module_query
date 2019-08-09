@@ -39,7 +39,7 @@ function redrawChart(elem)
 
 	// La fonction que nous allons appeler est générée par TListviewTBS::renderChart() et fait appel à l'API Google Visualization
 	let functionToCall = 'drawChart' + chartID;
-	let height = null;
+	let height = 0;
 
 	// Si on est dans un dashboard en mode édition, la heuteur peut changer => on doit recalculer la hauteur du graphique
 	if(gridster)
@@ -56,7 +56,7 @@ function redrawChart(elem)
 		}
 
 		// 66 => espace pour le bouton "Voir en liste"
-		height = sizeY * gridster.options.widget_base_dimensions[1] - 66;
+		height += (sizeY * gridster.options.widget_base_dimensions[1] - 66);
 	}
 
 	if(window[functionToCall])

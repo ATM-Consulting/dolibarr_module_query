@@ -27,7 +27,8 @@ function handleResizing()
 
 	if(parentIframe)
 	{
-		parentIframe.height = $('body').height();
+		// html plutôt que body pour prendre en compte certaines marges
+		parentIframe.height = $('html').height();
 	}
 }
 

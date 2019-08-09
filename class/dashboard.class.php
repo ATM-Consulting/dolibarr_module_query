@@ -44,7 +44,7 @@ class TQDashBoard extends TObjetStd {
 		
 	}
 	
-	static function getDashboard(&$PDOdb, $hook = '', $fk_user = 0, $withTitle = false)
+	static function getDashboard(&$PDOdb, $hook = '', $user = null, $withTitle = false)
 	{
 		$Tab = array();
 		
@@ -59,21 +59,7 @@ class TQDashBoard extends TObjetStd {
 				AND qd.hook = ' . $PDOdb->quote($hook);
 		}
 
-		if($fk_user > 0)
-		{
-			$sql.= '
-				AND (
-					qd.fk_user_author = ' . intval($fk_user) . '
-					OR
-					COALESCE(qd.fk_usergroup, 0) <= 0
-					OR
-					qd.fk_usergroup IN (
-						SELECT fk_usergroup
-						FROM ' . MAIN_DB_PREFIX . 'usergroup_user
-						WHERE fk_user = '  . intval($fk_user) .'
-					)
-				)';
-		}
+		$sql.= static::getUserRightsSQLFilter($user);
 
 		$sql.= '
 				ORDER BY title';
@@ -82,7 +68,27 @@ class TQDashBoard extends TObjetStd {
 
 		return $Tab;
 	}
-	
+
+	public static function getUserRightsSQLFilter($user)
+	{
+		if(empty($user) || ! empty($user->admin) || ! empty($user->rights->dashboard->readall))
+		{
+			return '';
+		}
+
+		return '
+			AND (
+				qd.fk_user_author = ' . intval($user->id) . '
+				OR
+				COALESCE(qd.fk_usergroup, 0) <= 0
+				OR
+				qd.fk_usergroup IN (
+					SELECT fk_usergroup
+					FROM ' . MAIN_DB_PREFIX . 'usergroup_user
+					WHERE fk_user = '  . intval($user->id) .'
+				)
+			)';
+	}
 }
 
 class TQDashBoardQuery extends TObjetStd {

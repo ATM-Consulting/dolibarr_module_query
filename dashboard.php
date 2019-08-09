@@ -85,27 +85,22 @@ function run(&$PDOdb, &$dashboard, $withHeader = true) {
 }
 
 
-function liste() {
-	
-	global $langs, $conf,$user,$db;
+function liste()
+{
+	global $langs, $conf,$user, $db;
 
 	llxHeader('', 'Query DashBoard', '', '', 0, 0, array('/query/js/dashboard.js', '/query/js/jquery.gridster.min.js') , array('/query/css/dashboard.css','/query/css/jquery.gridster.min.css') );
 
 	dol_fiche_head(array(), 0, '', -1);
 	
-	$sql="SELECT qd.rowid as 'Id', qd.title,  '' as 'action'
-	FROM ".MAIN_DB_PREFIX."qdashboard qd
-	WHERE 1
-	";
-	
-	if($user->admin || $user->rights->query->dashboard->readall) {
-		null;
-	}
-	else {
-		$sql.=" AND (qd.fk_user_author=".$user->id." OR  qd.fk_usergroup IN (SELECT fk_usergroup FROM ".MAIN_DB_PREFIX."usergroup_user WHERE fk_user=".$user->id." ) )";
-	}
-	
-	
+	$sql = '
+			SELECT qd.rowid as "Id", qd.title, "" as action
+			FROM ' . MAIN_DB_PREFIX . 'qdashboard qd
+			WHERE TRUE';
+
+	$sql.= TQDashBoard::getUserRightsSQLFilter($user);
+
+
 	$r=new Listview($db, 'lDash');
 	echo $r->render($sql,array(
 		'link'=>array(

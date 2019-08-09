@@ -23,7 +23,7 @@ class ActionsQuery
 			dol_include_once('/query/class/query.class.php');
 
 			$PDOdb=new TPDOdb;
-			$TDash = TQDashBoard::getDashboard($PDOdb, $parameters['currentcontext'], $user->id);
+			$TDash = TQDashBoard::getDashboard($PDOdb, $parameters['currentcontext'], $user);
 
 			foreach($TDash as $uid) {
 				$url = dol_buildpath('/query/dashboard.php?action=run&allow_gen=1&uid='.$uid.'&table_element='.$object->table_element.'&fk_object='.$object->id,1);
@@ -49,28 +49,19 @@ class ActionsQuery
 		{
 			$langs->load('query@query');
 
+			define('INC_FROM_DOLIBARR',true);
+			dol_include_once('/query/config.php');
+			dol_include_once('/query/class/dashboard.class.php');
+			dol_include_once('/query/class/query.class.php');
+
 			$sql = '
 					SELECT qd.uid as uid, qd.title, qd.use_as_landing_page, qd.rowid
 					FROM ' . MAIN_DB_PREFIX . 'qdashboard qd
 					WHERE CHAR_LENGTH(uid) > 0';
 
-			if(empty($user->admin))
-			{
-				$sql.= '
-					AND (
-						qd.fk_user_author = ' . $user->id . '
-						OR
-						COALESCE(qd.fk_usergroup, 0) <= 0
-						OR
-						qd.fk_usergroup IN (
-							SELECT fk_usergroup
-							FROM ' . MAIN_DB_PREFIX . 'usergroup_user
-							WHERE fk_user = ' . $user->id . '
-						)
-					)';
-			}
+			$sql .= TQDashBoard::getUserRightsSQLFilter($user);
 
-			$TDashboard=array();
+			$TDashboard = array();
 			$res = $db->query($sql);
 			if (!$res) {
 				setEventMessage($db->lasterror, 'errors');

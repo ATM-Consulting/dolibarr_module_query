@@ -474,9 +474,7 @@ class TQuery extends TObjetStd {
 			foreach($this->TClass as $f=>$v) {
 				if($v) {
 					$fSearch = strtr($f,'.','_');
-
-					$method = empty($this->TMethod[$fSearch]) ? 'getNomUrl' : $this->TMethod[$fSearch];
-
+					$method = empty($this->TMethod[$f]) ? 'getNomUrl' : $this->TMethod[$f];
 					$Tab[$fSearch]= 'TQuery::getCustomMethodForObject("'.$v.'", "@val@", "'.$method.'")';
 				}
 

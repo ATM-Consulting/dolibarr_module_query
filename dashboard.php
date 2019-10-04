@@ -85,27 +85,22 @@ function run(&$PDOdb, &$dashboard, $withHeader = true) {
 }
 
 
-function liste() {
-	
-	global $langs, $conf,$user,$db;
+function liste()
+{
+	global $langs, $conf,$user, $db;
 
-	llxHeader('', 'Query DashBoard', '', '', 0, 0, array('/query/js/dashboard.js', '/query/js/jquery.gridster.min.js') , array('/query/css/dashboard.css','/query/css/jquery.gridster.min.css') );
+	llxHeader('', 'Query DashBoard', '', '', 0, 0, array('/query/js/dashboard.js', '/query/js/jquery.gridster.min.js'), array('/query/css/jquery.gridster.min.css', '/query/css/dashboard.css'));
 
 	dol_fiche_head(array(), 0, '', -1);
 	
-	$sql="SELECT qd.rowid as 'Id', qd.title,  '' as 'action'
-	FROM ".MAIN_DB_PREFIX."qdashboard qd
-	WHERE 1
-	";
-	
-	if($user->admin || $user->rights->query->dashboard->readall) {
-		null;
-	}
-	else {
-		$sql.=" AND (qd.fk_user_author=".$user->id." OR  qd.fk_usergroup IN (SELECT fk_usergroup FROM ".MAIN_DB_PREFIX."usergroup_user WHERE fk_user=".$user->id." ) )";
-	}
-	
-	
+	$sql = '
+			SELECT qd.rowid as "Id", qd.title, "" as action
+			FROM ' . MAIN_DB_PREFIX . 'qdashboard qd
+			WHERE TRUE';
+
+	$sql.= TQDashBoard::getUserRightsSQLFilter($user);
+
+
 	$r=new Listview($db, 'lDash');
 	echo $r->render($sql,array(
 		'link'=>array(
@@ -150,35 +145,49 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 	}
 	
 	
-	if($withHeader) {
-	
-		llxHeader('', 'Query DashBoard', '', '', 0, 0, array('/query/js/dashboard.js', '/query/js/jquery.gridster.min.js') , array('/query/css/dashboard.css','/query/css/jquery.gridster.min.css') );
-	
-		$head = TQueryMenu::getHeadForObject($tab_object,$fk_object);
-		dol_fiche_head($head, 'tabQuery'.GETPOST('menuId'), 'Query');
-		print_fiche_titre($dashboard->title);
+	if($withHeader)
+	{
+		llxHeader('', 'Query DashBoard', '', '', 0, 0, array('/query/js/dashboard.js', '/query/js/jquery.gridster.min.js', '/query/js/query-resize.js') , array('/query/css/jquery.gridster.min.css', '/query/css/dashboard.css'));
+
+		if($dashboard->getId() > 0)
+		{
+			$head = TQueryMenu::getHeadForObject($tab_object, $fk_object);
+			echo dol_get_fiche_head($head, 'tabQuery' . GETPOST('menuId'), 'Query');
+		}
+
+		$title = ! empty($dashboard->title) ? $langs->trans('DashboardTitle', $dashboard->title) : $langs->trans('NewDashboard');
+		$morehtmlright = '<a href="' . $_SERVER['PHP_SELF'] . '">' . $langs->trans('BackToList') . '</a>';
+		print load_fiche_titre($title, $morehtmlright, '');
+
+		if($dashboard->getId() <= 0)
+		{
+			echo dol_get_fiche_head('');
+		}
 	}
 	else if(GETPOST('for_incusion')>0) {
 		?>
 		<div class="querydashboard">
-			<link rel="stylesheet" type="text/css" title="default" href="<?php echo dol_buildpath('/query/css/dashboard.css',1); ?>">
-			<link rel="stylesheet" type="text/css" title="default" href="<?php echo dol_buildpath('/query/css/jquery.gridster.min.css',1); ?>">
-			<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/dashboard.js',1); ?>"></script>
-			<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/jquery.gridster.min.js',1); ?>"></script>
+			<link rel="stylesheet" type="text/css" title="default" href="<?php echo dol_buildpath('/query/css/jquery.gridster.min.css', 1); ?>" />
+			<link rel="stylesheet" type="text/css" title="default" href="<?php echo dol_buildpath('/query/css/dashboard.css', 1); ?>" />
+			<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/dashboard.js', 1); ?>"></script>
+			<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/jquery.gridster.min.js', 1); ?>"></script>
+			<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/query-resize.js', 1); ?>"></script>
 
 		<?php
 	}
 	else {
-		?><html>
+		?><!doctype html>
+		<html>
 			<head>
 				<meta charset="UTF-8">
-				<link rel="stylesheet" type="text/css" href="<?php echo dol_buildpath('/theme/eldy/style.css.php?lang=fr_FR&theme=eldy',1); ?>">
-				<link rel="stylesheet" type="text/css" title="default" href="<?php echo dol_buildpath('/query/css/dashboard.css',1); ?>">
-				<link rel="stylesheet" type="text/css" title="default" href="<?php echo dol_buildpath('/query/css/jquery.gridster.min.css',1); ?>">
+				<link rel="stylesheet" type="text/css" href="<?php echo dol_buildpath('/theme/eldy/style.css.php?lang=fr_FR&theme=eldy', 1); ?>" />
+				<link rel="stylesheet" type="text/css" title="default" href="<?php echo dol_buildpath('/query/css/jquery.gridster.min.css', 1); ?>" />
+				<link rel="stylesheet" type="text/css" title="default" href="<?php echo dol_buildpath('/query/css/dashboard.css', 1); ?>" />
 
-				<script type="text/javascript" src="<?php echo dol_buildpath('/includes/jquery/js/jquery.min.js',1); ?>"></script>
-				<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/dashboard.js',1); ?>"></script>
-				<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/jquery.gridster.min.js',1); ?>"></script>
+				<script type="text/javascript" src="<?php echo dol_buildpath('/includes/jquery/js/jquery.min.js', 1); ?>"></script>
+				<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/dashboard.js', 1); ?>"></script>
+				<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/jquery.gridster.min.js', 1); ?>"></script>
+				<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/query-resize.js', 1); ?>"></script>
 				<style type="text/css">
 					.pagination { display : none; }
 					<?php if((int)GETPOST('allow_gen')!=1) echo '.notInGeneration { display : none; }'; ?>
@@ -188,24 +197,35 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 					}
 				</style>
 			</head>
-		<body >
+		<body>
 		<?php	
 	}
 	
 	?>
 	<script type="text/javascript">
+        function calculateGridsterWidth()
+        {
+            // 4 => nombre de colonnes, 10 => CSS margin de chaque cellule, 8 => nombre de marges ( = nombre de colonnes * 2)
+            let gridster_width = Math.floor(($('.gridster').innerWidth() - 8 * 10) / 4);
+
+            // On ne va pas en dessous d'une certaine largeur
+            if(gridster_width < 100) gridster_width = 100;
+
+            return gridster_width;
+        }
+
 		var MODQUERY_INTERFACE = "<?php echo dol_buildpath('/query/script/interface.php',1); ?>";
-		
-		$(document).ready(function(){ //DOM Ready
-			
-			gridster_width = Math.round($('.gridster').innerWidth() / 5);
-			if(gridster_width<50) gridster_width = 240;
-			
-		    $(".gridster ul").gridster({
+		var cellHeight = <?= $cell_height ?>;
+
+		$(document).ready(function() //DOM Ready
+		{
+			// jQuery().gridster() retourne un objet jQuery, on chaîne un .data('gridster') pour récupérer l'instance de Gridster.js
+		    gridster = $(".gridster ul").gridster({
 		        widget_margins: [10, 10]
-		        ,widget_base_dimensions: [gridster_width, <?php echo $cell_height ?>]
-		        ,min_cols:3
-		        ,min_rows:5
+		        ,widget_base_dimensions: [calculateGridsterWidth(), cellHeight]
+		        ,min_cols:4
+                ,max_cols:4
+		        ,min_rows:1
 		        ,serialize_params: function($w, wgd) { 
 		        	return { posx: wgd.col, posy: wgd.row, width: wgd.size_x, height: wgd.size_y, k : $w.attr('data-k') } 
 		        }
@@ -216,23 +236,27 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 		            enabled: true
 		            ,max_size: [4, 4]
 		            ,min_size: [1, 1]
+				    ,stop: function()
+				    {
+                        handleResizing();
+                    }
 		        }
-		        
-		       
+
 		       <?php
 		       }
 		       ?>
-		    })<?php 
-				if($action == 'view') {
-					
-					echo '.data(\'gridster\').disable()';
-					
+
+		    }).data('gridster');
+
+			<?php
+				if($action == 'view')
+				{
+					echo 'gridster.disable();';
 				}
 			
-			?>;
-		
-			var gridster = $(".gridster ul").gridster().data('gridster');
-		
+			?>
+
+
 			$('#addQuery').click(function() {
 				
 				var fk_query = $('select[name=fk_query]').val();
@@ -252,7 +276,8 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 					
 					gridster.add_widget('<li data-k="'+data+'">'+title+'</li>',1,1,1,1);	
 				});
-				
+
+				return false;
 			});
 			
 			$('#saveDashboard').click(function() {
@@ -301,7 +326,9 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 				});
 				
 			});
-		
+
+            $(window).on('resize', handleResizing);
+            handleResizing();
 		});
 		
 		function delTile(idTile) {
@@ -324,42 +351,60 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 			
 	</script>
 	<?php
-	if($action == 'edit') {
-		?><div><?php 
-			$TQuery = TQuery::getQueries($PDOdb);
-			echo $form->texte($langs->trans('Title'), 'title', $dashboard->title, 50,255);
-			
-			$formDoli=new Form($db);
-			echo ' - '.$langs->trans('LimitAccessToThisGroup').' : '
-					.$formDoli->select_dolgroups($dashboard->fk_usergroup, 'fk_usergroup', 1)
-					.'/'.$langs->trans('UseAsLandingPage')
-					.$formDoli->selectarray('use_as_landing_page', array($langs->trans('No'),$langs->trans('Yes')),$dashboard->use_as_landing_page);
-					
-			
-			echo $form->combo(' - '.$langs->trans('SendByMailToThisGroup'),'send_by_mail', $dashboard->TSendByMail, $dashboard->send_by_mail);
-			echo $form->combo(' - '.$langs->trans('ShowThisInCard'),'hook', $dashboard->THook, $dashboard->hook);
-			echo $form->number('<br />'.$langs->trans('RefreshDashboard'),'refresh_dashboard', $dashboard->refresh_dashboard, 20, 1, 0);
-			
-			?>
-			<a href="#" class="butAction" id="saveDashboard"><?php echo $langs->trans('SaveDashboard'); ?></a>
-		</div>
-		<?php
-		if($dashboard->getId()>0) {
+	if($action == 'edit')
+	{
+		$formDoli = new Form($db);
 		?>
-		<div>
-			<?php
-				$TQuery = TQuery::getQueries($PDOdb);
-				echo $form->combo('', 'fk_query', $TQuery, 0);
-			?>
-			<a href="#" class="butAction" id="addQuery"><?php echo $langs->trans('AddThisQuery'); ?></a>
-		</div>
-		
+
+		<table class="border centpercent">
+			<tr>
+				<td class="titlefieldcreate"><?= $langs->trans('Title') ?></td>
+				<td><?= $form->texte('', 'title', $dashboard->title, 50,255) ?></td>
+			</tr>
+			<tr>
+				<td class="titlefieldcreate"><?= $langs->trans('UseAsLandingPage') ?></td>
+				<td><?= $formDoli->selectarray('use_as_landing_page', array($langs->trans('No'),$langs->trans('Yes')),$dashboard->use_as_landing_page) ?></td>
+			</tr>
+			<tr>
+				<td class="titlefieldcreate"><?= $langs->trans('LimitAccessToThisGroup') ?></td>
+				<td><?= $formDoli->select_dolgroups($dashboard->fk_usergroup, 'fk_usergroup', 1) ?></td>
+			</tr>
+			<tr>
+				<td class="titlefieldcreate"><?= $langs->trans('SendByMailToThisGroup') ?></td>
+				<td><?= $form->combo('', 'send_by_mail', $dashboard->TSendByMail, $dashboard->send_by_mail) ?></td>
+			</tr>
+			<tr>
+				<td class="titlefieldcreate"><?= $langs->trans('ShowThisInCard') ?></td>
+				<td><?= $form->combo('','hook', $dashboard->THook, $dashboard->hook) ?></td>
+			</tr>
+			<tr>
+				<td class="titlefieldcreate"><?= $langs->trans('RefreshDashboard') ?></td>
+				<td><?= $form->number('','refresh_dashboard', $dashboard->refresh_dashboard, 20, 1, 0) ?></td>
+			</tr>
+		</table>
+
+		<div class="center"><a href="#" class="butAction" id="saveDashboard"><?php echo $langs->trans('SaveDashboard'); ?></a></div>
 		<?php
-		}
+
 	}
 	else {
-		if(!empty($conf->global->QUERY_SHOW_PDF_TRANSFORM))	echo '<div style="text-align:right" class="notInGeneration"><a class="butAction" style=";z-index:999;" href="download-dashboard.php?uid='.$dashboard->uid.'">'.$langs->trans('Download').'</a></div>';
+		if(true || ! empty($conf->global->QUERY_SHOW_PDF_TRANSFORM))	echo '<div style="text-align:right" class="notInGeneration"><a class="butAction" style=";z-index:999;" href="download-dashboard.php?uid='.$dashboard->uid.'">'.$langs->trans('Download').'</a></div>';
 		
+	}
+
+	if($withHeader && $action == 'edit')
+	{
+		dol_fiche_end(-1);
+
+		if ($dashboard->getId() > 0)
+		{
+			$TQueries = TQuery::getQueries($PDOdb);
+
+			$morehtmlright = $form->combo('', 'fk_query', $TQueries, 0);
+			$morehtmlright .= '&nbsp;<a href="#" class="butAction" id="addQuery">' . $langs->trans('AddThisQuery') . '</a>';
+
+			print load_fiche_titre($langs->trans('Queries'), $morehtmlright, '');
+		}
 	}
 	?>		
 	
@@ -367,7 +412,7 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 	    <ul>
 	    	<?php
 	    	foreach($dashboard->TQDashBoardQuery as $k=>&$cell) {
-	    		echo '<li tile-id="'.$cell->getId().'" data-k="'.$k.'" data-row="'.$cell->posy.'" data-col="'.$cell->posx.'" data-sizex="'.$cell->width.'" data-sizey="'.$cell->height.'" '.($withHeader ? '' : 'style="overflow:hidden;"').'>';
+	    		echo '<li tile-id="'.$cell->getId().'" data-k="'.$k.'" data-row="'.$cell->posy.'" data-col="'.$cell->posx.'" data-sizex="'.$cell->width.'" data-sizey="'.$cell->height.'">';
 		    		if($action == 'edit') {
 		    			echo '<a style="position:absolute; top:3px; right:3px; z-index:999;" href="javascript:delTile('.$cell->getId().')">'.img_delete('DeleteThisTile').'</a>';	
 		    		}
@@ -385,13 +430,20 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 					}
 					
 					if($cell->query->type=='LIST')$cell->query->type='SIMPLELIST';
-					
+
+					$trueHeight = $cell->height * $cell_height;
+
+					if($cell->height > 1)
+					{
+						$trueHeight += ($cell->height - 1) * 20;
+					}
+
 					if(!empty($cell->query)) {
 						if(!$withHeader) {
-							echo $cell->query->run(false, $cell->height * $cell_height, $table_element, $fk_object,0);
+							echo $cell->query->run(false, $trueHeight, $table_element, $fk_object, 0, false, true);
 						}
 						else{
-							echo $cell->query->run(false, $cell->height * $cell_height, $table_element, $fk_object);	
+							echo $cell->query->run(false, $trueHeight, $table_element, $fk_object, -1, false, true);
 						}
 						
 					}
@@ -412,25 +464,33 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 	
 	<div style="clear:both"></div>
 
-	<?php 
-		if(($dashboard->refresh_dashboard > 0) && !$withHeader) {
-			echo "<script type=\"text/javascript\">\n";
-			echo "   // Automatically refresh\n";
-			echo "   setInterval(\"window.location.reload()\",".
-				(60000 * $dashboard->refresh_dashboard).");\n";
-			echo "</script>\n";
+<?php
+	if(! $withHeader && $dashboard->refresh_dashboard > 0)
+	{
+		echo '
+			<script type="text/javascript">
+				// Automatically refresh
+				$(document).ready(function()
+				{
+					setTimeout("window.location.reload()", ' . (60000 * $dashboard->refresh_dashboard) . ');
+				});
+			</script>';
+	}
+
+	
+	if($withHeader)
+	{
+		if($dashboard->getId() > 0)
+		{
+			print dol_buildpath('/query/dashboard.php?action=run&uid=' . $dashboard->uid, 2);
 		}
-	?>
-	
-	<?php
-	
-	if($withHeader) {
-		
-		if($dashboard->getId()>0) print dol_buildpath('/query/dashboard.php?action=run&uid='.$dashboard->uid,2);
-		dol_fiche_end();
-		
+
+		if($action != 'edit')
+		{
+			dol_fiche_end(-1);
+		}
+
 		llxFooter();
-		
 	}
 	else if(GETPOST('for_incusion')>0) {
 		?></div><?php	

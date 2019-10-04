@@ -57,8 +57,8 @@ function _card(&$PDOdb, &$object) {
 	echo $formCore->hidden('action', 'save');
 	echo $formCore->hidden('id', $object->getId());
 	
-	$TQuery = array('0'=>'----') + TQuery::getQueries($PDOdb);
-	$TDashBoard = array('0'=>'----') + TQDashBoard::getDashboard($PDOdb,'',0,true);
+	$TQuery = array('0' => '----') + TQuery::getQueries($PDOdb);
+	$TDashBoard = array('0' => '----') + TQDashBoard::getDashboard($PDOdb, '', null, true);
 	
 	$buttons = '';
 	if (!empty($object->getId())) $buttons.= $formCore->btsubmit($langs->trans('Delete'), 'bt_delete','','buttonDelete');

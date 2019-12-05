@@ -1,5 +1,5 @@
 <?php
-$drivers["oracle"] = "Oracle";
+$drivers["oracle"] = "Oracle (beta)";
 
 if (isset($_GET["oracle"])) {
 	$possible_drivers = array("OCI8", "PDO_OCI");
@@ -175,8 +175,8 @@ if (isset($_GET["oracle"])) {
 		));
 	}
 
-	function limit1($query, $where) {
-		return " $query$where";
+	function limit1($table, $query, $where, $separator = "\n") {
+		return " $query$where"; //! limit
 	}
 
 	function db_collation($db, $collations) {
@@ -367,9 +367,12 @@ AND c_src.TABLE_NAME = " . q($table);
 		return $connection->result("SELECT sys_context('USERENV', 'SESSION_USER') FROM dual");
 	}
 
-	function set_schema($scheme) {
+	function set_schema($scheme, $connection2 = null) {
 		global $connection;
-		return $connection->query("ALTER SESSION SET CURRENT_SCHEMA = " . idf_escape($scheme));
+		if (!$connection2) {
+			$connection2 = $connection;
+		}
+		return $connection2->query("ALTER SESSION SET CURRENT_SCHEMA = " . idf_escape($scheme));
 	}
 
 	function show_variables() {
@@ -398,7 +401,7 @@ ORDER BY PROCESS
 	}
 
 	function support($feature) {
-		return preg_match('~^(columns|database|drop_col|indexes|processlist|scheme|sql|status|table|variables|view|view_trigger)$~', $feature); //!
+		return preg_match('~^(columns|database|drop_col|indexes|descidx|processlist|scheme|sql|status|table|variables|view|view_trigger)$~', $feature); //!
 	}
 
 	$jush = "oracle";

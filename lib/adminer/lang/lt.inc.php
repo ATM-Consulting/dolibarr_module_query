@@ -77,7 +77,6 @@ $translations = array(
 	'Use' => 'Naudoti',
 	'Select database' => 'Pasirinkti duomenų bazę',
 	'Invalid database.' => 'Neteisinga duomenų bazė.',
-	'Create new database' => 'Sukurti naują duomenų bazę',
 	'Database has been dropped.' => 'Duomenų bazė panaikinta.',
 	'Databases have been dropped.' => 'Duomenų bazės panaikintos.',
 	'Database has been created.' => 'Duomenų bazė sukurta.',
@@ -230,7 +229,7 @@ $translations = array(
 	'%d row(s)' => array('%d įrašas', '%d įrašai', '%d įrašų'),
 	'Page' => 'Puslapis',
 	'last' => 'paskutinis',
-	'whole result' => 'visas rezultatas',
+	'Whole result' => 'Visas rezultatas',
 	'%d byte(s)' => array('%d baitas', '%d baigai', '%d baitų'),
 	
 	'Import' => 'Importas',

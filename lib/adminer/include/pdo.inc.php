@@ -12,14 +12,14 @@ if (extension_loaded('pdo')) {
 			}
 		}
 		
-		function dsn($dsn, $username, $password) {
+		function dsn($dsn, $username, $password, $options = array()) {
 			try {
-				parent::__construct($dsn, $username, $password);
+				parent::__construct($dsn, $username, $password, $options);
 			} catch (Exception $ex) {
-				auth_error($ex->getMessage());
+				auth_error(h($ex->getMessage()));
 			}
 			$this->setAttribute(13, array('Min_PDOStatement')); // 13 - PDO::ATTR_STATEMENT_CLASS
-			$this->server_info = $this->getAttribute(4); // 4 - PDO::ATTR_SERVER_VERSION
+			$this->server_info = @$this->getAttribute(4); // 4 - PDO::ATTR_SERVER_VERSION
 		}
 		
 		/*abstract function select_db($database);*/
@@ -29,6 +29,9 @@ if (extension_loaded('pdo')) {
 			$this->error = "";
 			if (!$result) {
 				list(, $this->errno, $this->error) = $this->errorInfo();
+				if (!$this->error) {
+					$this->error = lang('Unknown error.');
+				}
 				return false;
 			}
 			$this->store_result($result);

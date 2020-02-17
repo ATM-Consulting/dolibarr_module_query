@@ -148,21 +148,23 @@ function run(&$PDOdb, &$query, $preview = false) {
 	}
 
 	if(!$preview) {
-		llxHeader('', 'Query', '', '', 0, 0, array() , array('/query/css/query.css') );
+		llxHeader('', 'Query', '', '', 0, 0, array('/query/js/query-resize.js') , array('/query/css/query.css') );
 		$head = TQueryMenu::getHeadForObject(GETPOST('tab_object'),GETPOST('fk_object'));
 		dol_fiche_head($head, 'tabQuery'.GETPOST('menuId'), 'Query', -1);
 
 	}
 	else{
 
-		?><html>
+		?><!doctype html>
+		<html>
 			<head>
-				<link rel="stylesheet" type="text/css" href="<?php echo dol_buildpath('/theme/eldy/style.css.php',1) ?>">
-				<link rel="stylesheet" type="text/css" href="<?php echo dol_buildpath('/query/css/query.css',1) ?>">
+				<link rel="stylesheet" type="text/css" href="<?php echo dol_buildpath('/theme/eldy/style.css.php',1) ?>" />
+				<link rel="stylesheet" type="text/css" href="<?php echo dol_buildpath('/query/css/query.css',1) ?>" />
 				<script type="text/javascript" src="<?php echo dol_buildpath('/includes/jquery/js/jquery.min.js',1) ?>"></script>
+				<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/query-resize.js',1) ?>"></script>
 				<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 			</head>
-		<body style="margin:0 0 0 0;padding:0 0 0 0;"><?php
+			<body style="margin:0 0 0 0;padding:0 0 0 0;"><?php
 
 	}
 
@@ -186,6 +188,15 @@ function run(&$PDOdb, &$query, $preview = false) {
 
 
 	echo $query->run($show_details,0,$table_element, $fk_object,-1, GETPOST('show_as_list'));
+
+	echo '
+		<script>
+			$(document).ready(function()
+			{
+				$(window).on(\'resize\', handleResizing);
+				handleResizing();
+			});
+		</script>';
 
 	if(!$preview) {
 
@@ -766,7 +777,4 @@ function fiche(&$query) {
 
 	llxFooter();
 }
-
-
-
 

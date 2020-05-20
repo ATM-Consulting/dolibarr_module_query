@@ -240,6 +240,10 @@ function liste() {
 
 	$formCore=new TFormCore('auto','formQ','get');
 
+	// ensure Listview takes pagination into account
+	$nbLine = !empty($user->conf->MAIN_SIZE_LISTE_LIMIT) ? $user->conf->MAIN_SIZE_LISTE_LIMIT : $conf->global->MAIN_SIZE_LISTE_LIMIT;
+	if (GETPOSTISSET('limit')) $nbLine = intval(GETPOST('limit', 'int'));
+
 	$r=new Listview($db, 'lQuery');
 	echo $r->render($sql,array(
 		'link'=>array(
@@ -258,19 +262,23 @@ function liste() {
 			'expert'=>array( 0=>$langs->trans('No'), 1=>$langs->trans('Yes'),2=>$langs->trans('Free') )
 
 		)
-//        ,'list'=>array(
-//            'param_url'=>''
-//        )
+		,'list'=>array(
+			// ⚠ required for pagination
+			'param_url' => '&limit=' . $nbLine
+		)
 		,'search'=>array(
 			'title'=>array(
-                'search_type' => true
-                ,'table' => 'q'
-                ,'field' => 'title'
-            ),
+				'search_type' => true
+				,'table' => 'q'
+				,'field' => 'title'
+			),
 		)
 		,'orderby'=>array(
 			'noOrder'=>array('action')
 		)
+		,'limit'=>array(
+				'nbLine' => $nbLine
+			)
 	));
 
 

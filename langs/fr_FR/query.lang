@@ -94,3 +94,4 @@ query_warnings_set_expert_mode=Attention, le passage en mode expert peut rendre 
 query_warnings_set_expert_free_mode=Attention, le passage en mode expert libre peut rendre votre requête inopérante en fonction de sa complexité et/ou lors d'un retour en mode assisté
 
 set_QUERY_DASHBOARD_OPEN_IN_NEW_TAB=Développer les panneaux de la page d'accueil dans un nouvel onglet plutôt que dans le widget
+QUERY_NO_DASHBOARD_ON_CARDS=Désactiver le tableau de bord Query sur les fiches projet, produit, tiers et utilisateur

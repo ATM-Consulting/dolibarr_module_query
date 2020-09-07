@@ -81,7 +81,7 @@ class modquery extends DolibarrModules
         $this->module_parts = array(
            	'triggers'=>1
 			,'hooks'=>array('index','projectcard','productcard','thirdpartycard','usercard')
-            
+
         );
 
         // Data directories to create when module is enabled.
@@ -215,14 +215,14 @@ class modquery extends DolibarrModules
         // Permissions
         $this->rights = array(); // Permission array used by this module
 		$r=0;
-		
+
 		$this->rights[$r][0] = $this->numero+$r; 				// Permission id (must not be already used)
 		$this->rights[$r][1] = 'Exécuter une requête';	// Permission label
 		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
 		$this->rights[$r][4] = 'all';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$this->rights[$r][5] = 'read';				// In php code, permission will be_o checked by test if ($user->rights->permkey->level1->level2)
 		$r++;
-		
+
 		$this->rights[$r][0] = $this->numero+$r; 				// Permission id (must not be already used)
 		$this->rights[$r][1] = 'Créer une requête';	// Permission label
 		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
@@ -250,7 +250,7 @@ class modquery extends DolibarrModules
 		$this->rights[$r][4] = 'dashboard';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$this->rights[$r][5] = 'viewin';			// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$r++;
-		
+
 		$this->rights[$r][0] = $this->numero+$r; 				// Permission id (must not be already used)
 		$this->rights[$r][1] = 'Faire des requêtes en expert';	// Permission label
 		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
@@ -264,21 +264,21 @@ class modquery extends DolibarrModules
 		$this->rights[$r][4] = 'dashboard';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$this->rights[$r][5] = 'read';			// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$r++;
-		
+
 		$this->rights[$r][0] = $this->numero+$r; 				// Permission id (must not be already used)
 		$this->rights[$r][1] = 'ViewAllDashboard';	// Permission label
 		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
 		$this->rights[$r][4] = 'dashboard';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$this->rights[$r][5] = 'readall';			// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$r++;
-		
+
 		$this->rights[$r][0] = $this->numero+$r; 				// Permission id (must not be already used)
 		$this->rights[$r][1] = 'UseOtherDB';	// Permission label
 		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
 		$this->rights[$r][4] = 'bdd';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$this->rights[$r][5] = 'use_other_db';			// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$r++;
-		
+
 
 
         // Add here list of permission defined by
@@ -314,9 +314,10 @@ class modquery extends DolibarrModules
         	'position'=>100,
         	'perms'=>'$user->rights->query->all->read',
         	'target'=>'',
-        	'user'=>2
+        	'user'=>2,
+			'enabled'=>1,
         );
-		
+
         $r++;
 
         $this->menu[$r]=array(
@@ -329,9 +330,10 @@ class modquery extends DolibarrModules
         	'position'=>102,
         	'perms'=>'$user->rights->query->all->create',
         	'target'=>'',
-        	'user'=>2
+        	'user'=>2,
+			'enabled'=>1,
         );
-		
+
         $r++;
 
 		$this->menu[$r]=array(
@@ -345,9 +347,10 @@ class modquery extends DolibarrModules
         	'position'=>101,
         	'perms'=>'$user->rights->query->all->read',
         	'target'=>'',
-        	'user'=>2
+        	'user'=>2,
+			'enabled'=>1,
         );
-		
+
 		$r++;
 
         $this->menu[$r]=array(
@@ -360,7 +363,8 @@ class modquery extends DolibarrModules
         	'position'=>201,
         	'perms'=>'$user->rights->query->dashboard->read',
         	'target'=>'',
-        	'user'=>2
+        	'user'=>2,
+			'enabled'=>1,
         );
 		$r++;
 
@@ -375,12 +379,13 @@ class modquery extends DolibarrModules
         	'position'=>202,
         	'perms'=>'$user->rights->query->dashboard->create',
         	'target'=>'',
-        	'user'=>2
+        	'user'=>2,
+			'enabled'=>1,
         );
-		
+
         $r++;
 
-        
+
         $this->menu[$r]=array(
         	'fk_menu'=>'fk_mainmenu=tools,fk_leftmenu=query',
         	'type'=>'left',
@@ -391,7 +396,8 @@ class modquery extends DolibarrModules
         	'perms'=>'$user->rights->query->all->create',
         	'position'=>311,
         	'target'=>'',
-        	'user'=>2
+        	'user'=>2,
+			'enabled'=>1,
         );
 		$r++;
 
@@ -406,12 +412,13 @@ class modquery extends DolibarrModules
         	'position'=>312,
         	'perms'=>'$user->rights->query->all->create',
         	'target'=>'',
-        	'user'=>2
+        	'user'=>2,
+			'enabled'=>1,
         );
-		
+
         $r++;
 
-        
+
         $this->menu[$r]=array(
         	'fk_menu'=>'fk_mainmenu=tools,fk_leftmenu=query',
         	'type'=>'left',
@@ -420,15 +427,15 @@ class modquery extends DolibarrModules
         	'leftmenu'=>'bdd_access',
         	'url'=>'/query/bdd.php',
         	'position'=>301,
-        	'enabled'=>'',
         	'langs'=>'query@query',
         	'perms'=>'$user->rights->query->bdd->write',
         	'target'=>'',
-        	'user'=>2
+        	'user'=>2,
+			'enabled'=>'',
         );
-		
+
         $r++;
-		
+
         $this->menu[$r]=array(
         	'fk_menu'=>'fk_mainmenu=tools,fk_leftmenu=query',
         	'type'=>'left',
@@ -437,16 +444,16 @@ class modquery extends DolibarrModules
         	'leftmenu'=>'bdd_access',
         	'url'=>'/query/bdd.php?action=new',
         	'position'=>302,
-        	'enabled'=>'',
         	'langs'=>'query@query',
         	'perms'=>'$user->rights->query->bdd->use_other_db',
         	'target'=>'',
-        	'user'=>2
+        	'user'=>2,
+			'enabled'=>'',
         );
-		
+
         $r++;
-		
-				
+
+
         //$this->menu[$r]=array(
         //	// Use r=value where r is index key used for the parent menu entry
         //	// (higher parent must be a top menu entry)
@@ -607,10 +614,10 @@ class modquery extends DolibarrModules
         $sql = array();
 
         $result = $this->loadTables();
-	
+
 	define('INC_FROM_DOLIBARR',true);
         dol_include_once('/query/script/create-maj-base.php');
-        
+
         return $this->_init($sql, $options);
     }
 

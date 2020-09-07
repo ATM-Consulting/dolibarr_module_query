@@ -61,7 +61,7 @@ if (preg_match('/set_(.*)/',$action,$reg))
 		dol_print_error($db);
 	}
 }
-	
+
 if (preg_match('/del_(.*)/',$action,$reg))
 {
 	$code=$reg[1];
@@ -231,6 +231,19 @@ if(! empty($conf->global->QUERY_HOME_SELECTOR))
 	print '</form>';
 	print '</td></tr>';
 }
+
+$var=!$var;
+print '<tr '.$bc[$var].'>';
+print '<td>'.$langs->trans("QUERY_NO_DASHBOARD_ON_CARDS").'</td>';
+print '<td align="center" width="20">&nbsp;</td>';
+print '<td align="right" width="300">';
+print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
+print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+print '<input type="hidden" name="action" value="set_QUERY_NO_DASHBOARD_ON_CARDS">';
+print $form->selectyesno("QUERY_NO_DASHBOARD_ON_CARDS",$conf->global->QUERY_NO_DASHBOARD_ON_CARDS,1);
+print '<input type="submit" class="button" value="'.$langs->trans("Modify").'">';
+print '</form>';
+print '</td></tr>';
 
 print '</table>';
 

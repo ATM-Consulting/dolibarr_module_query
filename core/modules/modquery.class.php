@@ -312,10 +312,10 @@ class modquery extends DolibarrModules
         	'leftmenu'=>'query',
         	'url'=>'/query/query.php',
         	'position'=>100,
+			'enabled'=>'$conf->query->enabled',
         	'perms'=>'$user->rights->query->all->read',
         	'target'=>'',
         	'user'=>2,
-			'enabled'=>1,
         );
 
         $r++;
@@ -328,10 +328,10 @@ class modquery extends DolibarrModules
         	'leftmenu'=>'query_add',
         	'url'=>'/query/query.php?action=add',
         	'position'=>102,
+			'enabled'=>'$conf->query->enabled',
         	'perms'=>'$user->rights->query->all->create',
         	'target'=>'',
         	'user'=>2,
-			'enabled'=>1,
         );
 
         $r++;
@@ -345,10 +345,10 @@ class modquery extends DolibarrModules
         	'url'=>'/query/query.php',
         	'langs'=>'query@query',
         	'position'=>101,
+			'enabled'=>'$conf->query->enabled',
         	'perms'=>'$user->rights->query->all->read',
         	'target'=>'',
         	'user'=>2,
-			'enabled'=>1,
         );
 
 		$r++;
@@ -361,10 +361,10 @@ class modquery extends DolibarrModules
         	'leftmenu'=>'dash_list',
         	'url'=>'/query/dashboard.php',
         	'position'=>201,
+			'enabled'=>'$conf->query->enabled',
         	'perms'=>'$user->rights->query->dashboard->read',
         	'target'=>'',
         	'user'=>2,
-			'enabled'=>1,
         );
 		$r++;
 
@@ -377,10 +377,10 @@ class modquery extends DolibarrModules
         	'url'=>'/query/dashboard.php?action=add',
         	'langs'=>'query@query',
         	'position'=>202,
+			'enabled'=>'$conf->query->enabled',
         	'perms'=>'$user->rights->query->dashboard->create',
         	'target'=>'',
         	'user'=>2,
-			'enabled'=>1,
         );
 
         $r++;
@@ -393,11 +393,11 @@ class modquery extends DolibarrModules
         	'mainmenu'=>'tools',
         	'leftmenu'=>'menu_query_list',
         	'url'=>'/query/menu.php',
+			'enabled'=>'$conf->query->enabled',
         	'perms'=>'$user->rights->query->all->create',
         	'position'=>311,
         	'target'=>'',
         	'user'=>2,
-			'enabled'=>1,
         );
 		$r++;
 
@@ -410,10 +410,10 @@ class modquery extends DolibarrModules
         	'url'=>'/query/menu.php?action=add',
         	'langs'=>'query@query',
         	'position'=>312,
+			'enabled'=>'$conf->query->enabled',
         	'perms'=>'$user->rights->query->all->create',
         	'target'=>'',
         	'user'=>2,
-			'enabled'=>1,
         );
 
         $r++;
@@ -427,11 +427,11 @@ class modquery extends DolibarrModules
         	'leftmenu'=>'bdd_access',
         	'url'=>'/query/bdd.php',
         	'position'=>301,
+        	'enabled'=>0,
         	'langs'=>'query@query',
         	'perms'=>'$user->rights->query->bdd->write',
         	'target'=>'',
         	'user'=>2,
-			'enabled'=>'',
         );
 
         $r++;
@@ -444,11 +444,11 @@ class modquery extends DolibarrModules
         	'leftmenu'=>'bdd_access',
         	'url'=>'/query/bdd.php?action=new',
         	'position'=>302,
+        	'enabled'=>0,
         	'langs'=>'query@query',
         	'perms'=>'$user->rights->query->bdd->use_other_db',
         	'target'=>'',
-        	'user'=>2,
-			'enabled'=>'',
+        	'user'=>2
         );
 
         $r++;

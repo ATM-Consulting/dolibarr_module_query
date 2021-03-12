@@ -61,7 +61,7 @@ class modquery extends DolibarrModules
         // (where XXX is value of numeric property 'numero' of module)
         $this->description = "Description of module query";
         // Possible values for version are: 'development', 'experimental' or version
-        $this->version = '1.5.7';
+        $this->version = '1.5.8';
         // Key used in llx_const table to save module status enabled/disabled
         // (where MYMODULE is value of property name of module in uppercase)
         $this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
@@ -199,9 +199,7 @@ class modquery extends DolibarrModules
 
         // Boxes
         // Add here list of php file(s) stored in core/boxes that contains class to show a box.
-        $this->boxes = array(
-			/*'query_box.php'*/
-		); // Boxes list
+        $this->boxes = array(); // Boxes list
         $r = 0;
         // Example:
 

@@ -13,7 +13,7 @@ class TQuery extends TObjetStd {
         parent::add_champs('sql_fields,sql_from,sql_where,sql_afterwhere',array('type'=>'text'));
 		parent::add_champs('TField,TTable,TOrder,TTitle,TTotal,TLink,TAlias,THide,TTranslate,TNull,TMode,TOperator,TGroup,TFunction,TValue,TJoin,TFilter,TType,TClass,TMethod',array('type'=>'array'));
 		parent::add_champs('expert,nb_result_max,fk_bdd',array('type'=>'integer'));
-		
+
 		parent::add_champs('uid',array('index'=>true, 'length'=>32));
 
         parent::_init_vars('title,type,xaxis');
@@ -84,7 +84,7 @@ class TQuery extends TObjetStd {
 
 	static function getFields(&$PDOdb, $table) {
 		global $langs;
-		
+
 		$PDOdb->Execute("DESCRIBE ".$table);
 
 		$Tab = array();
@@ -93,23 +93,23 @@ class TQuery extends TObjetStd {
 			$Tab[] = $obj;
 
 		}
-		
+
 		foreach($Tab as &$obj) {
-			
+
 			$obj->label = $langs->trans(ucfirst($obj->Field));
-			
-			$TValue = $PDOdb->ExecuteAsArray("SELECT DISTINCT ".$obj->Field." as 'val' FROM ".$table." 
+
+			$TValue = $PDOdb->ExecuteAsArray("SELECT DISTINCT ".$obj->Field." as 'val' FROM ".$table."
 				WHERE ".$obj->Field." IS NOT NULL AND ".$obj->Field."!='' LIMIT 6");
 			$sample = '';
 			foreach($TValue as $k=>$v) {
 				if($k>4){ $sample.=', ...';  break;}
-				
+
 				if(!empty($sample))$sample.=', ';
 				$sample.=$v->val;
 			}
-			
+
 			$obj->sample = dol_escape_js($sample);
-			
+
 		}
 
 		return $Tab;
@@ -158,15 +158,15 @@ class TQuery extends TObjetStd {
 
 		$form=new TFormCore();
 		$html.= $form->begin_form(dol_buildpath('/query/query.php', 1),'formQuery'. $this->getId(),'get');
-		$action = ! empty($_REQUEST['action']) ? GETPOST('action') : 'run';
+		$action = ! empty($_REQUEST['action']) ? GETPOST('action','alpha') : 'run';
 		if($from_dashboard) $action = 'run-in';
 		$html.=  $form->hidden('action', $action);
-		$html.=  $form->hidden('id', GETPOST('id') ? GETPOST('id') : $this->getId());
+		$html.=  $form->hidden('id', GETPOST('id','int') ? GETPOST('id','int') : $this->getId());
 
 		$html.=$list;
-		
+
 		$html.=$form->end();
-		
+
 		return $html;
 	}
 
@@ -185,24 +185,24 @@ class TQuery extends TObjetStd {
 		if($this->expert == 1) {
 		 	$this->sql_fields = $this->getSQLFieldsWithAlias();
 		}
-		
+
 		$this->connect($PDOdb);
-		
+
 		return $res;
 	}
-	
+
 	function connect(&$PDOdb) {
-		
+
 		dol_include_once('/query/class/bddconnector.class.php');
-		
+
 		$this->bdd=new TBDDConnector;
 		if($this->fk_bdd>0) $this->bdd->load($PDOdb, $this->fk_bdd);
-			
-		$this->bdd->connect();	
-		
+
+		$this->bdd->connect();
+
 		$this->pdodb = &$this->bdd->pdodb;
-	
-		
+
+
 	}
 
 	private function extractAliasFromSQL() {
@@ -231,9 +231,9 @@ class TQuery extends TObjetStd {
 	}
 
 	function save(&$PDOdb) {
-		
+
 		if(empty($this->uid))$this->uid = md5( time().$this->title.rand(1000,999999) );
-		
+
 		$this->extractAliasFromSQL();
 
 		return parent::save($PDOdb);
@@ -260,30 +260,30 @@ class TQuery extends TObjetStd {
 	}
 
 	private function getRequestParam($sql) {
-		
+
 		$sql = preg_replace_callback('/(@REQUEST_[a-zA-z0-9_-]+@)/i',function($matches) {
-			
+
 			$field = substr($matches[0] , 9, -1);
-			
-			
+
+
 			if(!empty($field) ) {
-				
-				$val = GETPOST($field);
-				
+
+				$val = GETPOST($field,'alpha');
+
 				return $val;
-				
-			}			
-			
-			  
+
+			}
+
+
 		}, $sql);
-		
+
 		return $sql;
 	}
 
 	function getSQL($table_element='',$objectid=0) {
 
 		global $conf, $user;
-		
+
 		$sql = '';
 
 		if($this->expert == 2) {
@@ -323,13 +323,13 @@ class TQuery extends TObjetStd {
 
 			$sql="SELECT ".($this->sql_fields ? $this->sql_fields : '*') ."
 				FROM ".$this->sql_from;
-				
+
 			if(empty($this->TFunction) || !empty($conf->global->QUERY_DO_NOT_USE_HAVING))	{
-				$sql.= " WHERE (".($this->sql_where ? $this->sql_where : 1 ).") ";	
+				$sql.= " WHERE (".($this->sql_where ? $this->sql_where : 1 ).") ";
 			} else {
 				$sql.= " WHERE 1"; // on évite que le contenu du prochain if() se retrouve dans le FROM
 			}
-				
+
 			if(!empty($table_element) && strpos($sql, $table_element)!==false) {
 				$sql.=' AND '.MAIN_DB_PREFIX.$table_element.'.rowid='.$objectid;
 			}
@@ -341,7 +341,7 @@ class TQuery extends TObjetStd {
 			if(!empty($this->TFunction) && !empty($this->sql_where) && empty($conf->global->QUERY_DO_NOT_USE_HAVING)) {
 				$sql.=' HAVING '. $this->getSQLHavingBindFunction($this->sql_where);
 			}
-				
+
 			if($this->preview && stripos($sql,'LIMIT ') === false) $sql.=" LIMIT 5";
 
 		}
@@ -357,30 +357,30 @@ class TQuery extends TObjetStd {
 	}
 
 	private function getSQLHavingBindFunction($sql) {
-		
+
 		$TFunction = & $this->TFunction;
-		
+
 		$sql = preg_replace_callback('/([a-z_]+\.{1}[a-z_]+)/i',function($matches) use($TFunction) {
 			$field = $matches[0];
-			
+
 			 if(isset($TFunction[$field])) {
-					
+
 			 	$r=  strtr( $TFunction[$field], array('@field@'=>$field));
 				return $r;
-			 } 
+			 }
 			else{
-				return $field;	
+				return $field;
 			}
-			  
+
 		}, $sql);
-		
+
 		return $sql;
 	}
 
 	function getBind() {
-		
+
 		return array(); // desactivation du mode bind qui présente trop de problème avec l'interprétation des requêtes
-		
+
 		$TBind = array();
 		if(!empty($this->TMode)) {
 			/*$this->getNonAliasField($this->TMode);
@@ -797,7 +797,7 @@ class TQuery extends TObjetStd {
 
 		return $html;
 	}
-	
+
 	function runRAW(&$PDOdb, $table_element='',$objectid=0) {
 		global $conf,$langs;
 		$sql=$this->getSQL($table_element,$objectid);
@@ -810,9 +810,9 @@ class TQuery extends TObjetStd {
 		$TType = $this->getType();
 		$TEval = $this->getEval();
 		$TTitle=$this->getTitle();
-		
+
 		$r=new TListviewTBS('lRunQuery'. $this->getId());
-		
+
 		return $r->render($PDOdb, $sql,array(
 				'link'=>$this->TLink
 				,'view_type'=>'raw'
@@ -850,7 +850,7 @@ class TQuery extends TObjetStd {
 			$TType = $this->getType();
 			$TEval = $this->getEval();
 
-			
+
 			if($this->show_details) $html.= '<div class="query">'.$sql.'</div>';
 
 			$TTitle=$this->getTitle();
@@ -898,7 +898,7 @@ class TQuery extends TObjetStd {
 					</div>';
 			}
 
-			
+
 			return $html;
 	}
 
@@ -907,10 +907,10 @@ class TQuery extends TObjetStd {
 	 * Permet de asvoir si l'utilisateur connecté est autorisé à accéder à la requête
 	 */
 	function userHasRights(&$PDOdb, &$user) {
-		
+
 		// On part du principe que les admin ont accès à toutes les requêtes
 		if($user->admin) return true;
-		
+
 		/**
 		 * Vérification que la requête est soit
 		 * - publique (aucun droit défini)
@@ -928,10 +928,10 @@ class TQuery extends TObjetStd {
 				OR qr.rowid IS NULL
 			)
 		 ";
-		
+
 		$PDOdb->Execute($sql);
 		if($PDOdb->Get_Recordcount() > 0) return true;
-		
+
 		return false;
 	}
 }

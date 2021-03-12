@@ -1,70 +1,70 @@
 <?php
 
 	require 'config.php';
-	
+
 	dol_include_once('/query/class/query.class.php');
 	dol_include_once('/query/class/dashboard.class.php');
-	
+
 	$PDOdb = new TPDOdb;
-	
+
 	$langs->load('query@query');
-	
-	$action = GETPOST('action');
-	
+
+	$action = GETPOST('action','alpha');
+
 	$object=new TQueryMenu;
-	
+
 	switch ($action) {
 		case 'save':
-			$object->load($PDOdb, GETPOST('id'));
-			
-			if(GETPOST('bt_delete')!='') {
+			$object->load($PDOdb, GETPOST('id','int'));
+
+			if(GETPOST('bt_delete','alpha')!='') {
 				$object->delete($PDOdb);
 				setEventMessage('MenuDeleted');
 			}
 			else{
 				$object->set_values($_POST);
 				$object->save($PDOdb);
-				setEventMessage('MenuSaved');				
+				setEventMessage('MenuSaved');
 			}
-			
-			
+
+
 			_list($PDOdb);
-			
+
 			break;
 		case 'edit':
-			$object->load($PDOdb, GETPOST('id'));
+			$object->load($PDOdb, GETPOST('id','int'));
 			_card($PDOdb, $object);
-			
+
 			break;
-		case 'add':	
+		case 'add':
 			_card($PDOdb, $object);
 			break;
 		default:
-		
+
 			_list($PDOdb);
-			
+
 			break;
-	}	
+	}
 
 function _card(&$PDOdb, &$object) {
-	
+
 	global $langs, $conf,$user,$db;
-	
+
 	llxHeader();
 	dol_fiche_head(array(),'menu','Menu');
 
 	$formCore=new TFormCore('auto','formMenu','post');
 	echo $formCore->hidden('action', 'save');
 	echo $formCore->hidden('id', $object->getId());
-	
+
 	$TQuery = array('0' => '----') + TQuery::getQueries($PDOdb);
 	$TDashBoard = array('0' => '----') + TQDashBoard::getDashboard($PDOdb, '', null, true);
-	
+
 	$buttons = '';
 	if (!empty($object->getId())) $buttons.= $formCore->btsubmit($langs->trans('Delete'), 'bt_delete','','buttonDelete');
-	
+
 	$buttons.= ' &nbsp; '. $formCore->btsubmit($langs->trans('Save'), 'bt_save');
-	
+
 	$tbs=new TTemplateTBS;
 	echo $tbs->render('tpl/menu.html',array(),array(
 		'menu'=>array(
@@ -83,31 +83,31 @@ function _card(&$PDOdb, &$object) {
 		)
 		,'conf'=>$conf
 	));
-	
+
 	$formCore->end();
-	
+
 	dol_fiche_end();
 	llxFooter();
-	
+
 }
 
 function _list(&$PDOdb) {
 	global $langs, $conf,$user,$db;
-	
+
 	llxHeader();
 
 	dol_fiche_head(array(),'menu','Menu', -1);
-	
-	
+
+
 	$l=new Listview($db, 'lMenu');
-	$sql = "SELECT rowid,title, type_menu, tab_object, mainmenu,leftmenu,date_cre 
-	FROM ".MAIN_DB_PREFIX."query_menu 
+	$sql = "SELECT rowid,title, type_menu, tab_object, mainmenu,leftmenu,date_cre
+	FROM ".MAIN_DB_PREFIX."query_menu
 	WHERE entity IN (0,".$conf->entity.")";
-	
+
 	$menu_static = new TQueryMenu;
-	
+
 	echo $l->render($sql,array(
-	
+
 		'title'=>array(
 			'title'=>$langs->trans('Title')
 			,'leftmenu'=>$langs->trans('LeftMenu')
@@ -127,17 +127,17 @@ function _list(&$PDOdb) {
 		,'type'=>array(
 			'date_cre'=>'date'
 		)
-		
+
 	));
-	
-	
+
+
 	/*$kiwi = new TKiwi;
 	$kiwi->fk_soc = $object->id;
 	$kiwi->fk_product = 1;
 	$kiwi->save($PDOdb);
 	*/
-	// pied de page 
+	// pied de page
 	dol_fiche_end(-1);
 	llxFooter();
-	
+
 }

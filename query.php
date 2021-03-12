@@ -10,7 +10,7 @@ dol_include_once('/query/lib/query.lib.php');
 $langs->load('query@query');
 
 
-$action = GETPOST('action');
+$action = GETPOST('action','alpha');
 
 $query=new TQuery;
 $PDOdb=new TPDOdb;
@@ -40,7 +40,7 @@ switch ($action) {
 		break;
 
 	case 'export':
-		$query->load($PDOdb, GETPOST('id'));
+		$query->load($PDOdb, GETPOST('id','int'));
 		$query->rowid = 0;
 		unset($query->pdodb,$query->bdd);
 		$gz = gzcompress( serialize($query) );
@@ -57,7 +57,7 @@ switch ($action) {
 		break;
 
 	case 'clone':
-		$query->load($PDOdb, GETPOST('id'));
+		$query->load($PDOdb, GETPOST('id','int'));
 		$query->rowid = 0;
 		$query->title.=' ('.$langs->trans('Copy').')';
 		$newId = $query->save($PDOdb);
@@ -69,7 +69,7 @@ switch ($action) {
 
 		break;
 	case 'delete':
-		$query->load($PDOdb, GETPOST('id'));
+		$query->load($PDOdb, GETPOST('id','int'));
 		$query->delete($PDOdb);
 		setEventMessage($langs->trans('DeleteSuccess'));
 		header('Location:query.php');
@@ -78,21 +78,21 @@ switch ($action) {
 		break;
 
 	case 'set-expert':
-		$query->load($PDOdb, GETPOST('id'));
+		$query->load($PDOdb, GETPOST('id','int'));
 		$query->expert = 1;
 		$query->save($PDOdb);
 		fiche($query);
 
 		break;
 	case 'set-free':
-		$query->load($PDOdb, GETPOST('id'));
+		$query->load($PDOdb, GETPOST('id','int'));
 		$query->expert = 2;
 		$query->save($PDOdb);
 		fiche($query);
 
 		break;
 	case 'unset-expert':
-		$query->load($PDOdb, GETPOST('id'));
+		$query->load($PDOdb, GETPOST('id','int'));
 		$query->expert = 0;
 		$query->save($PDOdb);
 		fiche($query);
@@ -100,7 +100,7 @@ switch ($action) {
 		break;
 	case 'view':
 
-		$query->load($PDOdb, GETPOST('id'));
+		$query->load($PDOdb, GETPOST('id','int'));
 		fiche($query);
 
 		break;
@@ -113,19 +113,19 @@ switch ($action) {
 		break;
 
 	case 'run':
-		$query->load($PDOdb, GETPOST('id'));
+		$query->load($PDOdb, GETPOST('id','int'));
 		run($PDOdb, $query);
 
 		break;
 
 	case 'run-in':
-		$query->load($PDOdb, GETPOST('id'));
+		$query->load($PDOdb, GETPOST('id','int'));
 		run($PDOdb, $query,2);
 
 
 		break;
 	case 'preview':
-		$query->load($PDOdb, GETPOST('id'));
+		$query->load($PDOdb, GETPOST('id','int'));
 		run($PDOdb, $query, true);
 
 		break;
@@ -149,8 +149,8 @@ function run(&$PDOdb, &$query, $preview = false) {
 
 	if(!$preview) {
 		llxHeader('', 'Query', '', '', 0, 0, array('/query/js/query-resize.js') , array('/query/css/query.css') );
-		$head = TQueryMenu::getHeadForObject(GETPOST('tab_object'),GETPOST('fk_object'));
-		dol_fiche_head($head, 'tabQuery'.GETPOST('menuId'), 'Query', -1);
+		$head = TQueryMenu::getHeadForObject(GETPOST('tab_object','alpha'),GETPOST('fk_object','int'));
+		dol_fiche_head($head, 'tabQuery'.GETPOST('menuId','int'), 'Query', -1);
 
 	}
 	else{
@@ -170,15 +170,15 @@ function run(&$PDOdb, &$query, $preview = false) {
 
 	if(empty($query->sql_from)) die('InvalidQuery');
 
-	$show_details = GETPOST('_a') == '' ? true : false;
+	$show_details = GETPOST('_a','alpha') == '' ? true : false;
 
 	if($preview === true) {
 		$query->preview = true;
 
 	}
-	$tab_object = GETPOST('tab_object');
-	$table_element = GETPOST('table_element');
-	$fk_object = GETPOST('fk_object');
+	$tab_object = GETPOST('tab_object','alpha');
+	$table_element = GETPOST('table_element','alpha');
+	$fk_object = GETPOST('fk_object','int');
 
 	if(empty($table_element)) {
 		if($tab_object == 'thirdparty') $table_element = 'societe';
@@ -187,7 +187,7 @@ function run(&$PDOdb, &$query, $preview = false) {
 	}
 
 
-	echo $query->run($show_details,0,$table_element, $fk_object,-1, GETPOST('show_as_list'));
+	echo $query->run($show_details,0,$table_element, $fk_object,-1, GETPOST('show_as_list','int'));
 
 	echo '
 		<script>
@@ -242,7 +242,7 @@ function liste() {
 
 	// ensure Listview takes pagination into account
 	$nbLine = !empty($user->conf->MAIN_SIZE_LISTE_LIMIT) ? $user->conf->MAIN_SIZE_LISTE_LIMIT : $conf->global->MAIN_SIZE_LISTE_LIMIT;
-	if (GETPOSTISSET('limit')) $nbLine = intval(GETPOST('limit', 'int'));
+	if (GETPOSTISSET('limit','int')) $nbLine = intval(GETPOST('limit', 'int'));
 
 	$r=new Listview($db, 'lQuery');
 	echo $r->render($sql,array(

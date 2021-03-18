@@ -1006,7 +1006,13 @@ class TQueryMenu extends TObjetStd {
 	        $menu->url=$this->getUrl();
 
 	        $menu->target='';
-	        $menu->titre=$this->title;
+	        // retro compatibility
+			if (DOL_VERSION < 13.0){
+				$menu->titre=$this->title;
+			}else{
+				$menu->title=$this->title;
+			}
+
 	        $menu->langs='query.lang';
 	        $menu->perms=$this->perms;
 	        $menu->enabled=0;
@@ -1032,7 +1038,14 @@ class TQueryMenu extends TObjetStd {
 				$menu->url=$this->getUrl();
 				$menu->leftmenu = 'querymenu'.$this->getId();
 				$menu->position=500 + $this->getId();
-				$menu->titre=$this->title;
+
+				//retro compatibility
+				if (DOL_VERSION < 13.0){
+					$menu->titre=$this->title;
+				}else{
+					$menu->title=$this->title;
+				}
+
 				$menu->enabled=0;
 				$menu->level=0;
 				$menu->user=2;

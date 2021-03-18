@@ -1,85 +1,85 @@
 <?php
-	
+
 	if(!empty($_GET['uid'])) {
 		define('INC_FROM_CRON_SCRIPT',true);
 	}
-	
+
 	require 'config.php';
-	
+
 	dol_include_once('/query/class/query.class.php');
 	dol_include_once('/query/class/dashboard.class.php');
-	
+
 	$langs->load('query@query');
-	
-	
-	$action = GETPOST('action');
+
+
+	$action = GETPOST('action','alpha');
 
 	$dashboard=new TQDashBoard;
 	$PDOdb=new TPDOdb;
 
-	$fk_user_to_use = GETPOST('fk_user');	
+	$fk_user_to_use = GETPOST('fk_user','int');
 	if(empty($user->id) && !empty($fk_user_to_use)) {
 		$user->fetch($fk_user_to_use);
 	}
-	
+
 	switch ($action) {
 		case 'delete':
-			
-			$dashboard->load($PDOdb, GETPOST('id'));
+
+			$dashboard->load($PDOdb, GETPOST('id','int'));
 			$dashboard->delete($PDOdb);
 			setEventMessage($langs->trans('DeleteSuccess'));
 			header('Location:dashboard.php');
 			exit;
-		
-		
+
+
 			break;
 		case 'view':
-			
-			$dashboard->load($PDOdb, GETPOST('id'));
+
+			$dashboard->load($PDOdb, GETPOST('id','int'));
 			fiche($dashboard);
-			
+
 			break;
 		case 'add':
-			
+
 			if(empty($user->rights->query->dashboard->create)) accessforbidden();
-			
+
 			fiche($dashboard);
-			
+
 			break;
-			
+
 		case 'run':
-			
-			if(GETPOST('uid')) {
-				
-				if(GETPOST('storechoice')>0 && $user->id > 0) {
+
+			if(GETPOST('uid','alpha')) {
+
+				if(GETPOST('storechoice','int')>0 && $user->id > 0) {
 					dol_include_once('/core/lib/admin.lib.php');
-					$res = dolibarr_set_const($db, 'QUERY_HOME_DEFAULT_DASHBOARD_USER_'.$user->id, GETPOST('uid'));
+					$res = dolibarr_set_const($db, 'QUERY_HOME_DEFAULT_DASHBOARD_USER_'.$user->id, GETPOST('uid','alpha'));
 				}
-				
-				$dashboard->loadBy($PDOdb, GETPOST('uid'),'uid',true);
+
+				$dashboard->loadBy($PDOdb, GETPOST('uid','alpha'),'uid',true);
 				run($PDOdb, $dashboard, false);
-				
+
 			}
 			else {
-				$dashboard->load($PDOdb, GETPOST('id'));
+				$dashboard->load($PDOdb, GETPOST('id','int'));
 				run($PDOdb, $dashboard);
-			 
+
 			}
-			
-			break;		
-	
+
+			break;
+
 		default:
-			
+
 			liste();
-			
+
 			break;
 	}
-	
+
 
 
 
 function run(&$PDOdb, &$dashboard, $withHeader = true) {
-	
+
 	echo fiche($dashboard, 'view', $withHeader);
 
 }
@@ -92,7 +92,7 @@ function liste()
 	llxHeader('', 'Query DashBoard', '', '', 0, 0, array('/query/js/dashboard.js', '/query/js/jquery.gridster.min.js'), array('/query/css/jquery.gridster.min.css', '/query/css/dashboard.css'));
 
 	dol_fiche_head(array(), 0, '', -1);
-	
+
 	$sql = '
 			SELECT qd.rowid as "Id", qd.title, "" as action
 			FROM ' . MAIN_DB_PREFIX . 'qdashboard qd
@@ -106,7 +106,7 @@ function liste()
 		'link'=>array(
 			'title'=>'<a href="?action=run&id=@Id@">'.img_picto('Run', 'object_cron.png').' @val@</a>'
 			,'action'=>'<a href="?action=view&id=@Id@">'.img_picto('Edit', 'edit.png').'</a> <a href="?action=delete&id=@Id@" onclick="return(confirm(\''.$langs->trans('ConfirmDeleteMessage').'\'));">'.img_picto('Delete', 'delete.png').'</a>'
-		
+
 		)
 		,'title'=>array(
 			'title'=>$langs->trans('Title')
@@ -117,34 +117,34 @@ function liste()
                 'action' => 'right'
             )
         )
-	
+
 	));
-	
+
 	dol_fiche_end(-1);
-	
+
 	llxFooter();
 }
 
 function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 	global $langs, $conf,$user, $db;
-	
+
 	$PDOdb=new TPDOdb;
-	
+
 	$form=new TFormCore;
-	
+
 	$cell_height = 200;
-	
-	$tab_object = GETPOST('tab_object');
-	$table_element = GETPOST('table_element');
-	$fk_object = GETPOST('fk_object');
-	
+
+	$tab_object = GETPOST('tab_object','alpha');
+	$table_element = GETPOST('table_element','alpha');
+	$fk_object = GETPOST('fk_object','int');
+
 	if(empty($table_element)) {
 		if($tab_object == 'thirdparty') $table_element = 'societe';
 		else if($tab_object == 'project') $table_element = 'projet';
 		else $table_element = $tab_object;
 	}
-	
-	
+
+
 	if($withHeader)
 	{
 		llxHeader('', 'Query DashBoard', '', '', 0, 0, array('/query/js/dashboard.js', '/query/js/jquery.gridster.min.js', '/query/js/query-resize.js') , array('/query/css/jquery.gridster.min.css', '/query/css/dashboard.css'));
@@ -152,7 +152,7 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 		if($dashboard->getId() > 0)
 		{
 			$head = TQueryMenu::getHeadForObject($tab_object, $fk_object);
-			echo dol_get_fiche_head($head, 'tabQuery' . GETPOST('menuId'), 'Query');
+			echo dol_get_fiche_head($head, 'tabQuery' . GETPOST('menuId','int'), 'Query');
 		}
 
 		$title = ! empty($dashboard->title) ? $langs->trans('DashboardTitle', $dashboard->title) : $langs->trans('NewDashboard');
@@ -164,7 +164,7 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 			echo dol_get_fiche_head('');
 		}
 	}
-	else if(GETPOST('for_incusion')>0) {
+	else if(GETPOST('for_incusion','int')>0) {
 		?>
 		<div class="querydashboard">
 			<link rel="stylesheet" type="text/css" title="default" href="<?php echo dol_buildpath('/query/css/jquery.gridster.min.css', 1); ?>" />
@@ -190,7 +190,7 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 				<script type="text/javascript" src="<?php echo dol_buildpath('/query/js/query-resize.js', 1); ?>"></script>
 				<style type="text/css">
 					.pagination { display : none; }
-					<?php if((int)GETPOST('allow_gen')!=1) echo '.notInGeneration { display : none; }'; ?>
+					<?php if((int)GETPOST('allow_gen','int')!=1) echo '.notInGeneration { display : none; }'; ?>
 
 					table.liste tr.impair,table.liste tr.pair,table.liste tr.liste_titre,div.titre {
 						font-size: 12px;
@@ -198,9 +198,9 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 				</style>
 			</head>
 		<body>
-		<?php	
+		<?php
 	}
-	
+
 	?>
 	<script type="text/javascript">
         function calculateGridsterWidth()
@@ -226,12 +226,12 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 		        ,min_cols:4
                 ,max_cols:4
 		        ,min_rows:1
-		        ,serialize_params: function($w, wgd) { 
-		        	return { posx: wgd.col, posy: wgd.row, width: wgd.size_x, height: wgd.size_y, k : $w.attr('data-k') } 
+		        ,serialize_params: function($w, wgd) {
+		        	return { posx: wgd.col, posy: wgd.row, width: wgd.size_x, height: wgd.size_y, k : $w.attr('data-k') }
 		        }
 		        <?php
 		        if($action == 'edit') {
-		        
+
 		        ?>,resize: {
 		            enabled: true
 		            ,max_size: [4, 4]
@@ -253,14 +253,14 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 				{
 					echo 'gridster.disable();';
 				}
-			
+
 			?>
 
 
 			$('#addQuery').click(function() {
-				
+
 				var fk_query = $('select[name=fk_query]').val();
-				
+
 				$.ajax({
 					url: MODQUERY_INTERFACE
 					,data: {
@@ -269,23 +269,23 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 						,fk_qdashboard:<?php echo $dashboard->getId() ?>
 					}
 					,dataType:'json'
-					
+
 				}).done(function(data) {
-					
+
 					var title = $('select[name=fk_query] option:selected').text();
-					
-					gridster.add_widget('<li data-k="'+data+'">'+title+'</li>',1,1,1,1);	
+
+					gridster.add_widget('<li data-k="'+data+'">'+title+'</li>',1,1,1,1);
 				});
 
 				return false;
 			});
-			
+
 			$('#saveDashboard').click(function() {
-				
+
 				var $button = $(this);
-				
+
 				$button.hide();
-				
+
 				$.ajax({
 					url: MODQUERY_INTERFACE
 					,data: {
@@ -298,7 +298,7 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 						,use_as_landing_page:$('select[name=use_as_landing_page]').val()
 						,refresh_dashboard:$('input[name=refresh_dashboard]').val()
 					}
-					
+
 				}).done(function(data) {
 				   <?php
 					if($dashboard->getId()> 0) {
@@ -310,30 +310,30 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 								,fk_qdashboard:<?php echo $dashboard->getId() ?>
 							}
 							,dataType:'json'
-							
+
 					  }).done(function(data) {
 					  	$button.show();
 					  });
-						
+
 						<?php
-					}					  	
+					}
 					else {
 						echo 'document.location.href="?action=view&id="+data;';
 					}
 				  ?>
-					  	
-		              
+
+
 				});
-				
+
 			});
 
             $(window).on('resize', handleResizing);
             handleResizing();
 		});
-		
+
 		function delTile(idTile) {
 			$('li[tile-id='+idTile+']').css('opacity',.5);
-			
+
 			$.ajax({
 				url: MODQUERY_INTERFACE
 				,data: {
@@ -341,14 +341,14 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 					,id : idTile
 				}
 				,dataType:'json'
-				
+
 			}).done(function(data) {
 				$('li[tile-id='+idTile+']').toggle();
 				//document.location.hre
 			});
-			
+
 		}
-			
+
 	</script>
 	<?php
 	if($action == 'edit')
@@ -389,7 +389,7 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 	}
 	else {
 		if(true || ! empty($conf->global->QUERY_SHOW_PDF_TRANSFORM))	echo '<div style="text-align:right" class="notInGeneration"><a class="butAction" style=";z-index:999;" href="download-dashboard.php?uid='.$dashboard->uid.'">'.$langs->trans('Download').'</a></div>';
-		
+
 	}
 
 	if($withHeader && $action == 'edit')
@@ -406,15 +406,15 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 			print load_fiche_titre($langs->trans('Queries'), $morehtmlright, '');
 		}
 	}
-	?>		
-	
+	?>
+
 	<div class="gridster">
 	    <ul>
 	    	<?php
 	    	foreach($dashboard->TQDashBoardQuery as $k=>&$cell) {
 	    		echo '<li tile-id="'.$cell->getId().'" data-k="'.$k.'" data-row="'.$cell->posy.'" data-col="'.$cell->posx.'" data-sizex="'.$cell->width.'" data-sizey="'.$cell->height.'">';
 		    		if($action == 'edit') {
-		    			echo '<a style="position:absolute; top:3px; right:3px; z-index:999;" href="javascript:delTile('.$cell->getId().')">'.img_delete('DeleteThisTile').'</a>';	
+		    			echo '<a style="position:absolute; top:3px; right:3px; z-index:999;" href="javascript:delTile('.$cell->getId().')">'.img_delete('DeleteThisTile').'</a>';
 		    		}
 					else {
 						$actionToDo = 'run-in';
@@ -425,10 +425,10 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 							$actionToDo = 'run';
 							$target = ' target="_blank"';
 						}
-						
+
 						echo '<a style="position:absolute; top:3px; right:3px; z-index:999;" href="'.dol_buildpath('/query/query.php?action='.$actionToDo.'&id='.$cell->query->getId(),1).'"'.$target.'>'.img_picto($langs->trans('Run'),'object_cron.png').'</a>';
 					}
-					
+
 					if($cell->query->type=='LIST')$cell->query->type='SIMPLELIST';
 
 					$trueHeight = $cell->height * $cell_height;
@@ -445,23 +445,23 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 						else{
 							echo $cell->query->run(false, $trueHeight, $table_element, $fk_object, -1, false, true);
 						}
-						
+
 					}
-					
-					
-					
-				
+
+
+
+
 	    		echo '</li>';
-				
-				
+
+
 	    	}
-	    	
+
 	    	?>
-	        
-	
+
+
 	    </ul>
 	</div>
-	
+
 	<div style="clear:both"></div>
 
 <?php
@@ -477,7 +477,7 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 			</script>';
 	}
 
-	
+
 	if($withHeader)
 	{
 		if($dashboard->getId() > 0)
@@ -492,17 +492,17 @@ function fiche(&$dashboard, $action = 'edit', $withHeader=true) {
 
 		llxFooter();
 	}
-	else if(GETPOST('for_incusion')>0) {
-		?></div><?php	
+	else if(GETPOST('for_incusion','int')>0) {
+		?></div><?php
 	}
 	else {
 		?>
 		</body></html>
-		<?php		
-		
+		<?php
+
 	}
-	
+
 }
-	
+
 
 

@@ -9,62 +9,62 @@ if(empty($user->rights->query->bdd->write)) {
 
 $object = new TBDDConnector;
 $PDOdb=new TPDOdb;
-$action=GETPOST('action');
+$action=GETPOST('action','alpha');
 
 switch ($action) {
-	
+
 	case 'save':
-		$object->load($PDOdb, GETPOST('id'));
-		
-		if(GETPOST('bt_delete')!='') {
+		$object->load($PDOdb, GETPOST('id','int'));
+
+		if(GETPOST('bt_delete','alpha')!='') {
 			$object->delete($PDOdb);
 			setEventMessage('BDDDeleted');
 		}
 		else{
 			$object->set_values($_POST);
 			$object->save($PDOdb);
-			setEventMessage('BDDSaved');				
+			setEventMessage('BDDSaved');
 		}
-		
-		
+
+
 		_list($PDOdb);
-		
+
 		break;
 	case 'edit':
-		$object->load($PDOdb, GETPOST('id'));
+		$object->load($PDOdb, GETPOST('id','int'));
 		_card($PDOdb, $object);
-		
+
 		break;
-	
+
 	case 'new':
-		
+
 		_card($PDOdb,$object);
-		
+
 		break;
-	
+
 	default:
-	
+
 		_list($PDOdb);
-		
+
 		break;
 }
 
 function _card(&$PDOdb,&$object) {
 	global $langs, $conf,$user,$db;
-	
+
 	if(empty($user->rights->query->bdd->use_other_db))return '';
-	
+
 	llxHeader();
 	dol_fiche_head(array(),'bdd','BDD');
-	
+
 	$tbs = new TTemplateTBS;
-	
+
 	$object->connect();
-	
+
 	$formCore=new TFormCore('auto','formBDD','post');
 	echo $formCore->hidden('action', 'save');
 	echo $formCore->hidden('id', $object->getId());
-	
+
 	echo $tbs->render('tpl/bdd.html',array(
 	),array(
 		'object'=>array(
@@ -77,25 +77,25 @@ function _card(&$PDOdb,&$object) {
 			,'db_type'=>$formCore->combo('', 'db_type', $object->TDBType, $object->db_type)
 		)
 		,'view'=>array(
-			'langs'=>$langs		
+			'langs'=>$langs
 			,'buttons'=>$formCore->btsubmit($langs->trans('Delete'), 'bt_delete','','butActionDelete').' &nbsp; '. $formCore->btsubmit($langs->trans('Save'), 'bt_save')
 		)
 	));
-	
+
 	$formCore->end();
-	
+
 	dol_fiche_end();
-	
+
 	llxFooter();
 }
 
 function _list(&$PDOdb) {
 	global $langs, $conf,$user,$db;
 	llxHeader();
-	
+
 
 		$url = 'lib/adminer/?';
-		
+
 		//TODO genrate read profile
 		/*
 		$url.='&server='.$dolibarr_main_db_host;
@@ -105,24 +105,24 @@ function _list(&$PDOdb) {
 		$url.='&driver='.$dolibarr_main_db_type;
 		*/
 ?>
-	
+
 	<a href="<?php echo $url; ?>" class="butAction" target="_blank">Accès à la base de données</a>
-	
+
 <?php
 
-	if(!empty($user->rights->query->bdd->use_other_db)) { 
+	if(!empty($user->rights->query->bdd->use_other_db)) {
 
 
 	dol_fiche_head(array(),'bdd','BDD');
-	
-	
+
+
 	$l=new TListviewTBS('lMenu');
 	$sql = "SELECT rowid, host, db_name,login,port,charset, '' as 'alive'
-	FROM ".MAIN_DB_PREFIX."query_bdd_connector 
+	FROM ".MAIN_DB_PREFIX."query_bdd_connector
 	WHERE entity IN (0,".$conf->entity.")";
-	
+
 	echo $l->render($PDOdb, $sql,array(
-	
+
 		'title'=>array(
 			'host'=>$langs->trans('Host')
 			,'db_name'=>$langs->trans('DBName')
@@ -130,7 +130,7 @@ function _list(&$PDOdb) {
 			,'charset'=>$langs->trans('Charset')
 			,'login'=>$langs->trans('Login')
 			,'alive'=>$langs->trans('Alive')
-		
+
 		)
 		,'link'=>array(
 			'host'=>'<a href="?id=@rowid@&action=edit">@val@</a>'
@@ -142,32 +142,32 @@ function _list(&$PDOdb) {
 		,'eval'=>array(
 			'alive'=>'_test_alive(@rowid@)'
 		)
-		
+
 	));
-	
-	
+
+
 	/*$kiwi = new TKiwi;
 	$kiwi->fk_soc = $object->id;
 	$kiwi->fk_product = 1;
 	$kiwi->save($PDOdb);
 	*/
-	// pied de page 
+	// pied de page
 	dol_fiche_end();
 	}
-	
+
 	llxFooter();
 
 }
 
 function _test_alive($fk_bbb) {
 	$PDOdb=new TPDOdb;
-		
+
 	$bdd=new TBDDConnector;
 	$bdd->load($PDOdb, $fk_bbb);
 	ob_start();
 	$alive = $bdd->connect();
 	ob_clean();
 	return $alive ? img_picto('Ok', 'on.png') : img_picto('KO','error.png');
-	
+
 }
 

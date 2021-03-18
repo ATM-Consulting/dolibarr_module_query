@@ -158,10 +158,10 @@ class TQuery extends TObjetStd {
 
 		$form=new TFormCore();
 		$html.= $form->begin_form(dol_buildpath('/query/query.php', 1),'formQuery'. $this->getId(),'get');
-		$action = ! empty($_REQUEST['action']) ? GETPOST('action') : 'run';
+		$action = ! empty($_REQUEST['action']) ? GETPOST('action','alpha') : 'run';
 		if($from_dashboard) $action = 'run-in';
 		$html.=  $form->hidden('action', $action);
-		$html.=  $form->hidden('id', GETPOST('id') ? GETPOST('id') : $this->getId());
+		$html.=  $form->hidden('id', GETPOST('id','int') ? GETPOST('id','int') : $this->getId());
 
 		$html.=$list;
 
@@ -268,7 +268,7 @@ class TQuery extends TObjetStd {
 
 			if(!empty($field) ) {
 
-				$val = GETPOST($field);
+				$val = GETPOST($field,'alpha');
 
 				return $val;
 

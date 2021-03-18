@@ -46,9 +46,9 @@ $action = GETPOST('action', 'alpha');
 if (preg_match('/set_(.*)/',$action,$reg))
 {
 	$code=$reg[1];
-	if (dolibarr_set_const($db, $code, GETPOST($code), 'chaine', 0, '', $conf->entity) > 0)
+	if (dolibarr_set_const($db, $code, GETPOST($code,'alpha'), 'chaine', 0, '', $conf->entity) > 0)
 	{
-		if($code == 'QUERY_HOME_SELECTOR' && GETPOST($code) == 0)
+		if($code == 'QUERY_HOME_SELECTOR' && GETPOST($code,'alpha') == 0)
 		{
 			dolibarr_del_const($db, 'QUERY_DASHBOARD_OPEN_IN_NEW_TAB', 0);
 		}

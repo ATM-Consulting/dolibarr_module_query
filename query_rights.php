@@ -11,8 +11,8 @@ $langs->load('query@query');
 
 if(!$user->rights->query->all->create) accessforbidden();
 
-$action = GETPOST('action');
-$query_id = GETPOST('id');
+$action = GETPOST('action','alpha');
+$query_id = GETPOST('id','int');
 
 $query = new TQuery();
 $query->load($PDOdb, $query_id);
@@ -27,16 +27,16 @@ switch ($action) {
 			$objectright->save($PDOdb);
 			setEventMessage('RightSaved');
 		}
-		
+
 		break;
 	case 'remove':
-		$objectright->load($PDOdb, GETPOST('rights_id'));
+		$objectright->load($PDOdb, GETPOST('rights_id','int'));
 		$objectright->delete($PDOdb);
 		setEventMessage('RightDeleted');
-		
+
 		break;
 	default:
-		
+
 		break;
 }
 
@@ -44,18 +44,18 @@ _list($PDOdb, $query);
 
 function _list(&$PDOdb, &$query) {
 	global $langs, $conf,$user,$db;
-	
+
 	$formdoli = new Form($db);
-	
+
 	llxHeader('', 'Query - '.$query->title);
 	$head = queryPrepareHead($query);
 	dol_fiche_head($head, 'rights', $langs->trans("Query"));
-	
+
 	echo $langs->trans('Title') . ' : ' . $query->title;
 	echo '<br><br>';
-	
+
 	// Utilisateurs associés
-	
+
 	$l=new TListviewTBS('lRightsUser');
 	$sql = "SELECT qr.rowid, qr.element, qr.fk_element
 			, CASE WHEN qr.element = 'user' THEN CONCAT(u.firstname, ' ', u.lastname) ELSE g.nom END as label
@@ -65,9 +65,9 @@ function _list(&$PDOdb, &$query) {
 			LEFT JOIN ".MAIN_DB_PREFIX."usergroup g ON (g.rowid = qr.fk_element AND qr.element = 'group')
 			WHERE fk_query = ".$query->getId()."
 			ORDER BY element ASC";
-	
+
 	echo $l->render($PDOdb, $sql,array(
-	
+
 		'title'=>array(
 			'title'=>$langs->trans('Title')
 			,'fk_element'=>$langs->trans('LinkedElement')
@@ -85,39 +85,39 @@ function _list(&$PDOdb, &$query) {
 		,'type'=>array(
 		)
 	));
-	
+
 	echo '<br>';
-	
+
 	$form = new TFormCore('auto','add_user');
-	
+
 	echo $form->hidden('action', 'add');
 	echo $form->hidden('element', 'user');
 	echo $form->hidden('fk_query', $query->getId());
 	echo $form->hidden('id', $query->getId());
-	
+
 	echo $langs->trans('AddUser') . ' : ';
 	echo $formdoli->select_dolusers('','fk_user');
-	
+
 	echo $form->btsubmit($langs->trans('Add'), 'add');
-	
+
 	echo $form->end_form();
-	
-	
+
+
 	$form = new TFormCore('auto','add_group');
-	
+
 	echo $form->hidden('action', 'add');
 	echo $form->hidden('element', 'group');
 	echo $form->hidden('fk_query', $query->getId());
 	echo $form->hidden('id', $query->getId());
-	
+
 	echo $langs->trans('AddGroup') . ' : ';
 	echo $formdoli->select_dolgroups('','fk_group');
-	
+
 	echo $form->btsubmit($langs->trans('Add'), 'add');
-	
+
 	echo $form->end_form();
-	
-	// pied de page 
+
+	// pied de page
 	dol_fiche_end();
 	llxFooter();
 }

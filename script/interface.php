@@ -1,5 +1,5 @@
 <?php
-
+	if (!defined('NOTOKENRENEWAL')) define('NOTOKENRENEWAL', 1);
 	require '../config.php';
 	dol_include_once('/query/class/query.class.php');
 	dol_include_once('/query/class/dashboard.class.php');

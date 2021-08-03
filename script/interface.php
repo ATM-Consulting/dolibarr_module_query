@@ -1,5 +1,6 @@
 <?php
-
+if (!defined("NOCSRFCHECK")) define('NOCSRFCHECK', 1);
+if (!defined('NOTOKENRENEWAL')) define('NOTOKENRENEWAL', 1); // Disables token renewal
 	require '../config.php';
 	dol_include_once('/query/class/query.class.php');
 	dol_include_once('/query/class/dashboard.class.php');

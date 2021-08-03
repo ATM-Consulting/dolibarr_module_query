@@ -46,12 +46,14 @@ class modquery extends DolibarrModules
         // Use a free id here
         // (See in Home -> System information -> Dolibarr for list of used modules id).
         $this->numero = 104778; // 104000 to 104999 for ATM CONSULTING
+		$this->editor_name = 'ATM Consulting';
+		$this->editor_url = 'https://www.atm-consulting.fr';
         // Key text used to identify module (for permissions, menus, etc...)
         $this->rights_class = 'query';
 
         // Family can be 'crm','financial','hr','projects','products','ecm','technic','other'
         // It is used to group modules in module setup page
-        $this->family = "ATM";
+        $this->family = "ATM Consulting - Autre";
         // Module label (no space allowed)
         // used if translation string 'ModuleXXXName' not found
         // (where XXX is value of numeric property 'numero' of module)
@@ -59,9 +61,9 @@ class modquery extends DolibarrModules
         // Module description
         // used if translation string 'ModuleXXXDesc' not found
         // (where XXX is value of numeric property 'numero' of module)
-        $this->description = "Description of module query";
+        $this->description = "This module helps you build and run database queries";
         // Possible values for version are: 'development', 'experimental' or version
-        $this->version = '1.6.1';
+        $this->version = '1.6.2';
         // Key used in llx_const table to save module status enabled/disabled
         // (where MYMODULE is value of property name of module in uppercase)
         $this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);

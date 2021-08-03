@@ -1,3 +1,16 @@
+# Changelog for Query
+
+## Unreleased
+
+
 ## Version 1.6
 
-- FIX : Token Renewal  *07/05/2021* - 1.6.1
+- FIX: NOCSRFCHECK *03/08/2021* - 1.6.2
+- FIX: Token Renewal  *07/05/2021* - 1.6.1
+
+
+## Version 1.5
+
+- FIX: V13 COMPATIBILITY TITLE PROPERTIES [2020-03-12]
+- FIX: V13 COMPATIBILITY GETPOST [2020-03-12]
+- FIX: V13 COMPATIBILITY BOX [2020-03-12]

@@ -1015,14 +1015,13 @@ class TQueryMenu extends TObjetStd {
 
 	        $menu->langs='query.lang';
 	        $menu->perms=$this->perms;
-	        $menu->enabled=0;
+	        $menu->enabled=1;
 	        $menu->user=2;
 
 	        $menu->level=0;
 			$res = $menu->create($user);
 
 			if($res<=0) {
-				var_dump($menu);
 				exit('Erreur lors de la création du menu');
 			}
 

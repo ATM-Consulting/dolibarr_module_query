@@ -1,7 +1,7 @@
 # Changelog for Query
 
 ## Unreleased
-
+- NEW : Ajout de la class TechATM pour l'affichage de la page "A propos" *11/05/2022* 1.7.0
 
 ## Version 1.6
 

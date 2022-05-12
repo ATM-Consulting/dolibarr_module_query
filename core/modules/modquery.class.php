@@ -63,7 +63,10 @@ class modquery extends DolibarrModules
         // (where XXX is value of numeric property 'numero' of module)
         $this->description = "This module helps you build and run database queries";
         // Possible values for version are: 'development', 'experimental' or version
-        $this->version = '1.6.4';
+        $this->version = '1.7.0';
+		// Url to the file with your last numberversion of this module
+		require_once __DIR__ . '/../../class/techatm.class.php';
+		$this->url_last_version = \query\TechATM::getLastModuleVersionUrl($this);
         // Key used in llx_const table to save module status enabled/disabled
         // (where MYMODULE is value of property name of module in uppercase)
         $this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);

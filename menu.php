@@ -126,7 +126,9 @@ function _list(&$PDOdb) {
 		,'hide'=>array('rowid')
 		,'type'=>array(
 			'date_cre'=>'date'
-		)
+		) ,'sortorder'=>''
+        ,'sortfield'=>''
+        ,'list' =>array('param_url'=>'','morehtmlrighttitle'=>'')
 
 	));
 

@@ -5,7 +5,8 @@
 
 ## Version 1.6
 
-- FIX: Debut Compat PHP8 puis je me suis rendu compte que le module était déprécie *03/08/2022* - 1.6.4
+- FIX: Debut Compat PHP8 puis je me suis rendu compte que le module était déprécie *03/08/2022* - 1.6.6
+- FIX: Compatibility V16 : newToken, and family - *02/06/2022* - 1.6.5
 - FIX: lors de la création d'un menu query, il faut que le menu dolibarr créé soit "enabled" *06/04/2022* - 1.6.4
 - FIX: Compat V14 AddStatisticLine *13/12/2021* - 1.6.3
 - FIX: NOCSRFCHECK *03/08/2021* - 1.6.2

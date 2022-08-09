@@ -3,6 +3,11 @@
 ## Unreleased
 
 
+
+## Version 1.7
+
+- NEW : Ajout de la class TechATM pour l'affichage de la page "A propos" *11/05/2022* 1.7.0
+
 ## Version 1.6
 
 - FIX: Debut Compat PHP8 puis je me suis rendu compte que le module était déprécie *03/08/2022* - 1.6.6

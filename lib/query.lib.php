@@ -72,7 +72,7 @@ function queryAdminPrepareHead()
     //$this->tabs = array(
     //	'entity:-tabname:Title:@query:/query/mypage.php?id=__ID__'
     //); // to remove a tab
-    complete_head_from_modules($conf, $langs, $object, $head, $h, 'query');
+    complete_head_from_modules($conf, $langs, new stdClass(), $head, $h, 'query');
 
     return $head;
 }
@@ -83,6 +83,7 @@ function explode_brackets($str, $separator=",", $leftbracket="(", $rightbracket=
     $depth = 0;
     $betweenquotes = false;
     $len = strlen($str);
+	$char = '';
     for ($i=0; $i<$len; $i++) {
       $previouschar = $char;
       $char = $str[$i];

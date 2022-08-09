@@ -14,7 +14,8 @@
 
 	$action = GETPOST('action','alpha');
 
-	$dashboard=new TQDashBoard;
+
+    $dashboard=new TQDashBoard;
 	$PDOdb=new TPDOdb;
 
 	$fk_user_to_use = GETPOST('fk_user','int');
@@ -117,6 +118,10 @@ function liste()
                 'action' => 'right'
             )
         )
+        ,'sortorder'=>''
+        ,'sortfield'=>''
+        ,'list' =>array('param_url'=>'','morehtmlrighttitle'=>'')
+
 
 	));
 

@@ -6,6 +6,7 @@
 
 ## Version 1.7
 
+- FIX : Fix php 8 - fatal PDO exception dû aux requêtes d'insertion dans le create-maj-base - *16/08/2022* - 1.7.1
 - NEW : Ajout de la class TechATM pour l'affichage de la page "A propos" *11/05/2022* 1.7.0
 
 ## Version 1.6

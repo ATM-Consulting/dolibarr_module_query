@@ -157,7 +157,7 @@ class TQuery extends TObjetStd {
 
 
 		$form=new TFormCore();
-		$html.= $form->begin_form(dol_buildpath('/query/query.php', 1),'formQuery'. $this->getId(),'get');
+		$html= $form->begin_form(dol_buildpath('/query/query.php', 1),'formQuery'. $this->getId(),'get');
 		$action = ! empty($_REQUEST['action']) ? GETPOST('action','alpha') : 'run';
 		if($from_dashboard) $action = 'run-in';
 		$html.=  $form->hidden('action', $action);
@@ -770,9 +770,9 @@ class TQuery extends TObjetStd {
 			,'xaxis'=>$xaxis
 			,'hide'=>$THide
 			,'search'=>$TSearch
-			,'height'=>$this->height
-			,'curveType'=>$conf->global->QUERY_GRAPH_LINESTYLE
-			,'pieHole'=>$conf->global->QUERY_GRAPH_PIEHOLE
+			,'height'=>!empty($this->height)?$this->height:0
+			,'curveType'=>!empty($conf->global->QUERY_GRAPH_LINESTYLE)?$conf->global->QUERY_GRAPH_LINESTYLE:0
+			,'pieHole'=>!empty($conf->global->QUERY_GRAPH_QUERY_GRAPH_PIEHOLE)?$conf->global->QUERY_GRAPH_QUERY_GRAPH_PIEHOLE:0
 			,'operator'=>$TOperator
 		),$TBind);
 

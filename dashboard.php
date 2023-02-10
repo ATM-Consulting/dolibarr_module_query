@@ -17,6 +17,8 @@
 	$dashboard=new TQDashBoard;
 	$PDOdb=new TPDOdb;
 
+	$newToken = function_exists('newToken') ? newToken() : $_SESSION['newtoken'];
+
 	$fk_user_to_use = GETPOST('fk_user','int');
 	if(empty($user->id) && !empty($fk_user_to_use)) {
 		$user->fetch($fk_user_to_use);
@@ -87,7 +89,7 @@ function run(&$PDOdb, &$dashboard, $withHeader = true) {
 
 function liste()
 {
-	global $langs, $conf,$user, $db;
+	global $langs, $conf,$user, $db, $newToken;
 
 	llxHeader('', 'Query DashBoard', '', '', 0, 0, array('/query/js/dashboard.js', '/query/js/jquery.gridster.min.js'), array('/query/css/jquery.gridster.min.css', '/query/css/dashboard.css'));
 
@@ -105,7 +107,7 @@ function liste()
 	echo $r->render($sql,array(
 		'link'=>array(
 			'title'=>'<a href="?action=run&id=@Id@">'.img_picto('Run', 'object_cron.png').' @val@</a>'
-			,'action'=>'<a href="?action=view&id=@Id@">'.img_picto('Edit', 'edit.png').'</a> <a href="?action=delete&id=@Id@" onclick="return(confirm(\''.$langs->trans('ConfirmDeleteMessage').'\'));">'.img_picto('Delete', 'delete.png').'</a>'
+			,'action'=>'<a href="?action=view&id=@Id@">'.img_picto('Edit', 'edit.png').'</a> <a href="?action=delete&token='.$newToken.'&id=@Id@" onclick="return(confirm(\''.$langs->trans('ConfirmDeleteMessage').'\'));">'.img_picto('Delete', 'delete.png').'</a>'
 
 		)
 		,'title'=>array(

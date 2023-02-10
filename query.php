@@ -15,6 +15,7 @@ $action = GETPOST('action','alpha');
 $query=new TQuery;
 $PDOdb=new TPDOdb;
 
+$newToken = function_exists('newToken') ? newToken() : $_SESSION['newtoken'];
 
 switch ($action) {
 
@@ -214,7 +215,7 @@ function run(&$PDOdb, &$query, $preview = false) {
 
 function liste() {
 
-	global $langs, $conf,$user,$db;
+	global $langs, $conf,$user,$db, $newToken;
 
 	$PDOdb=new TPDOdb;
 
@@ -249,7 +250,7 @@ function liste() {
 		'link'=>array(
 			//'Id'=>'<a href="?action=view&id=@val@">'.img_picto('Edit', 'edit.png').' @val@</a>'
 			'title'=>'<a href="?action=run&id=@Id@">'.img_picto('Run', 'object_cron.png').' @val@</a>'
-			,'action'=>'<a href="?action=view&id=@Id@">'.img_picto('Edit', 'edit.png').'</a> <a href="?action=delete&id=@Id@" onclick="return(confirm(\''.$langs->trans('ConfirmDeleteMessage').'\'));">'.img_picto('Delete', 'delete.png').'</a>'
+			,'action'=>'<a href="?action=view&id=@Id@">'.img_picto('Edit', 'edit.png').'</a> <a href="?action=delete&token='.$newToken.'&id=@Id@" onclick="return(confirm(\''.$langs->trans('ConfirmDeleteMessage').'\'));">'.img_picto('Delete', 'delete.png').'</a>'
 		)
 		,'orderBy'=>array('title'=>'ASC')
 		,'hide'=>array('type','nb_result_max','Id')

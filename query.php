@@ -432,7 +432,7 @@ function init_js(&$query) {
 }
 
 function fiche(&$query) {
-	global $langs, $conf,$user;
+	global $langs, $conf, $user, $newToken;
 
 	if(!$user->rights->query->all->create) accessforbidden();
 
@@ -660,20 +660,20 @@ function fiche(&$query) {
 
 				if($query->expert == 0) {
 
-					?><a onclick="if (!confirm('<?php echo dol_escape_js($langs->trans('query_warnings_set_expert_mode')); ?>')) return false;" class="butAction" href="?action=set-expert&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('setExpertMode') ?></a><?php
+					?><a onclick="if (!confirm('<?php echo dol_escape_js($langs->trans('query_warnings_set_expert_mode')); ?>')) return false;" class="butAction" href="?action=set-expert&token=<?php echo $newToken; ?>&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('setExpertMode') ?></a><?php
 
 				}
 				else if($query->expert == 2) {
 					?><a class="butAction" href="?action=set-expert&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('setExpertMode') ?></a><?php
-					?><br /><br /><a class="butAction" href="?action=unset-expert&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('unsetExpertMode') ?></a><?php
+					?><br /><br /><a class="butAction" href="?action=unset-expert&token=<?php echo $newToken; ?>&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('unsetExpertMode') ?></a><?php
 				}
 				else {
 					?><a onclick="if (!confirm('<?php echo dol_escape_js($langs->trans('query_warnings_set_expert_free_mode')); ?>')) return false;"  class="butAction" href="?action=set-free&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('setExpertFreeMode') ?></a><?php
-					?><br /><br /><a class="butAction" href="?action=unset-expert&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('unsetExpertMode') ?></a><?php
+					?><br /><br /><a class="butAction" href="?action=unset-expert&token=<?php echo $newToken; ?>&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('unsetExpertMode') ?></a><?php
 				}
 
-				?><br /><br /><a class="butAction" href="?action=clone&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('cloneQuery') ?></a><?php
-				?><br /><br /><a class="butAction" href="?action=export&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('ExportQuery') ?></a><?php
+				?><br /><br /><a class="butAction" href="?action=clone&token=<?php echo $newToken; ?>&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('cloneQuery') ?></a><?php
+				?><br /><br /><a class="butAction" href="?action=export&token=<?php echo $newToken; ?>&id=<?php echo $query->getId() ?>"><?php echo $langs->trans('ExportQuery') ?></a><?php
 
 				?></div><?php
 

@@ -123,6 +123,10 @@ function liste()
                 'action' => 'right'
             )
         )
+        ,'sortorder'=>''
+        ,'sortfield'=>''
+        ,'list' =>array('param_url'=>'','morehtmlrighttitle'=>'')
+
 
 	));
 

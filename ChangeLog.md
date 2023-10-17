@@ -5,6 +5,7 @@
 
 
 ## Version 1.7
+- FIX : FIX TOKENS - *17/10/2023* - 1.7.4
 - FIX : FIX TOKENS - *08/08/2023* - 1.7.3  
 - FIX : token - *01/02/2023* - 1.7.2
 - FIX : Fix php 8 - fatal PDO exception dû aux requêtes d'insertion dans le create-maj-base - *16/08/2022* - 1.7.1

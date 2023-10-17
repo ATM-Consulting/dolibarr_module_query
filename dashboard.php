@@ -14,6 +14,10 @@
 
 	$action = GETPOST('action','alpha');
 
+	// HOTFIX: l'action "add" nécessite un jeton CSRF (car dans les modules standard, c'est une action impactante)
+	// mais pour query, "add" correspond au "create" du standard.
+	if ($action === 'create') $action = 'add';
+
 	$dashboard=new TQDashBoard;
 	$PDOdb=new TPDOdb;
 

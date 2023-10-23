@@ -5,7 +5,8 @@
 
 
 ## Version 1.7
-- FIX : FIX TOKENS - *08/08/2023* - 1.7.3  
+- FIX : Fix : missing sortorder and sortfield - *23/10/2023* - 1.7.4
+- FIX : FIX TOKENS - *08/08/2023* - 1.7.3
 - FIX : token - *01/02/2023* - 1.7.2
 - FIX : Fix php 8 - fatal PDO exception dû aux requêtes d'insertion dans le create-maj-base - *16/08/2022* - 1.7.1
 - NEW : Ajout de la class TechATM pour l'affichage de la page "A propos" *11/05/2022* 1.7.0

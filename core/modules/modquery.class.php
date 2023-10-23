@@ -63,7 +63,7 @@ class modquery extends DolibarrModules
         // (where XXX is value of numeric property 'numero' of module)
         $this->description = "This module helps you build and run database queries";
         // Possible values for version are: 'development', 'experimental' or version
-        $this->version = '1.7.3';
+        $this->version = '1.7.4';
 		// Url to the file with your last numberversion of this module
 		require_once __DIR__ . '/../../class/techatm.class.php';
 		$this->url_last_version = \query\TechATM::getLastModuleVersionUrl($this);

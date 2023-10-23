@@ -257,6 +257,8 @@ function liste() {
 			,'action'=>'<a href="?action=view&id=@Id@">'.img_picto('Edit', 'edit.png').'</a> <a href="?action=delete&token='.$newToken.'&id=@Id@" onclick="return(confirm(\''.$langs->trans('ConfirmDeleteMessage').'\'));">'.img_picto('Delete', 'delete.png').'</a>'
 		)
 		,'orderBy'=>array('title'=>'ASC')
+		,'sortorder'=>array('ASC')
+		,'sortfield'=>array('title')
 		,'hide'=>array('type','nb_result_max','Id')
 		,'title'=>array(
 			'title'=>$langs->trans('Title')

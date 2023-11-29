@@ -63,10 +63,11 @@ class modquery extends DolibarrModules
         // (where XXX is value of numeric property 'numero' of module)
         $this->description = "This module helps you build and run database queries";
         // Possible values for version are: 'development', 'experimental' or version
-        $this->version = '1.7.4';
+        $this->version = '1.7.5';
 		// Url to the file with your last numberversion of this module
 		require_once __DIR__ . '/../../class/techatm.class.php';
 		$this->url_last_version = \query\TechATM::getLastModuleVersionUrl($this);
+
         // Key used in llx_const table to save module status enabled/disabled
         // (where MYMODULE is value of property name of module in uppercase)
         $this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
@@ -284,8 +285,6 @@ class modquery extends DolibarrModules
 		$this->rights[$r][5] = 'use_other_db';			// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$r++;
 
-	$newToken = function_exists('newToken') ? newToken() : $_SESSION['newtoken'];
-
         // Add here list of permission defined by
         // an id, a label, a boolean and two constant strings.
         // Example:
@@ -331,7 +330,7 @@ class modquery extends DolibarrModules
         	'titre'=>'Créer une requête',
         	'mainmenu'=>'tools',
         	'leftmenu'=>'query_add',
-        	'url'=>'/query/query.php?action=add&token='.$newToken,
+        	'url'=>'/query/query.php?action=create',
         	'position'=>102,
 			'enabled'=>'$conf->query->enabled',
         	'perms'=>'$user->rights->query->all->create',
@@ -379,7 +378,7 @@ class modquery extends DolibarrModules
         	'titre'=>'Créer un panneau',
         	'mainmenu'=>'tools',
         	'leftmenu'=>'dash_add',
-        	'url'=>'/query/dashboard.php?action=add&token='.$newToken,
+        	'url'=>'/query/dashboard.php?action=create',
         	'langs'=>'query@query',
         	'position'=>202,
 			'enabled'=>'$conf->query->enabled',
@@ -412,7 +411,7 @@ class modquery extends DolibarrModules
         	'titre'=>'Créer une entrée menu',
         	'mainmenu'=>'tools',
         	'leftmenu'=>'menu_query_add',
-        	'url'=>'/query/menu.php?action=add&token='.$newToken,
+			'url'=>'/query/menu.php?action=create',
         	'langs'=>'query@query',
         	'position'=>312,
 			'enabled'=>'$conf->query->enabled',

@@ -12,6 +12,10 @@ $langs->load('query@query');
 
 $action = GETPOST('action','alpha');
 
+// HOTFIX: l'action "add" nécessite un jeton CSRF (car dans les modules standard, c'est une action impactante)
+// mais pour query, "add" correspond au "create" du standard.
+if ($action === 'create') $action = 'add';
+
 $query=new TQuery;
 $PDOdb=new TPDOdb;
 
@@ -201,7 +205,7 @@ function run(&$PDOdb, &$query, $preview = false) {
 
 	if(!$preview) {
 
-		echo '<p><a href="'.dol_buildpath('/query/get-json.php',1).'?'.http_build_query(array('TListTBS'=>$_REQUEST['TListTBS'])).'&uid='.$query->uid.'" target="_blank">'.$langs->trans('QueryAsJSON').'</a></p>';
+		echo '<p><a href="'.dol_buildpath('/query/get-json.php',1).'?'.http_build_query(array('TListTBS'=>!empty($_REQUEST['TListTBS'])?$_REQUEST['TListTBS']:'')).'&uid='.$query->uid.'" target="_blank">'.$langs->trans('QueryAsJSON').'</a></p>';
 
 		dol_fiche_end(-1);
 		llxFooter();
@@ -267,7 +271,8 @@ function liste() {
 		)
 		,'list'=>array(
 			// ⚠ required for pagination
-			'param_url' => '&limit=' . $nbLine
+			'param_url' => '&limit=' . $nbLine,
+			'morehtmlrighttitle' => ''
 		)
 		,'search'=>array(
 			'title'=>array(
@@ -282,6 +287,8 @@ function liste() {
 		,'limit'=>array(
 				'nbLine' => $nbLine
 			)
+        ,'sortorder'=>''
+        ,'sortfield'=>''
 	));
 
 

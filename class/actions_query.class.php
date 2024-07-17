@@ -17,7 +17,7 @@ class ActionsQuery
 		|| $parameters['currentcontext'] == 'usercard')
 		&& $action == ''
 		&& empty($conf->global->QUERY_NO_DASHBOARD_ON_CARDS)
-		&& !empty($user->rights->query->dashboard->viewin)) {
+		&& !empty($user->hasRight('query', 'dashboard', 'viewin'))) {
 
 			define('INC_FROM_DOLIBARR',true);
 			dol_include_once('/query/config.php');

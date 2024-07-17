@@ -188,7 +188,7 @@ class TQDashBoard extends TObjetStd {
 
 	public static function getUserRightsSQLFilter($user)
 	{
-		if(empty($user) || ! empty($user->admin) || ! empty($user->rights->dashboard->readall))
+		if(empty($user) || ! empty($user->admin) || ! empty($user->hasRight('dashboard', 'readall')))
 		{
 			return '';
 		}

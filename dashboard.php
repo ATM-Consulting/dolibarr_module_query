@@ -47,7 +47,7 @@
 			break;
 		case 'add':
 
-			if(empty($user->rights->query->dashboard->create)) accessforbidden();
+			if(empty($user->hasRight('query', 'dashboard', 'create'))) accessforbidden();
 
 			fiche($dashboard);
 

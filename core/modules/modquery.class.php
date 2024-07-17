@@ -133,9 +133,9 @@ class modquery extends DolibarrModules
         // Example:
         $this->tabs = array(
             //	// To add a new tab identified by code tabname1
-            //	'objecttype:+tabname1:Title1:langfile@query:$user->rights->query->read:/query/mynewtab1.php?id=__ID__',
+            //	'objecttype:+tabname1:Title1:langfile@query:$user->hasRight('query', 'read'):/query/mynewtab1.php?id=__ID__',
             //	// To add another new tab identified by code tabname2
-            //	'objecttype:+tabname2:Title2:langfile@query:$user->rights->othermodule->read:/query/mynewtab2.php?id=__ID__',
+            //	'objecttype:+tabname2:Title2:langfile@query:$user->hasRight('othermodule', 'read'):/query/mynewtab2.php?id=__ID__',
             //	// To remove an existing tab identified by code tabname
             //	'objecttype:-tabname'
         );
@@ -157,14 +157,14 @@ class modquery extends DolibarrModules
         // 'categories_x'		to add a tab in category view
         // (replace 'x' by type of category (0=product, 1=supplier, 2=customer, 3=member)
         // Dictionnaries
-        if (! isset($conf->query->enabled)) {
+        if (! isModEnabled('query')) {
             $conf->query=new stdClass();
             $conf->query->enabled = 0;
         }
         $this->dictionnaries = array();
         /* Example:
           // This is to avoid warnings
-          if (! isset($conf->query->enabled)) $conf->query->enabled=0;
+          if (! isModEnabled('query')) $conf->query->enabled=0;
           $this->dictionnaries=array(
           'langs'=>'query@query',
           // List of tables we want to see into dictonnary editor
@@ -196,9 +196,9 @@ class modquery extends DolibarrModules
           'tabrowid'=>array("rowid","rowid","rowid"),
           // Condition to show each dictionnary
           'tabcond'=>array(
-          $conf->query->enabled,
-          $conf->query->enabled,
-          $conf->query->enabled
+          isModEnabled('query'),
+          isModEnabled('query'),
+          isModEnabled('query')
           )
           );
          */
@@ -225,64 +225,64 @@ class modquery extends DolibarrModules
 		$this->rights[$r][0] = $this->numero+$r; 				// Permission id (must not be already used)
 		$this->rights[$r][1] = 'Exécuter une requête';	// Permission label
 		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'all';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'read';				// In php code, permission will be_o checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][4] = 'all';				// In php code, permission will be checked by test if ($user->hasRight('permkey', 'level1', 'level2'))
+		$this->rights[$r][5] = 'read';				// In php code, permission will be_o checked by test if ($user->hasRight('permkey', 'level1', 'level2'))
 		$r++;
 
 		$this->rights[$r][0] = $this->numero+$r; 				// Permission id (must not be already used)
 		$this->rights[$r][1] = 'Créer une requête';	// Permission label
 		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'all';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'create';			// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][4] = 'all';				// In php code, permission will be checked by test if ($user->hasRight('permkey', 'level1', 'level2'))
+		$this->rights[$r][5] = 'create';			// In php code, permission will be checked by test if ($user->hasRight('permkey', 'level1', 'level2'))
 		$r++;
 
 		$this->rights[$r][0] = $this->numero+$r; 				// Permission id (must not be already used)
 		$this->rights[$r][1] = 'Ecrire dans la base de donnée';	// Permission label
 		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'bdd';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'write';			// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][4] = 'bdd';				// In php code, permission will be checked by test if ($user->hasRight('permkey', 'level1', 'level2'))
+		$this->rights[$r][5] = 'write';			// In php code, permission will be checked by test if ($user->hasRight('permkey', 'level1', 'level2'))
 		$r++;
 
 		$this->rights[$r][0] = $this->numero+$r; 				// Permission id (must not be already used)
 		$this->rights[$r][1] = 'Créer un panneau de contrôle';	// Permission label
 		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'dashboard';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'create';			// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][4] = 'dashboard';				// In php code, permission will be checked by test if ($user->hasRight('permkey', 'level1', 'level2'))
+		$this->rights[$r][5] = 'create';			// In php code, permission will be checked by test if ($user->hasRight('permkey', 'level1', 'level2'))
 		$r++;
 
 		$this->rights[$r][0] = $this->numero+$r; 				// Permission id (must not be already used)
 		$this->rights[$r][1] = 'Voir les panneaux intégrés aux fiches (projet,..)';	// Permission label
 		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'dashboard';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'viewin';			// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][4] = 'dashboard';				// In php code, permission will be checked by test if ($user->hasRight('permkey', 'level1', 'level2'))
+		$this->rights[$r][5] = 'viewin';			// In php code, permission will be checked by test if ($user->hasRight('permkey', 'level1', 'level2'))
 		$r++;
 
 		$this->rights[$r][0] = $this->numero+$r; 				// Permission id (must not be already used)
 		$this->rights[$r][1] = 'Faire des requêtes en expert';	// Permission label
 		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'all';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'expert';			// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][4] = 'all';				// In php code, permission will be checked by test if ($user->hasRight('permkey', 'level1', 'level2'))
+		$this->rights[$r][5] = 'expert';			// In php code, permission will be checked by test if ($user->hasRight('permkey', 'level1', 'level2'))
 		$r++;
 
 		$this->rights[$r][0] = $this->numero+$r; 				// Permission id (must not be already used)
 		$this->rights[$r][1] = 'ViewDashboard';	// Permission label
 		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'dashboard';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'read';			// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][4] = 'dashboard';				// In php code, permission will be checked by test if ($user->hasRight('permkey', 'level1', 'level2'))
+		$this->rights[$r][5] = 'read';			// In php code, permission will be checked by test if ($user->hasRight('permkey', 'level1', 'level2'))
 		$r++;
 
 		$this->rights[$r][0] = $this->numero+$r; 				// Permission id (must not be already used)
 		$this->rights[$r][1] = 'ViewAllDashboard';	// Permission label
 		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'dashboard';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'readall';			// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][4] = 'dashboard';				// In php code, permission will be checked by test if ($user->hasRight('permkey', 'level1', 'level2'))
+		$this->rights[$r][5] = 'readall';			// In php code, permission will be checked by test if ($user->hasRight('permkey', 'level1', 'level2'))
 		$r++;
 
 		$this->rights[$r][0] = $this->numero+$r; 				// Permission id (must not be already used)
 		$this->rights[$r][1] = 'UseOtherDB';	// Permission label
 		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
-		$this->rights[$r][4] = 'bdd';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		$this->rights[$r][5] = 'use_other_db';			// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+		$this->rights[$r][4] = 'bdd';				// In php code, permission will be checked by test if ($user->hasRight('permkey', 'level1', 'level2'))
+		$this->rights[$r][5] = 'use_other_db';			// In php code, permission will be checked by test if ($user->hasRight('permkey', 'level1', 'level2'))
 		$r++;
 
         // Add here list of permission defined by
@@ -295,10 +295,10 @@ class modquery extends DolibarrModules
         //// Permission by default for new user (0/1)
         //$this->rights[$r][3] = 1;
         //// In php code, permission will be checked by test
-        //// if ($user->rights->permkey->level1->level2)
+        //// if ($user->hasRight('permkey', 'level1', 'level2'))
         //$this->rights[$r][4] = 'level1';
         //// In php code, permission will be checked by test
-        //// if ($user->rights->permkey->level1->level2)
+        //// if ($user->hasRight('permkey', 'level1', 'level2'))
         //$this->rights[$r][5] = 'level2';
         //$r++;
         // Main menu entries
@@ -316,8 +316,8 @@ class modquery extends DolibarrModules
         	'leftmenu'=>'query',
         	'url'=>'/query/query.php',
         	'position'=>100,
-			'enabled'=>'$conf->query->enabled',
-        	'perms'=>'$user->rights->query->all->read',
+			'enabled'=>'isModEnabled('query')',
+        	'perms'=>'$user->hasRight('query', 'all', 'read')',
         	'target'=>'',
         	'user'=>2,
         );
@@ -332,8 +332,8 @@ class modquery extends DolibarrModules
         	'leftmenu'=>'query_add',
         	'url'=>'/query/query.php?action=create',
         	'position'=>102,
-			'enabled'=>'$conf->query->enabled',
-        	'perms'=>'$user->rights->query->all->create',
+			'enabled'=>'isModEnabled('query')',
+        	'perms'=>'$user->hasRight('query', 'all', 'create')',
         	'target'=>'',
         	'user'=>2,
         );
@@ -349,8 +349,8 @@ class modquery extends DolibarrModules
         	'url'=>'/query/query.php',
         	'langs'=>'query@query',
         	'position'=>101,
-			'enabled'=>'$conf->query->enabled',
-        	'perms'=>'$user->rights->query->all->read',
+			'enabled'=>'isModEnabled('query')',
+        	'perms'=>'$user->hasRight('query', 'all', 'read')',
         	'target'=>'',
         	'user'=>2,
         );
@@ -365,8 +365,8 @@ class modquery extends DolibarrModules
         	'leftmenu'=>'dash_list',
         	'url'=>'/query/dashboard.php',
         	'position'=>201,
-			'enabled'=>'$conf->query->enabled',
-        	'perms'=>'$user->rights->query->dashboard->read',
+			'enabled'=>'isModEnabled('query')',
+        	'perms'=>'$user->hasRight('query', 'dashboard', 'read')',
         	'target'=>'',
         	'user'=>2,
         );
@@ -381,8 +381,8 @@ class modquery extends DolibarrModules
         	'url'=>'/query/dashboard.php?action=create',
         	'langs'=>'query@query',
         	'position'=>202,
-			'enabled'=>'$conf->query->enabled',
-        	'perms'=>'$user->rights->query->dashboard->create',
+			'enabled'=>'isModEnabled('query')',
+        	'perms'=>'$user->hasRight('query', 'dashboard', 'create')',
         	'target'=>'',
         	'user'=>2,
         );
@@ -397,8 +397,8 @@ class modquery extends DolibarrModules
         	'mainmenu'=>'tools',
         	'leftmenu'=>'menu_query_list',
         	'url'=>'/query/menu.php',
-			'enabled'=>'$conf->query->enabled',
-        	'perms'=>'$user->rights->query->all->create',
+			'enabled'=>'isModEnabled('query')',
+        	'perms'=>'$user->hasRight('query', 'all', 'create')',
         	'position'=>311,
         	'target'=>'',
         	'user'=>2,
@@ -414,8 +414,8 @@ class modquery extends DolibarrModules
 			'url'=>'/query/menu.php?action=create',
         	'langs'=>'query@query',
         	'position'=>312,
-			'enabled'=>'$conf->query->enabled',
-        	'perms'=>'$user->rights->query->all->create',
+			'enabled'=>'isModEnabled('query')',
+        	'perms'=>'$user->hasRight('query', 'all', 'create')',
         	'target'=>'',
         	'user'=>2,
         );
@@ -433,7 +433,7 @@ class modquery extends DolibarrModules
         	'position'=>301,
         	'enabled'=>0,
         	'langs'=>'query@query',
-        	'perms'=>'$user->rights->query->bdd->write',
+        	'perms'=>'$user->hasRight('query', 'bdd', 'write')',
         	'target'=>'',
         	'user'=>2,
         );
@@ -450,7 +450,7 @@ class modquery extends DolibarrModules
         	'position'=>302,
         	'enabled'=>0,
         	'langs'=>'query@query',
-        	'perms'=>'$user->rights->query->bdd->use_other_db',
+        	'perms'=>'$user->hasRight('query', 'bdd', 'use_other_db')',
         	'target'=>'',
         	'user'=>2
         );
@@ -473,9 +473,9 @@ class modquery extends DolibarrModules
         //	'langs'=>'mylangfile',
         //	'position'=>100,
         //	// Define condition to show or hide menu entry.
-        //	// Use '$conf->query->enabled' if entry must be visible if module is enabled.
-        //	'enabled'=>'$conf->query->enabled',
-        //	// Use 'perms'=>'$user->rights->query->level1->level2'
+        //	// Use 'isModEnabled('query')' if entry must be visible if module is enabled.
+        //	'enabled'=>'isModEnabled('query')',
+        //	// Use 'perms'=>'$user->hasRight('query', 'level1', 'level2')'
         //	// if you want your menu with a permission rules
         //	'perms'=>'1',
         //	'target'=>'',
@@ -499,10 +499,10 @@ class modquery extends DolibarrModules
         //	'langs'=>'mylangfile',
         //	'position'=>100,
         //	// Define condition to show or hide menu entry.
-        //	// Use '$conf->query->enabled' if entry must be visible if module is enabled.
+        //	// Use 'isModEnabled('query')' if entry must be visible if module is enabled.
         //	// Use '$leftmenu==\'system\'' to show if leftmenu system is selected.
-        //	'enabled'=>'$conf->query->enabled',
-        //	// Use 'perms'=>'$user->rights->query->level1->level2'
+        //	'enabled'=>'isModEnabled('query')',
+        //	// Use 'perms'=>'$user->hasRight('query', 'level1', 'level2')'
         //	// if you want your menu with a permission rules
         //	'perms'=>'1',
         //	'target'=>'',

@@ -3,7 +3,7 @@
 require 'config.php';
 dol_include_once('/query/class/bddconnector.class.php');
 
-if(empty($user->rights->query->bdd->write)) {
+if(empty($user->hasRight('query', 'bdd', 'write'))) {
 	accessforbidden();
 }
 
@@ -52,7 +52,7 @@ switch ($action) {
 function _card(&$PDOdb,&$object) {
 	global $langs, $conf,$user,$db;
 
-	if(empty($user->rights->query->bdd->use_other_db))return '';
+	if(empty($user->hasRight('query', 'bdd', 'use_other_db')))return '';
 
 	llxHeader();
 	dol_fiche_head(array(),'bdd','BDD');
@@ -110,7 +110,7 @@ function _list(&$PDOdb) {
 
 <?php
 
-	if(!empty($user->rights->query->bdd->use_other_db)) {
+	if(!empty($user->hasRight('query', 'bdd', 'use_other_db'))) {
 
 
 	dol_fiche_head(array(),'bdd','BDD');

@@ -111,7 +111,7 @@ switch ($action) {
 		break;
 	case 'add':
 
-		if(empty($user->rights->query->all->create)) accessforbidden();
+		if(empty($user->hasRight('query', 'all', 'create'))) accessforbidden();
 
 		fiche($query);
 
@@ -440,7 +440,7 @@ function init_js(&$query) {
 function fiche(&$query) {
 	global $langs, $conf, $user, $newToken;
 
-	if(!$user->rights->query->all->create) accessforbidden();
+	if(!$user->hasRight('query', 'all', 'create')) accessforbidden();
 
 	llxHeader('', 'Query - '.$query->title, '', '', 0, 0, array('/query/js/query.js'/*,'/query/js/jquery.base64.min.js'*/) , array('/query/css/query.css') );
 
@@ -661,7 +661,7 @@ function fiche(&$query) {
 
 	<div>
 		<?php
-			if($query->getId()>0 && !empty($user->rights->query->all->expert) ) {
+			if($query->getId()>0 && !empty($user->hasRight('query', 'all', 'expert')) ) {
 				?><div style="float:right;z-index:999; position:relative; top:40px;"><?php
 
 				if($query->expert == 0) {
@@ -691,7 +691,7 @@ function fiche(&$query) {
 			<?php
 				$form=new TFormCore;
 
-				if(!empty($user->rights->query->bdd->use_other_db)) {
+				if(!empty($user->hasRight('query', 'bdd', 'use_other_db'))) {
 					dol_include_once('/query/class/bddconnector.class.php');
 					$PDOdb=new TPDOdb;
 

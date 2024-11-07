@@ -65,6 +65,8 @@ class ActionsQuery
                 TQDashBoard::injectIndexQueryDashbord();
             }
         }
+
+		return 0;
 	}
 
 	function addStatisticLine($parameters, &$object, &$action, $hookmanager)

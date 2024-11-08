@@ -5,6 +5,7 @@
 
 
 ## Version 1.7
+- FIX : Sentry INC_FROM_Dolibarr already defined, hook must return int, undefined property QUERY_HOME_DEFAULT_DASHBOARD_USER_1 - *08/11/2024* - 1.7.6
 - FIX : FIX TOKENS - *17/10/2023* - 1.7.5
 - FIX : Fix : missing sortorder and sortfield - *23/10/2023* - 1.7.4
 - FIX : FIX TOKENS - *08/08/2023* - 1.7.3  

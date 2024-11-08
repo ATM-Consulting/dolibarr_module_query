@@ -57,14 +57,18 @@ class ActionsQuery
 		// we use this hook starting from 14.0 instead of addStatisticLine
         if(in_array('index', explode(':', $parameters['context'])) && ! empty($conf->global->QUERY_HOME_SELECTOR)) {
             if(version_compare(DOL_VERSION, '14.0', '>=')) {
-                define('INC_FROM_DOLIBARR', true);
-                dol_include_once('/query/config.php');
+				if (!defined('INC_FROM_DOLIBARR')) {
+					define('INC_FROM_DOLIBARR', true);
+				}
+				dol_include_once('/query/config.php');
                 dol_include_once('/query/class/dashboard.class.php');
                 dol_include_once('/query/class/query.class.php');
                 dol_include_once('/query/class/dashboard.class.php');
                 TQDashBoard::injectIndexQueryDashbord();
             }
         }
+
+		return 0;
 	}
 
 	function addStatisticLine($parameters, &$object, &$action, $hookmanager)
